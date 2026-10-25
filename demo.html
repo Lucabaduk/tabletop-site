@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TableTop live demo</title>
+<meta name="description" content="Try TableTop in your browser. It is the real app with a sample restaurant loaded, and nothing is sent anywhere.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+<a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>Table<b>Top</b></span></a>
+<button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav">☰</button>
+<nav class="main" id="nav" aria-label="Main">
+<a href="index.html#features">Features</a><a href="index.html#how">How it works</a><a href="index.html#pricing">Pricing</a><a href="index.html#faq">FAQ</a><a href="demo.html">Demo</a>
+<a class="btn sm" href="index.html#waitlist">Join the waitlist</a></nav></div></header>
+<main id="main">
+<div class="wrap demo-top center"><span class="eyebrow">Live demo</span><h2>Try TableTop right here</h2>
+<p class="sub">This is the real app with a sample restaurant called The Copper Spoon. Click around, take an order, send it to the kitchen. Everything you do stays in your browser.</p>
+<div class="toolbar"><div class="seg" role="group" aria-label="Preview size"><button type="button" id="bdesk" aria-pressed="true">🖥️ Desktop</button><button type="button" id="bphone" aria-pressed="false">📱 Phone</button></div>
+<a class="btn sm" href="app.html" target="_blank" rel="noopener">Open full screen ↗</a><a class="btn alt sm" href="index.html">← Back to site</a></div></div>
+<div class="wrap stage"><div class="dev" id="dev"><div class="frame"><iframe id="appf" src="app.html" title="TableTop live demo"></iframe></div></div></div>
+<noscript><div class="wrap center"><p>Your browser blocked the embedded demo. <a href="app.html">Open the demo directly</a>.</p></div></noscript>
+<div class="wrap"><p class="center" style="color:var(--muted);font-size:14px">Not loading? <a href="app.html">Open the demo in its own tab</a>. To start over, go to Settings inside the app and choose “Load demo data”.</p>
+<div class="tips">
+<div class="card"><h3>1. Take an order</h3><p>Go to <b>POS</b>, pick a table, tap a few dishes and press Card or Cash. Then open <b>Orders</b> to print the receipt.</p></div>
+<div class="card"><h3>2. Run the kitchen</h3><p>Open <b>Kitchen</b> and move a ticket from new to cooking to ready. Notice the timers.</p></div>
+<div class="card"><h3>3. Mark a dish sold out</h3><p>In <b>Menu</b>, flip the switch on any item. It greys out in the POS right away.</p></div>
+<div class="card"><h3>4. Check your numbers</h3><p>The <b>Dashboard</b> shows sales by hour, best sellers and low-stock alerts.</p></div>
+</div>
+<div class="card soonc" style="margin-bottom:60px"><h3>Not in the demo yet <span class="tag soon">Coming in v2</span></h3><p>Staff schedule, tip splitter, end-of-night report, allergy tags and the staff training quiz are still being built. <a href="index.html#v2">See the roadmap</a> or <a href="index.html#waitlist">join the waitlist</a>.</p></div>
+</div></main>
+<footer><div class="wrap"><div class="cols">
+<div><a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>Table<b>Top</b></span></a><p style="max-width:320px;margin:10px 0 0">Simple, flat-price restaurant software for small places.</p></div>
+<div><b style="color:#fff">Product</b><a href="index.html#features">Features</a><a href="index.html#pricing">Pricing</a><a href="demo.html">Live demo</a><a href="app.html">Open the app</a></div>
+<div><b style="color:#fff">Company</b><a href="index.html#how">How it works</a><a href="index.html#faq">FAQ</a><a href="index.html#waitlist">Waitlist</a></div>
+</div><small>© 2026 TableTop. This is a demo site: the waitlist form saves only in your own browser and nothing is sent anywhere. Pricing shown is planned launch pricing.</small></div></footer>
+<script src="js/site.js"></script>
+</body></html>

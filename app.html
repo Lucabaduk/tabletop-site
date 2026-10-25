@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'">
+<title>TableTop — Restaurant Manager</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍽️%3C/text%3E%3C/svg%3E">
+<style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:#f4f6fb;color:#1c2333}
+a{color:#2563eb;text-decoration:none}.layout{display:flex;min-height:100vh}
+nav{width:220px;background:#0f172a;color:#cbd5e1;padding:20px 12px;flex-shrink:0}nav h1{color:#fff;font-size:20px;margin:0 8px 4px}nav .dl{font-size:12px;margin:0 8px 20px;color:#94a3b8}
+nav a{display:block;color:#cbd5e1;padding:10px 12px;border-radius:8px;margin-bottom:2px}nav a.active,nav a:hover{background:#1e293b;color:#fff}
+nav .me{margin-top:30px;font-size:12px;padding:0 8px}main{flex:1;padding:28px;overflow:auto}
+h2{margin:0 0 18px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px}
+.card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.08)}.stat .v{font-size:28px;font-weight:700}.stat .l{color:#64748b;font-size:13px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #eef1f6;font-size:14px}th{background:#f8fafc;color:#64748b;font-weight:600;font-size:12px;text-transform:uppercase}
+input,select,textarea{padding:9px 10px;border:1px solid #d6dbe6;border-radius:8px;font:inherit;background:#fff}textarea{width:100%;min-height:70px}
+button{padding:9px 14px;border:0;border-radius:8px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer}button.sec{background:#e2e8f0;color:#1c2333}button.danger{background:#dc2626}button.sm{padding:5px 9px;font-size:12px}
+.badge{padding:3px 8px;border-radius:99px;font-size:12px;font-weight:600;background:#e2e8f0}.available,.won,.completed{background:#dcfce7;color:#166534}.reserved,.negotiating,.test_drive,.scheduled{background:#fef9c3;color:#854d0e}.sold,.lost,.cancelled,.no_show{background:#fee2e2;color:#991b1b}.new,.contacted{background:#dbeafe;color:#1e40af}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;z-index:9}.modal .card{width:520px;max-width:95vw;max-height:90vh;overflow:auto}
+.hidden{display:none!important}.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form label{font-size:12px;color:#64748b;display:flex;flex-direction:column;gap:4px}.form .full{grid-column:1/-1}
+.login{max-width:380px;margin:10vh auto}.login input{width:100%;margin-bottom:10px}.bar{height:10px;background:#2563eb;border-radius:4px}
+.kanban{display:grid;grid-template-columns:repeat(6,minmax(160px,1fr));gap:10px;overflow:auto}.col{background:#e9edf5;border-radius:10px;padding:8px;min-height:120px}.col h4{margin:4px 4px 8px;font-size:12px;text-transform:uppercase;color:#475569}
+.lead{background:#fff;border-radius:8px;padding:8px;margin-bottom:8px;font-size:13px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.06)}.muted{color:#64748b;font-size:12px}
+.thumb{width:56px;height:38px;object-fit:cover;border-radius:6px;background:#e2e8f0}.toast{position:fixed;bottom:20px;right:20px;background:#0f172a;color:#fff;padding:12px 16px;border-radius:8px}
+.chart{display:flex;align-items:flex-end;gap:10px;height:160px}.chart div{flex:1;text-align:center;font-size:11px;color:#64748b}.chart .b{background:#2563eb;border-radius:4px 4px 0 0;margin-bottom:4px}
+:root{--brand:#c2410c}body{-webkit-font-smoothing:antialiased}nav{background:#1c1917}nav a.active,nav a:hover{background:#292524}
+button{background:var(--brand)}button.green{background:#16a34a}button.wide,.wide{width:100%}button:disabled{opacity:.5;cursor:not-allowed}a{color:var(--brand)}
+nav{display:flex;flex-direction:column}nav .links{flex:1}nav a{position:relative}nav a span{display:inline-block;width:24px}nav em{font-style:normal}
+.dot{position:absolute;right:10px;top:9px;background:#dc2626;color:#fff;border-radius:99px;font-size:11px;padding:1px 7px}.dot.blue{background:#2563eb}
+.tw{overflow-x:auto;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:8px}.tw table{box-shadow:none}
+.btn{display:inline-block;padding:9px 14px;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;background:var(--brand);color:#fff;text-align:center}.btn.sec{background:#e2e8f0;color:#1c2333}.btn.sm{padding:5px 9px;font-size:12px}
+h3{margin:0 0 10px;font-size:16px}.between{justify-content:space-between}.end{justify-content:flex-end}.nomb{margin-bottom:0}.grow{flex:1}.center{text-align:center;justify-content:center}.nowrap{white-space:nowrap}.small{font-size:12px;margin:4px 0}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}.alert{background:#fef3c7;border:1px solid #fcd34d;color:#78350f;padding:12px 14px;border-radius:10px;margin-bottom:16px}.alert.ok{background:#dcfce7;border-color:#86efac;color:#14532d}
+.li{padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:14px}.hbar{margin-bottom:10px;font-size:14px}.bar{background:var(--brand);height:8px;margin-top:4px}
+.chart{display:flex;align-items:flex-end;gap:3px}.chart>div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;font-size:10px;min-width:0}.chart .b{flex:none!important;width:100%;background:linear-gradient(#fb923c,var(--brand));border-radius:4px 4px 0 0;margin:0}.chart span{margin-top:4px;white-space:nowrap}
+.badge.free,.badge.okk,.badge.paid,.badge.seated{background:#dcfce7;color:#166534}.badge.occupied,.badge.low,.badge.cooking{background:#fee2e2;color:#991b1b}.badge.reserved,.badge.booked{background:#fef9c3;color:#854d0e}.badge.ready{background:#dcfce7;color:#166534}.badge.served{background:#e0e7ff;color:#3730a3}
+.seg{display:inline-flex;background:#e2e8f0;border-radius:9px;padding:3px}.seg button{background:transparent;color:#334155;padding:7px 12px}.seg button.on{background:#fff;color:#0f172a;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.tabs button,.chip{background:#f1f5f9;color:#334155;border-radius:99px;padding:7px 14px}.tabs button.on,.chip.on{background:var(--brand);color:#fff}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.chip{font-size:13px;padding:6px 12px}
+.pos{display:grid;grid-template-columns:1fr 380px;gap:16px;align-items:start}.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.item{background:#fff7ed;color:#431407;border:1px solid #fed7aa;padding:14px 10px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;border-radius:12px}.item:hover{background:#ffedd5}.item span{font-weight:700;color:var(--brand)}.item em{font-size:11px;font-style:normal;color:#9a3412;opacity:.7}.item.off{background:#f1f5f9;border-color:#e2e8f0;color:#94a3b8}
+.pos-right{position:sticky;top:16px}.lines{max-height:42vh;overflow:auto;margin:10px 0;border-top:1px solid #f1f5f9}.line{display:flex;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:14px}
+.qty{display:flex;align-items:center;gap:6px}.amt{width:70px;text-align:right;font-weight:600}button.x{background:transparent;color:#94a3b8;padding:4px}.note{font-size:12px;color:#b45309}
+.tot>div{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px;gap:6px;flex-wrap:wrap}.tot .grand{font-size:22px;font-weight:800;border-top:2px solid #0f172a;margin-top:6px;padding-top:10px}.tiny{width:70px;padding:5px 6px}
+.actions{display:grid;gap:8px;margin-top:12px}.actions button{padding:13px}
+.k4{grid-template-columns:repeat(4,minmax(220px,1fr))}.col h4 span{background:#fff;border-radius:99px;padding:1px 8px;margin-left:4px}.kcard{background:#fff;border-radius:10px;padding:10px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.08);border-left:5px solid #22c55e;font-size:14px}.kcard.warn{border-color:#f59e0b}.kcard.late{border-color:#dc2626;background:#fff5f5}
+.kcard ul{padding-left:18px;margin:8px 0}.kcard li{margin-bottom:4px}.el{font-weight:700;font-variant-numeric:tabular-nums}
+.floor{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}.tbl{background:#fff;border-radius:16px;padding:16px;text-align:center;border:3px solid #22c55e;box-shadow:0 1px 3px rgba(0,0,0,.08)}.tbl.occupied{border-color:#ef4444;background:#fff5f5}.tbl.reserved{border-color:#eab308;background:#fefce8}
+.tn{font-size:22px;font-weight:800}.ts{text-transform:uppercase;font-size:12px;font-weight:700;letter-spacing:.05em;margin:6px 0}.tbl.free .ts{color:#16a34a}.tbl.occupied .ts{color:#dc2626}.tbl.reserved .ts{color:#a16207}
+.switch{position:relative;display:inline-block;width:40px;height:22px}.switch input{display:none}.switch span{position:absolute;inset:0;background:#cbd5e1;border-radius:99px;cursor:pointer;transition:.2s}.switch span:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}.switch input:checked+span{background:#16a34a}.switch input:checked+span:before{transform:translateX(18px)}
+.mods{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chk{flex-direction:row!important;align-items:center;gap:6px!important;background:#f8fafc;border:1px solid #e2e8f0;padding:8px 10px;border-radius:8px;color:#1c2333!important;font-size:14px!important;cursor:pointer}
+.lowrow td{background:#fff7f7}.receipt{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;max-width:320px;margin:0 auto 14px}.receipt h3{text-align:center;font-size:18px;margin-bottom:4px}.receipt>div{text-align:center}.receipt .rl{display:flex;justify-content:space-between;text-align:left}.receipt .rm{text-align:left;padding-left:16px;color:#555}.receipt .big{font-weight:800;font-size:16px}.receipt hr{border:0;border-top:1px dashed #999}
+#print{display:none}code{background:#f1f5f9;padding:1px 5px;border-radius:4px}
+@media print{body>*{display:none!important}#print{display:block!important}.receipt{max-width:none}}
+@media(max-width:1000px){.pos{grid-template-columns:1fr}.pos-right{position:static}.k4{grid-template-columns:repeat(4,240px)}}
+@media(max-width:760px){.layout{flex-direction:column}nav{width:100%;height:auto;padding:8px;flex-direction:row;align-items:center;gap:6px;position:sticky;top:0;z-index:5;overflow-x:auto}
+ nav .brand h1{font-size:15px;margin:0;white-space:nowrap}nav .brand .dl{display:none}nav .links{display:flex;gap:2px}nav a{padding:8px 9px;white-space:nowrap;margin:0}nav em{display:none}nav a span{width:auto;font-size:18px}.dot{top:0;right:0;font-size:9px;padding:0 5px}
+ main{padding:12px}.form{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr!important}.grid.two{grid-template-columns:1fr!important}.stat .v{font-size:20px}h2{font-size:20px}.items{grid-template-columns:repeat(2,1fr)}.floor{grid-template-columns:repeat(2,1fr)}.chart span{font-size:8px}}
+</style></head>
+<body><div id="app"></div><div id="modal" class="modal hidden"><div class="card" id="modal-body"></div></div><div id="toast" class="toast hidden"></div><div id="print"></div>
+<script>
+/* TableTop single-file edition. Data is stored in this browser's localStorage. */
+const KEY='tabletop_v1';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'$'+(Math.round((+n||0)*100)/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const money0=n=>'$'+Math.round(+n||0).toLocaleString();
+const r2=n=>Math.round(n*100)/100;
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>{d=new Date(d);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
+const localDT=d=>{d=new Date(d);return ymd(d)+'T'+pad(d.getHours())+':'+pad(d.getMinutes());};
+const fmtTime=t=>new Date(t).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+const fmtDT=t=>new Date(t).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+const blank=()=>({settings:{name:'My Restaurant',pin:'',tax:6,address:'',phone:''},seq:1,categories:[],items:[],tables:[],orders:[],reservations:[],ingredients:[],staff:[]});
+let DB;try{DB=JSON.parse(localStorage.getItem(KEY));}catch{DB=null;}
+const save=()=>localStorage.setItem(KEY,JSON.stringify(DB));
+const nid=()=>(DB.seq=(DB.seq||1)+1);
+const byId=(t,id)=>DB[t].find(x=>x.id==id);
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.add('hidden'),2500);};
+const badge=(s,l)=>`<span class="badge ${s}">${esc(l||String(s).replace('_',' '))}</span>`;
+
+// ---------- calculations ----------
+const lineUnit=l=>l.price+(l.mods||[]).reduce((a,m)=>a+(+m.p||0),0);
+const lineTotal=l=>r2(lineUnit(l)*l.qty);
+function totals(o){const sub=r2(o.lines.reduce((a,l)=>a+lineTotal(l),0)),tax=r2(sub*(+o.tax_rate||0)/100),tip=r2(+o.tip||0),cost=r2(o.lines.reduce((a,l)=>a+(l.cost||0)*l.qty,0));return{sub,tax,tip,total:r2(sub+tax+tip),cost};}
+const parseMods=s=>String(s||'').split(',').map(x=>x.trim()).filter(Boolean).map(x=>{const[n,p]=x.split(':');return{n:n.trim(),p:+p||0};});
+const margin=i=>i.price?Math.round((i.price-(i.cost||0))/i.price*100):0;
+const lowStock=()=>DB.ingredients.filter(i=>+i.qty<=+i.par);
+function tableStatus(t){if(DB.orders.some(o=>o.table_id==t.id&&!o.paid))return'occupied';
+ const now=Date.now();if(DB.reservations.some(r=>r.table_id==t.id&&r.status==='seated'))return'occupied';
+ if(DB.reservations.some(r=>r.table_id==t.id&&r.status==='booked'&&Math.abs(new Date(r.at)-now)<=2*3600e3))return'reserved';return'free';}
+const orderLabel=o=>o.type==='takeout'?'Takeout'+(o.customer?' · '+o.customer:''):(byId('tables',o.table_id)?.name||'Table');
+const elapsed=t=>{const m=Math.floor((Date.now()-t)/60000);return m<60?m+'m':Math.floor(m/60)+'h '+m%60+'m';};
+
+// ---------- demo data ----------
+function demoData(){const keepPin=DB?.settings?.pin||'';const d=blank();DB=d;d.settings.name='The Copper Spoon';d.settings.pin=keepPin;d.settings.address='123 Woodward Ave, Detroit, MI';d.settings.phone='(313) 555-0142';
+ let seed=42;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;const pick=a=>a[Math.floor(rnd()*a.length)];
+ const menu={'Starters':[['Garlic Bread',6.5,1.2,''],['Wings (8)',12.99,3.8,'Buffalo:0,BBQ:0,Extra sauce:0.75'],['Calamari',13.5,4.1,''],['Soup of the Day',7,1.6,'']],
+  'Mains':[['Classic Burger',15.99,4.6,'Add cheese:1.5,Add bacon:2,No onions:0,Gluten-free bun:2'],['Margherita Pizza',16,3.9,'Extra cheese:2,Gluten-free crust:3'],['Grilled Salmon',24.5,8.9,'Sub salad:0,Extra veg:2'],['Chicken Alfredo',19.5,5.2,'Add shrimp:5'],['Ribeye Steak',34,13.5,'Rare:0,Medium rare:0,Medium:0,Well done:0'],['Veggie Bowl',14.5,3.6,'Add tofu:3']],
+  'Desserts':[['Cheesecake',8.5,2.1,''],['Chocolate Lava Cake',9.5,2.4,'Add ice cream:2']],
+  'Drinks':[['Soda',3,0.4,'No ice:0'],['Iced Tea',3.5,0.4,''],['Craft Beer',7,2.2,''],['House Wine',9,2.8,'Red:0,White:0'],['Espresso',3.5,0.6,'Extra shot:1']]};
+ for(const[c,items]of Object.entries(menu)){const cid=nid();d.categories.push({id:cid,name:c});items.forEach(([n,p,cost,m])=>d.items.push({id:nid(),cat_id:cid,name:n,price:p,cost,mods:m,available:true}));}
+ d.items.find(i=>i.name==='Calamari').available=false;
+ [['T1',2],['T2',2],['T3',4],['T4',4],['T5',4],['T6',6],['T7',6],['Bar 1',2],['Patio 1',4],['Patio 2',8]].forEach(([n,s])=>d.tables.push({id:nid(),name:n,seats:s}));
+ [['Ana Torres','Manager','313-555-0101'],['Ben Ford','Server','313-555-0102'],['Chloe Wu','Server','313-555-0103'],['Diego Ruiz','Head Chef','313-555-0104'],['Eve Adams','Line Cook','313-555-0105'],['Frank Moss','Host','313-555-0106']].forEach(([n,r,p])=>d.staff.push({id:nid(),name:n,role:r,phone:p,active:true}));
+ [['Ground beef','lb',18,10],['Burger buns','pcs',22,24],['Mozzarella','lb',6,8],['Salmon fillet','lb',9,6],['Chicken breast','lb',14,10],['Pizza dough','balls',30,20],['Romaine','heads',5,8],['Ribeye','pcs',7,6],['Coffee beans','lb',3,4],['Fryer oil','gal',4,3]].forEach(([n,u,q,p])=>d.ingredients.push({id:nid(),name:n,unit:u,qty:q,par:p}));
+ const avail=d.items.filter(i=>i.available),servers=d.staff.filter(s=>s.role==='Server');
+ const mk=(t,status,paid)=>{const lines=[];const n=1+Math.floor(rnd()*4);for(let k=0;k<n;k++){const it=pick(avail);const mods=parseMods(it.mods);lines.push({item_id:it.id,name:it.name,price:it.price,cost:it.cost,qty:1+Math.floor(rnd()*2),mods:mods.length&&rnd()<.4?[pick(mods)]:[],note:''});}
+  const take=rnd()<.25;const o={id:nid(),type:take?'takeout':'dine',table_id:take?null:pick(d.tables).id,customer:take?pick(['Sam','Lee','Jo','Max','Ivy']):'',lines,status,paid,tax_rate:6,tip:0,method:null,server_id:pick(servers).id,created_at:t,paid_at:null};
+  if(paid){const s=totals(o).sub;o.tip=take?0:r2(s*pick([.15,.18,.2]));o.method=rnd()<.7?'card':'cash';o.paid_at=t+(30+rnd()*50)*60000;o.status='served';}return o;};
+ const now=new Date();for(let day=30;day>=0;day--){const base=new Date(now.getFullYear(),now.getMonth(),now.getDate()-day);const dow=base.getDay();const n=(dow===5||dow===6?26:16)+Math.floor(rnd()*8);
+  for(let k=0;k<n;k++){const hr=rnd()<.4?11+Math.floor(rnd()*3):17+Math.floor(rnd()*4);const t=base.getTime()+hr*3600e3+Math.floor(rnd()*60)*60000;if(t>Date.now()-40*60000)continue;d.orders.push(mk(t,'served',true));}}
+ // open orders in the kitchen right now on distinct tables
+ const free=d.tables.slice();[['new',4],['new',2],['cooking',12],['cooking',9],['ready',18],['served',35]].forEach(([s,m],i)=>{const o=mk(Date.now()-m*60000,s,false);o.type='dine';o.customer='';o.table_id=free[i].id;d.orders.push(o);});
+ const tm=(dd,h,m)=>{const x=new Date(now.getFullYear(),now.getMonth(),now.getDate()+dd,h,m);return localDT(x);};
+ const nh=Math.min(22,now.getHours()+1);
+ [['Grace Hall','313-555-0199',4,tm(0,nh,0),d.tables[8].id,'booked'],['Omar Ali','313-555-0177',2,tm(0,nh,30),d.tables[7].id,'booked'],['Priya Patel','313-555-0133',6,tm(1,19,0),d.tables[6].id,'booked'],['Tom Wilson','313-555-0122',8,tm(2,18,30),d.tables[9].id,'booked'],['Lisa Ray','313-555-0111',2,tm(-1,19,0),d.tables[0].id,'completed']].forEach(([n,p,ps,at,tid,st])=>d.reservations.push({id:nid(),name:n,phone:p,party:ps,at,table_id:tid,status:st,notes:''}));
+ save();}
+if(!DB){DB=null;demoData();}
+
+// ---------- modal & forms ----------
+function modal(html,onSubmit){$('#modal-body').innerHTML=html;$('#modal').classList.remove('hidden');const f=$('#modal-body form');
+ if(f)f.addEventListener('submit',e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));$$('#modal-body input[type=checkbox][name]').forEach(c=>d[c.name]=c.checked);try{if(onSubmit(d)!==false){closeModal();route();}}catch(err){toast(err.message);}});}
+const closeModal=()=>$('#modal').classList.add('hidden');
+const field=(n,l,v='',t='text',x='',extra='')=>`<label class="${x}">${l}<input name="${n}" type="${t}" value="${esc(v??'')}" ${t==='number'?'step="any"':''} ${extra}></label>`;
+const sel=(n,l,opts,v,x='')=>`<label class="${x}">${l}<select name="${n}">${opts.map(([k,t])=>`<option value="${esc(k)}" ${String(k)===String(v??'')?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
+const btns=`<div class="full row end"><button type="button" class="sec" onclick="closeModal()">Cancel</button><button>Save</button></div>`;
+const need=(v,m)=>{if(v===undefined||v===null||String(v).trim()==='')throw new Error(m);};
+function delRec(t,id,msg){if(!confirm(msg||'Delete this record?'))return;DB[t]=DB[t].filter(x=>x.id!=id);save();toast('Deleted');route();}
+
+// ---------- shell ----------
+const PAGES=[['dashboard','📊','Dashboard'],['pos','🧾','POS'],['kitchen','👨‍🍳','Kitchen'],['tables','🪑','Tables'],['reservations','📅','Reservations'],['menu','🍔','Menu'],['inventory','📦','Inventory'],['staff','🧑‍🤝‍🧑','Staff'],['orders','🗂️','Orders'],['settings','⚙️','Settings']];
+function render(){if(DB.settings.pin&&!sessionStorage.tt_unlocked)return lockView();
+ const low=lowStock().length,kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length;
+ $('#app').innerHTML=`<div class="layout"><nav><div class="brand"><h1>🍽️ TableTop</h1><div class="dl" id="rname">${esc(DB.settings.name)}</div></div><div class="links">
+ ${PAGES.map(([h,i,t])=>`<a href="#${h}" data-r="${h}"><span>${i}</span><em>${t}</em>${h==='inventory'&&low?`<b class="dot">${low}</b>`:''}${h==='kitchen'&&kit?`<b class="dot blue">${kit}</b>`:''}</a>`).join('')}</div>
+ ${DB.settings.pin?'<a href="#" id="lock" class="lockbtn"><span>🔒</span><em>Lock</em></a>':''}</nav><main id="main"></main></div>`;
+ const lk=$('#lock');if(lk)lk.onclick=e=>{e.preventDefault();sessionStorage.removeItem('tt_unlocked');render();};route();}
+function lockView(){$('#app').innerHTML=`<div class="login card"><h2>🔒 ${esc(DB.settings.name)}</h2><p class="muted">Enter PIN to unlock TableTop</p><form id="lf"><input name="pin" type="password" inputmode="numeric" placeholder="PIN" autofocus required><button class="wide">Unlock</button></form></div>`;
+ $('#lf').onsubmit=e=>{e.preventDefault();if(e.target.pin.value===DB.settings.pin){sessionStorage.tt_unlocked='1';render();}else{toast('Wrong PIN');e.target.pin.value='';}};}
+let timer=null;
+function route(){if(!$('#main'))return;clearInterval(timer);const r=(location.hash||'#dashboard').slice(1).split('/')[0];
+ $$('nav a[data-r]').forEach(a=>a.classList.toggle('active',a.dataset.r===r));
+ const low=lowStock().length,kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length;
+ $$('nav a[data-r]').forEach(a=>{const b=a.querySelector('.dot');if(b)b.remove();const n=a.dataset.r==='inventory'?low:a.dataset.r==='kitchen'?kit:0;if(n)a.insertAdjacentHTML('beforeend',`<b class="dot ${a.dataset.r==='kitchen'?'blue':''}">${n}</b>`);});
+ (PAGE[r]||PAGE.dashboard)();}
+window.addEventListener('hashchange',route);
+
+// ---------- dashboard ----------
+const PAGE={};
+PAGE.dashboard=()=>{const paid=DB.orders.filter(o=>o.paid),today=ymd(Date.now());const tdy=paid.filter(o=>ymd(o.paid_at)===today);
+ const T=os=>os.reduce((a,o)=>{const t=totals(o);a.sub+=t.sub;a.cost+=t.cost;a.tip+=t.tip;a.tax+=t.tax;return a;},{sub:0,cost:0,tip:0,tax:0});
+ const tt=T(tdy),since=Date.now()-30*864e5,p30=paid.filter(o=>o.paid_at>=since),t30=T(p30);
+ const hours=Array.from({length:24},(_,h)=>({h,v:0}));tdy.forEach(o=>hours[new Date(o.paid_at).getHours()].v+=totals(o).sub);
+ const hs=hours.filter(x=>x.h>=10&&x.h<=23);
+ const days=[];for(let i=29;i>=0;i--){const dd=new Date();dd.setDate(dd.getDate()-i);days.push({d:ymd(dd),v:0,n:0});}
+ const dm=Object.fromEntries(days.map(x=>[x.d,x]));p30.forEach(o=>{const x=dm[ymd(o.paid_at)];if(x){x.v+=totals(o).sub;x.n++;}});
+ const top={};p30.forEach(o=>o.lines.forEach(l=>{top[l.name]=top[l.name]||{q:0,v:0};top[l.name].q+=l.qty;top[l.name].v+=lineTotal(l);}));
+ const tops=Object.entries(top).sort((a,b)=>b[1].q-a[1].q).slice(0,6),tmax=Math.max(1,...tops.map(x=>x[1].q));
+ const open=DB.orders.filter(o=>!o.paid),low=lowStock(),resToday=DB.reservations.filter(r=>r.at.slice(0,10)===today&&r.status==='booked');
+ const bars=(arr,lab,h=150)=>{const m=Math.max(1,...arr.map(x=>x.v));return`<div class="chart" style="height:${h+40}px">${arr.map(x=>`<div title="${esc(lab(x))}: ${money(x.v)}"><div class="b" style="height:${Math.max(x.v?2:0,x.v/m*h)}px"></div><span>${esc(lab(x,true))}</span></div>`).join('')}</div>`;};
+ $('#main').innerHTML=`<div class="row between"><h2>Dashboard</h2><span class="muted">${new Date().toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'})}</span></div>
+ ${low.length?`<div class="alert">⚠️ <b>${low.length} ingredient${low.length>1?'s':''} low on stock:</b> ${low.map(i=>esc(i.name)).join(', ')} — <a href="#inventory">review inventory</a></div>`:''}
+ <div class="grid">
+ <div class="card stat"><div class="v" id="k-sales">${money(tt.sub)}</div><div class="l">Today's sales (net, excl. tax &amp; tips)</div></div>
+ <div class="card stat"><div class="v" id="k-orders">${tdy.length}</div><div class="l">Orders paid today · ${open.length} open</div></div>
+ <div class="card stat"><div class="v">${money(tdy.length?tt.sub/tdy.length:0)}</div><div class="l">Average ticket today</div></div>
+ <div class="card stat"><div class="v">${t30.sub?Math.round(t30.cost/t30.sub*1000)/10:0}%</div><div class="l">Food cost % (30 days) · tips today ${money(tt.tip)}</div></div></div>
+ <div class="grid two"><div class="card"><h3>Sales by hour — today</h3>${tdy.length?bars(hs,(x,s)=>s?(x.h%12||12)+(x.h<12?'a':'p'):x.h+':00'):'<p class="muted">No paid orders yet today.</p>'}</div>
+ <div class="card"><h3>Top items (30 days)</h3>${tops.map(([n,x])=>`<div class="hbar"><div class="row between"><span>${esc(n)}</span><b>${x.q} · ${money0(x.v)}</b></div><div class="bar" style="width:${x.q/tmax*100}%"></div></div>`).join('')||'<p class="muted">No sales yet.</p>'}</div></div>
+ <div class="card"><div class="row between"><h3>Last 30 days</h3><span class="muted">${money0(t30.sub)} net · ${p30.length} orders · avg ${money(p30.length?t30.sub/p30.length:0)}</span></div>${bars(days,(x,s)=>s?(x.d.slice(8)):x.d+' ('+x.n+' orders)',130)}</div>
+ <div class="grid two"><div class="card"><h3>Today's reservations</h3>${resToday.length?resToday.sort((a,b)=>a.at<b.at?-1:1).map(r=>`<div class="li"><b>${fmtTime(r.at)}</b> ${esc(r.name)} · party of ${r.party} · ${esc(byId('tables',r.table_id)?.name||'no table')}</div>`).join(''):'<p class="muted">None booked.</p>'}</div>
+ <div class="card"><h3>Open orders</h3>${open.length?open.map(o=>`<div class="li"><b>${esc(orderLabel(o))}</b> ${badge(o.status)} <span class="muted">${elapsed(o.created_at)} · ${money(totals(o).total)}</span></div>`).join(''):'<p class="muted">No open orders.</p>'}</div></div>`;};
+
+// ---------- POS ----------
+let CUR=null,posCat=null;
+const newTicket=()=>({id:null,type:'dine',table_id:null,customer:'',lines:[],status:'new',paid:false,tax_rate:+DB.settings.tax||0,tip:0,method:null,server_id:null,created_at:null,paid_at:null});
+PAGE.pos=()=>{const q=(location.hash.split('/')[1]||'');if(q.startsWith('o')){const o=byId('orders',q.slice(1));if(o&&!o.paid)CUR=JSON.parse(JSON.stringify(o));history.replaceState(null,'','#pos');}
+ else if(q.startsWith('t')){CUR=newTicket();const open=DB.orders.find(o=>!o.paid&&o.table_id==q.slice(1));if(open)CUR=JSON.parse(JSON.stringify(open));else CUR.table_id=+q.slice(1);history.replaceState(null,'','#pos');}
+ if(!CUR)CUR=newTicket();if(!posCat||!byId('categories',posCat))posCat=DB.categories[0]?.id;drawPOS();};
+function drawPOS(){const o=CUR,t=totals(o),open=DB.orders.filter(x=>!x.paid);
+ const items=DB.items.filter(i=>i.cat_id==posCat);
+ $('#main').innerHTML=`<div class="row between"><h2>Point of Sale</h2><div class="row nomb"><button class="sec" id="newt">+ New ticket</button></div></div>
+ ${open.length?`<div class="chips"><span class="muted">Open tickets:</span>${open.map(x=>`<button class="chip ${x.id===o.id?'on':''}" data-open="${x.id}">${esc(orderLabel(x))} · ${money(totals(x).total)}</button>`).join('')}</div>`:''}
+ <div class="pos"><div class="pos-left card">
+  <div class="row nomb"><div class="seg"><button class="${o.type==='dine'?'on':''}" data-type="dine">🍽️ Dine-in</button><button class="${o.type==='takeout'?'on':''}" data-type="takeout">🥡 Takeout</button></div>
+  ${o.type==='dine'?`<select id="tsel"><option value="">Choose table…</option>${DB.tables.map(x=>{const s=tableStatus(x);const mine=x.id==o.table_id;return`<option value="${x.id}" ${mine?'selected':''} ${s==='occupied'&&!mine?'disabled':''}>${esc(x.name)} (${x.seats}) ${s!=='free'&&!mine?'— '+s:''}</option>`}).join('')}</select>`:`<input id="cust" placeholder="Customer name" value="${esc(o.customer)}">`}
+  <select id="srv"><option value="">Server…</option>${DB.staff.filter(s=>s.active!==false).map(s=>`<option value="${s.id}" ${s.id==o.server_id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
+  <div class="tabs">${DB.categories.map(c=>`<button class="${c.id==posCat?'on':''}" data-cat="${c.id}">${esc(c.name)}</button>`).join('')}</div>
+  <div class="items">${items.map(i=>`<button class="item ${i.available?'':'off'}" data-item="${i.id}" ${i.available?'':'disabled'}><b>${esc(i.name)}</b><span>${money(i.price)}</span>${i.available?(i.mods?'<em>options</em>':''):'<em>86’d</em>'}</button>`).join('')||'<p class="muted">No items in this category.</p>'}</div></div>
+ <div class="pos-right card"><div class="row between nomb"><h3>${o.id?'Ticket #'+o.id:'New ticket'}</h3>${o.id?badge(o.status):''}</div><div class="muted">${o.type==='dine'?esc(byId('tables',o.table_id)?.name||'No table selected'):'Takeout'}</div>
+  <div class="lines">${o.lines.map((l,i)=>`<div class="line"><div class="grow"><b>${esc(l.name)}</b>${l.mods.length?`<div class="muted">${l.mods.map(m=>esc(m.n)+(m.p?' +'+money(m.p):'')).join(', ')}</div>`:''}${l.note?`<div class="note">📝 ${esc(l.note)}</div>`:''}</div>
+   <div class="qty"><button class="sm sec" data-dec="${i}">−</button><span>${l.qty}</span><button class="sm sec" data-inc="${i}">+</button></div><div class="amt">${money(lineTotal(l))}</div><button class="sm x" data-rm="${i}" title="Remove">✕</button></div>`).join('')||'<p class="muted center">Tap menu items to add them.</p>'}</div>
+  <div class="tot"><div><span>Subtotal</span><span>${money(t.sub)}</span></div><div><span>Tax <input id="tax" type="number" step="0.01" value="${o.tax_rate}" class="tiny">%</span><span>${money(t.tax)}</span></div>
+  <div><span>Tip ${[0,15,18,20].map(p=>`<button class="sm sec" data-tip="${p}">${p}%</button>`).join('')} <input id="tip" type="number" step="0.01" value="${o.tip||''}" placeholder="$" class="tiny"></span><span>${money(t.tip)}</span></div>
+  <div class="grand"><span>Total</span><span id="gtotal">${money(t.total)}</span></div></div>
+  <div class="actions"><button id="send" class="wide">${o.id?'💾 Update order':'🔥 Send to kitchen'}</button><div class="row nomb"><button id="paycard" class="green grow">💳 Card</button><button id="paycash" class="green grow">💵 Cash</button></div>
+  ${o.id?`<button id="voidt" class="danger sm">Void ticket</button>`:''}</div></div></div>`;
+ $$('[data-open]').forEach(b=>b.onclick=()=>{CUR=JSON.parse(JSON.stringify(byId('orders',b.dataset.open)));drawPOS();});
+ $('#newt').onclick=()=>{CUR=newTicket();drawPOS();};
+ $$('[data-type]').forEach(b=>b.onclick=()=>{o.type=b.dataset.type;if(o.type==='takeout')o.table_id=null;drawPOS();});
+ if($('#tsel'))$('#tsel').onchange=e=>{const v=+e.target.value||null;const ex=v&&DB.orders.find(x=>!x.paid&&x.table_id==v&&x.id!==o.id);if(ex&&!o.lines.length){CUR=JSON.parse(JSON.stringify(ex));}else o.table_id=v;drawPOS();};
+ if($('#cust'))$('#cust').onchange=e=>o.customer=e.target.value;
+ $('#srv').onchange=e=>o.server_id=+e.target.value||null;
+ $$('[data-cat]').forEach(b=>b.onclick=()=>{posCat=+b.dataset.cat;drawPOS();});
+ $$('[data-item]').forEach(b=>b.onclick=()=>addItem(byId('items',b.dataset.item)));
+ $$('[data-inc]').forEach(b=>b.onclick=()=>{o.lines[b.dataset.inc].qty++;drawPOS();});
+ $$('[data-dec]').forEach(b=>b.onclick=()=>{const l=o.lines[b.dataset.dec];if(--l.qty<1)o.lines.splice(b.dataset.dec,1);drawPOS();});
+ $$('[data-rm]').forEach(b=>b.onclick=()=>{o.lines.splice(b.dataset.rm,1);drawPOS();});
+ $('#tax').onchange=e=>{o.tax_rate=+e.target.value||0;drawPOS();};
+ $('#tip').onchange=e=>{o.tip=r2(+e.target.value||0);drawPOS();};
+ $$('[data-tip]').forEach(b=>b.onclick=()=>{o.tip=r2(totals(o).sub*b.dataset.tip/100);drawPOS();});
+ $('#send').onclick=()=>{try{commit();toast(o.id&&DB.orders.find(x=>x.id===o.id)?'Order sent to kitchen':'Saved');CUR=newTicket();drawPOS();}catch(e){toast(e.message);}};
+ $('#paycard').onclick=()=>pay('card');$('#paycash').onclick=()=>pay('cash');
+ if($('#voidt'))$('#voidt').onclick=()=>{if(!confirm('Void this ticket? It will be removed.'))return;DB.orders=DB.orders.filter(x=>x.id!==o.id);save();CUR=newTicket();toast('Ticket voided');route();};}
+function addItem(it){const mods=parseMods(it.mods);const push=(ms,note)=>{const same=CUR.lines.find(l=>l.item_id===it.id&&!note&&!l.note&&JSON.stringify(l.mods)===JSON.stringify(ms));if(same)same.qty++;else CUR.lines.push({item_id:it.id,name:it.name,price:it.price,cost:+it.cost||0,qty:1,mods:ms,note:note||''});drawPOS();};
+ modal(`<h3>${esc(it.name)} <span class="muted">${money(it.price)}</span></h3><form class="form">${mods.length?`<div class="full"><div class="muted">Modifiers</div><div class="mods">${mods.map((m,i)=>`<label class="chk"><input type="checkbox" data-mod="${i}"> ${esc(m.n)}${m.p?` <span class="muted">+${money(m.p)}</span>`:''}</label>`).join('')}</div></div>`:''}
+ <label class="full">Kitchen note<input name="note" placeholder="e.g. allergy, no salt, on the side"></label>${field('qty','Quantity',1,'number')}<div class="full row end"><button type="button" class="sec" onclick="closeModal()">Cancel</button><button>Add to ticket</button></div></form>`,
+ d=>{const ms=$$('#modal-body [data-mod]').filter(c=>c.checked).map(c=>mods[c.dataset.mod]);const q=Math.max(1,Math.floor(+d.qty||1));push(ms,d.note.trim());if(q>1)CUR.lines[CUR.lines.length-1].qty+=q-1;closeModal();drawPOS();return false;});}
+function commit(){const o=CUR;if(!o.lines.length)throw new Error('Add at least one item');if(o.type==='dine'&&!o.table_id)throw new Error('Choose a table (or switch to Takeout)');
+ if(o.type==='dine'&&DB.orders.some(x=>!x.paid&&x.table_id==o.table_id&&x.id!==o.id))throw new Error('That table already has an open ticket');
+ if(!o.id){o.id=nid();o.created_at=Date.now();o.status='new';DB.orders.push(o);}else{const i=DB.orders.findIndex(x=>x.id===o.id);if(i<0)throw new Error('Ticket no longer exists');const prev=DB.orders[i];if(o.lines.length>prev.lines.length&&prev.status!=='new')o.status='new';DB.orders[i]=o;}
+ save();return o;}
+function pay(method){try{const o=commit();o.paid=true;o.method=method;o.paid_at=Date.now();if(o.status!=='served')o.status='served';
+ if(o.type==='dine'){const r=DB.reservations.find(r=>r.table_id==o.table_id&&r.status==='seated');if(r)r.status='completed';}
+ save();CUR=newTicket();receipt(o.id);}catch(e){toast(e.message);}}
+function receipt(id){const o=byId('orders',id),t=totals(o),s=DB.settings;
+ const html=`<div class="receipt"><h3>${esc(s.name)}</h3>${s.address?`<div>${esc(s.address)}</div>`:''}${s.phone?`<div>${esc(s.phone)}</div>`:''}<hr>
+ <div>Ticket #${o.id} · ${esc(orderLabel(o))}</div><div>${new Date(o.paid_at||o.created_at).toLocaleString()}</div>${o.server_id?`<div>Server: ${esc(byId('staff',o.server_id)?.name||'')}</div>`:''}<hr>
+ ${o.lines.map(l=>`<div class="rl"><span>${l.qty} × ${esc(l.name)}</span><span>${money(lineTotal(l))}</span></div>${l.mods.map(m=>`<div class="rm">+ ${esc(m.n)}${m.p?' '+money(m.p):''}</div>`).join('')}${l.note?`<div class="rm">“${esc(l.note)}”</div>`:''}`).join('')}<hr>
+ <div class="rl"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="rl"><span>Tax (${o.tax_rate}%)</span><span>${money(t.tax)}</span></div><div class="rl"><span>Tip</span><span>${money(t.tip)}</span></div>
+ <div class="rl big"><span>TOTAL</span><span>${money(t.total)}</span></div>${o.paid?`<div class="rl"><span>Paid by</span><span>${o.method==='card'?'Card':'Cash'}</span></div>`:'<div><b>UNPAID</b></div>'}<hr><div class="center">Thank you for dining with us!</div></div>`;
+ $('#print').innerHTML=html;modal(`${html}<div class="row end noprint"><button class="sec" onclick="closeModal();route()">Close</button><button onclick="window.print()">🖨️ Print receipt</button></div>`);}
+
+// ---------- kitchen ----------
+const KS=['new','cooking','ready','served'],KN={new:'cooking',cooking:'ready',ready:'served'};
+PAGE.kitchen=()=>{const os=DB.orders.filter(o=>!o.paid||(o.status!=='served'));const draw=()=>{if(!$('#kds'))return;$('#kds').innerHTML=KS.map(s=>{const list=os.filter(o=>o.status===s).sort((a,b)=>a.created_at-b.created_at);
+ return`<div class="col"><h4>${s} <span>${list.length}</span></h4>${list.map(o=>{const m=(Date.now()-o.created_at)/60000;return`<div class="kcard ${s!=='served'&&m>20?'late':m>12&&s!=='served'?'warn':''}"><div class="row between nomb"><b>${esc(orderLabel(o))}</b><span class="el">⏱ ${elapsed(o.created_at)}</span></div><div class="muted">#${o.id} · ${fmtTime(o.created_at)}</div>
+ <ul>${o.lines.map(l=>`<li><b>${l.qty}×</b> ${esc(l.name)}${l.mods.length?`<div class="muted">${l.mods.map(x=>esc(x.n)).join(', ')}</div>`:''}${l.note?`<div class="note">📝 ${esc(l.note)}</div>`:''}</li>`).join('')}</ul>
+ <div class="row nomb">${KN[s]?`<button class="sm grow" data-adv="${o.id}">→ ${KN[s]}</button>`:`<a class="btn sm sec grow" href="#pos/o${o.id}">Go to POS to pay</a>`}${s!=='new'?`<button class="sm sec" data-back="${o.id}" title="Move back">↩</button>`:''}</div></div>`;}).join('')||'<p class="muted center">—</p>'}</div>`;}).join('');
+ $$('[data-adv]').forEach(b=>b.onclick=()=>{const o=byId('orders',b.dataset.adv);o.status=KN[o.status];save();route();});
+ $$('[data-back]').forEach(b=>b.onclick=()=>{const o=byId('orders',b.dataset.back);o.status=KS[KS.indexOf(o.status)-1];save();route();});};
+ $('#main').innerHTML=`<div class="row between"><h2>Kitchen Display</h2><span class="muted">Auto-refreshes every 15s · cards turn amber at 12 min, red at 20 min</span></div><div class="kanban k4" id="kds"></div>`;draw();timer=setInterval(()=>{if(!$('#kds'))return clearInterval(timer);PAGE.kitchen();},15000);};
+
+// ---------- tables ----------
+PAGE.tables=()=>{const c={free:0,occupied:0,reserved:0};DB.tables.forEach(t=>c[tableStatus(t)]++);
+ $('#main').innerHTML=`<div class="row between"><h2>Floor</h2><button id="add">+ Add table</button></div><div class="row"><span class="badge free">${c.free} free</span><span class="badge occupied">${c.occupied} occupied</span><span class="badge reserved">${c.reserved} reserved</span></div>
+ <div class="floor">${DB.tables.map(t=>{const s=tableStatus(t),o=DB.orders.find(o=>!o.paid&&o.table_id==t.id),r=DB.reservations.filter(r=>r.table_id==t.id&&r.status==='booked'&&new Date(r.at)>=Date.now()-3600e3).sort((a,b)=>a.at<b.at?-1:1)[0];
+ return`<div class="tbl ${s}" data-t="${t.id}"><div class="tn">${esc(t.name)}</div><div class="muted">${t.seats} seats</div><div class="ts">${s}</div>${o?`<div class="small">${badge(o.status)} ${money(totals(o).total)} · ${elapsed(o.created_at)}</div>`:''}${r?`<div class="small">📅 ${esc(r.name)} ${fmtDT(r.at)}</div>`:''}
+ <div class="row nomb center"><a class="btn sm" href="#pos/t${t.id}">${o?'Open ticket':'New order'}</a><button class="sm sec" data-edit="${t.id}">Edit</button></div></div>`;}).join('')||'<p class="muted">No tables yet.</p>'}</div>`;
+ $('#add').onclick=()=>editTable();$$('[data-edit]').forEach(b=>b.onclick=()=>editTable(+b.dataset.edit));};
+function editTable(id){const t=id?byId('tables',id):{seats:4};modal(`<h3>${id?'Edit':'Add'} table</h3><form class="form">${field('name','Table name',t.name)}${field('seats','Seats',t.seats,'number')}
+ ${id?`<div class="full"><button type="button" class="danger sm" onclick="closeModal();if(DB.orders.some(o=>!o.paid&&o.table_id==${id}))toast('Table has an open ticket');else delRec('tables',${id},'Delete this table?')">Delete table</button></div>`:''}${btns}</form>`,
+ d=>{need(d.name,'Name is required');const x={name:d.name.trim(),seats:+d.seats||1};if(DB.tables.some(o=>o.name.toLowerCase()===x.name.toLowerCase()&&o.id!==id))throw new Error('Table name already used');if(id)Object.assign(t,x);else DB.tables.push({id:nid(),...x});save();});}
+
+// ---------- reservations ----------
+let resFilter='upcoming';
+const RS=['booked','seated','completed','cancelled','no_show'];
+PAGE.reservations=()=>{let rs=DB.reservations.slice().sort((a,b)=>a.at<b.at?-1:1);const today=ymd(Date.now());
+ if(resFilter==='upcoming')rs=rs.filter(r=>r.at.slice(0,10)>=today&&['booked','seated'].includes(r.status));else if(resFilter==='today')rs=rs.filter(r=>r.at.slice(0,10)===today);
+ $('#main').innerHTML=`<div class="row between"><h2>Reservations</h2><button id="add">+ New reservation</button></div>
+ <div class="row"><div class="seg">${[['upcoming','Upcoming'],['today','Today'],['all','All']].map(([k,l])=>`<button class="${resFilter===k?'on':''}" data-f="${k}">${l}</button>`).join('')}</div></div>
+ <div class="tw"><table><tr><th>When</th><th>Name</th><th>Phone</th><th>Party</th><th>Table</th><th>Status</th><th></th></tr>${rs.map(r=>`<tr><td><b>${fmtDT(r.at)}</b></td><td>${esc(r.name)}${r.notes?`<div class="muted">${esc(r.notes)}</div>`:''}</td><td>${esc(r.phone)}</td><td>${r.party}</td><td>${esc(byId('tables',r.table_id)?.name||'—')}</td><td>${badge(r.status)}</td>
+ <td class="nowrap">${r.status==='booked'?`<button class="sm green" data-seat="${r.id}">Seat</button> `:''}<button class="sm sec" data-edit="${r.id}">Edit</button> <button class="sm danger" data-del="${r.id}">Del</button></td></tr>`).join('')||'<tr><td colspan=7 class="muted">No reservations.</td></tr>'}</table></div>`;
+ $$('[data-f]').forEach(b=>b.onclick=()=>{resFilter=b.dataset.f;route();});$('#add').onclick=()=>editRes();
+ $$('[data-edit]').forEach(b=>b.onclick=()=>editRes(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('reservations',+b.dataset.del,'Delete this reservation?'));
+ $$('[data-seat]').forEach(b=>b.onclick=()=>{const r=byId('reservations',b.dataset.seat);if(r.table_id&&DB.orders.some(o=>!o.paid&&o.table_id==r.table_id))return toast('Table is still occupied');r.status='seated';save();toast(r.name+' seated');if(r.table_id)location.hash='#pos/t'+r.table_id;else route();});};
+function editRes(id){const r=id?byId('reservations',id):{party:2,status:'booked',at:localDT(Date.now()+3600e3).slice(0,14)+'00'};
+ modal(`<h3>${id?'Edit':'New'} reservation</h3><form class="form">${field('name','Guest name',r.name,'text','full')}${field('phone','Phone',r.phone,'tel')}${field('party','Party size',r.party,'number')}
+ ${field('at','Date & time',r.at,'datetime-local')}${sel('table_id','Table',[['','Assign later']].concat(DB.tables.map(t=>[t.id,`${t.name} (${t.seats} seats)`])),r.table_id)}${sel('status','Status',RS.map(s=>[s,s.replace('_',' ')]),r.status)}
+ <label class="full">Notes<input name="notes" value="${esc(r.notes)}" placeholder="Birthday, high chair, allergies…"></label>${btns}</form>`,
+ d=>{need(d.name,'Guest name is required');need(d.at,'Date & time is required');const x={name:d.name.trim(),phone:d.phone,party:Math.max(1,+d.party||1),at:d.at,table_id:+d.table_id||null,status:d.status,notes:d.notes};
+  const t=x.table_id&&byId('tables',x.table_id);if(t&&x.party>t.seats&&!confirm(`Party of ${x.party} exceeds ${t.name}'s ${t.seats} seats. Save anyway?`))return false;
+  if(x.table_id&&x.status==='booked'&&DB.reservations.some(o=>o.id!==id&&o.table_id==x.table_id&&o.status==='booked'&&Math.abs(new Date(o.at)-new Date(x.at))<2*3600e3))throw new Error('Table already booked within 2 hours of that time');
+  if(id)Object.assign(r,x);else DB.reservations.push({id:nid(),...x});save();});}
+
+// ---------- menu ----------
+let menuCat='all';
+PAGE.menu=()=>{const its=DB.items.filter(i=>menuCat==='all'||i.cat_id==menuCat);
+ $('#main').innerHTML=`<div class="row between"><h2>Menu</h2><div class="row nomb"><button class="sec" id="cats">Categories</button><button id="add">+ Add item</button></div></div>
+ <div class="tabs"><button class="${menuCat==='all'?'on':''}" data-c="all">All (${DB.items.length})</button>${DB.categories.map(c=>`<button class="${menuCat==c.id?'on':''}" data-c="${c.id}">${esc(c.name)} (${DB.items.filter(i=>i.cat_id==c.id).length})</button>`).join('')}</div>
+ <div class="tw"><table><tr><th>Item</th><th>Category</th><th>Price</th><th>Food cost</th><th>Margin</th><th>Available</th><th></th></tr>${its.map(i=>{const m=margin(i);return`<tr><td><b>${esc(i.name)}</b>${i.mods?`<div class="muted">${esc(parseMods(i.mods).map(x=>x.n).join(', '))}</div>`:''}</td><td>${esc(byId('categories',i.cat_id)?.name||'—')}</td><td>${money(i.price)}</td><td class="muted">${money(i.cost)} (${i.price?Math.round(i.cost/i.price*100):0}%)</td>
+ <td><b style="color:${m>=65?'#16a34a':m>=50?'#ca8a04':'#dc2626'}">${m}%</b></td><td><label class="switch"><input type="checkbox" data-av="${i.id}" ${i.available?'checked':''}><span></span></label></td><td class="nowrap"><button class="sm sec" data-edit="${i.id}">Edit</button> <button class="sm danger" data-del="${i.id}">Del</button></td></tr>`}).join('')||'<tr><td colspan=7 class="muted">No items.</td></tr>'}</table></div>
+ <p class="muted">Margin = (price − food cost) ÷ price. Green ≥ 65%, amber ≥ 50%. Modifiers format: <code>Add cheese:1.5, No onions:0</code></p>`;
+ $$('[data-c]').forEach(b=>b.onclick=()=>{menuCat=b.dataset.c==='all'?'all':+b.dataset.c;route();});
+ $$('[data-av]').forEach(c=>c.onchange=()=>{byId('items',c.dataset.av).available=c.checked;save();toast(c.checked?'Item available':'Item marked unavailable (86’d)');});
+ $('#add').onclick=()=>editItem();$$('[data-edit]').forEach(b=>b.onclick=()=>editItem(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('items',+b.dataset.del,'Delete this menu item?'));$('#cats').onclick=catsModal;};
+function editItem(id){if(!DB.categories.length)return toast('Add a category first');const i=id?byId('items',id):{available:true,cat_id:menuCat==='all'?DB.categories[0].id:menuCat};
+ modal(`<h3>${id?'Edit':'Add'} menu item</h3><form class="form">${field('name','Name',i.name,'text','full')}${sel('cat_id','Category',DB.categories.map(c=>[c.id,c.name]),i.cat_id)}<label>Available<select name="available"><option value="1" ${i.available?'selected':''}>Yes</option><option value="" ${i.available?'':'selected'}>No (86’d)</option></select></label>
+ ${field('price','Price',i.price,'number')}${field('cost','Food cost',i.cost,'number')}${field('mods','Modifiers (name:price, comma separated)',i.mods,'text','full')}<div class="full muted" id="mg"></div>${btns}</form>`,
+ d=>{need(d.name,'Name is required');if(!(+d.price>0))throw new Error('Price must be greater than 0');const x={name:d.name.trim(),cat_id:+d.cat_id,price:r2(+d.price),cost:r2(+d.cost||0),mods:d.mods.trim(),available:!!d.available};if(id)Object.assign(i,x);else DB.items.push({id:nid(),...x});save();});
+ const f=$('#modal-body form'),upd=()=>$('#mg').textContent=`Margin: ${margin({price:+f.price.value,cost:+f.cost.value})}% · Food cost: ${+f.price.value?Math.round(+f.cost.value/+f.price.value*100):0}%`;f.price.oninput=f.cost.oninput=upd;upd();}
+function catsModal(){modal(`<h3>Categories</h3>${DB.categories.map(c=>`<div class="row between li"><span>${esc(c.name)} <span class="muted">(${DB.items.filter(i=>i.cat_id==c.id).length} items)</span></span><span><button class="sm sec" data-ren="${c.id}">Rename</button> <button class="sm danger" data-cdel="${c.id}">Del</button></span></div>`).join('')}
+ <form class="form" style="margin-top:12px">${field('name','New category','','text','full')}<div class="full row end"><button type="button" class="sec" onclick="closeModal();route()">Done</button><button>Add category</button></div></form>`,
+ d=>{need(d.name,'Category name required');DB.categories.push({id:nid(),name:d.name.trim()});save();setTimeout(catsModal);});
+ $$('[data-ren]').forEach(b=>b.onclick=()=>{const c=byId('categories',b.dataset.ren);const n=prompt('Rename category',c.name);if(n&&n.trim()){c.name=n.trim();save();catsModal();}});
+ $$('[data-cdel]').forEach(b=>b.onclick=()=>{const id=+b.dataset.cdel;if(DB.items.some(i=>i.cat_id==id))return toast('Move or delete its items first');DB.categories=DB.categories.filter(c=>c.id!==id);save();catsModal();});}
+
+// ---------- inventory ----------
+PAGE.inventory=()=>{const low=lowStock();$('#main').innerHTML=`<div class="row between"><h2>Inventory</h2><button id="add">+ Add ingredient</button></div>
+ ${low.length?`<div class="alert">⚠️ <b>${low.length} low-stock item${low.length>1?'s':''}</b> at or below par level: ${low.map(i=>esc(i.name)).join(', ')}</div>`:'<div class="alert ok">✅ All ingredients above par level.</div>'}
+ <div class="tw"><table><tr><th>Ingredient</th><th>On hand</th><th>Par level</th><th>Status</th><th>Adjust</th><th></th></tr>${DB.ingredients.slice().sort((a,b)=>(+a.qty/(+a.par||1))-(+b.qty/(+b.par||1))).map(i=>{const lo=+i.qty<=+i.par;return`<tr class="${lo?'lowrow':''}"><td><b>${esc(i.name)}</b></td><td><b>${+i.qty}</b> ${esc(i.unit)}</td><td class="muted">${+i.par} ${esc(i.unit)}</td><td>${lo?badge('low','LOW STOCK'):badge('okk','OK')}</td>
+ <td class="nowrap"><button class="sm sec" data-adj="${i.id}" data-d="-1">−1</button> <button class="sm sec" data-adj="${i.id}" data-d="1">+1</button> <button class="sm sec" data-adj="${i.id}" data-d="10">+10</button></td><td class="nowrap"><button class="sm sec" data-edit="${i.id}">Edit</button> <button class="sm danger" data-del="${i.id}">Del</button></td></tr>`}).join('')||'<tr><td colspan=6 class="muted">No ingredients.</td></tr>'}</table></div>`;
+ $$('[data-adj]').forEach(b=>b.onclick=()=>{const i=byId('ingredients',b.dataset.adj);i.qty=Math.max(0,r2(+i.qty+ +b.dataset.d));save();route();});
+ $('#add').onclick=()=>editIng();$$('[data-edit]').forEach(b=>b.onclick=()=>editIng(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('ingredients',+b.dataset.del,'Delete this ingredient?'));};
+function editIng(id){const i=id?byId('ingredients',id):{unit:'lb',qty:0,par:0};modal(`<h3>${id?'Edit':'Add'} ingredient</h3><form class="form">${field('name','Name',i.name,'text','full')}${field('qty','On hand',i.qty,'number')}${field('unit','Unit',i.unit)}${field('par','Par level (alert at or below)',i.par,'number','full')}${btns}</form>`,
+ d=>{need(d.name,'Name is required');const x={name:d.name.trim(),qty:Math.max(0,+d.qty||0),unit:d.unit.trim(),par:Math.max(0,+d.par||0)};if(id)Object.assign(i,x);else DB.ingredients.push({id:nid(),...x});save();});}
+
+// ---------- staff ----------
+PAGE.staff=()=>{const since=Date.now()-30*864e5;const st=id=>{const os=DB.orders.filter(o=>o.paid&&o.server_id==id&&o.paid_at>=since);return[os.length,os.reduce((a,o)=>a+totals(o).sub,0),os.reduce((a,o)=>a+totals(o).tip,0)];};
+ $('#main').innerHTML=`<div class="row between"><h2>Staff</h2><button id="add">+ Add staff</button></div><div class="tw"><table><tr><th>Name</th><th>Role</th><th>Phone</th><th>Status</th><th>Orders (30d)</th><th>Sales (30d)</th><th>Tips (30d)</th><th></th></tr>
+ ${DB.staff.map(s=>{const x=st(s.id);return`<tr><td><b>${esc(s.name)}</b></td><td>${esc(s.role)}</td><td>${esc(s.phone)}</td><td>${s.active!==false?badge('free','active'):badge('cancelled','inactive')}</td><td>${x[0]}</td><td>${money0(x[1])}</td><td>${money0(x[2])}</td><td class="nowrap"><button class="sm sec" data-edit="${s.id}">Edit</button> <button class="sm danger" data-del="${s.id}">Del</button></td></tr>`}).join('')||'<tr><td colspan=8 class="muted">No staff.</td></tr>'}</table></div>`;
+ $('#add').onclick=()=>editStaff();$$('[data-edit]').forEach(b=>b.onclick=()=>editStaff(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('staff',+b.dataset.del,'Remove this staff member?'));};
+function editStaff(id){const s=id?byId('staff',id):{role:'Server',active:true};modal(`<h3>${id?'Edit':'Add'} staff</h3><form class="form">${field('name','Name',s.name,'text','full')}${sel('role','Role',['Manager','Server','Bartender','Host','Head Chef','Line Cook','Dishwasher','Other'].map(r=>[r,r]),s.role)}${field('phone','Phone',s.phone,'tel')}${sel('active','Status',[['1','Active'],['','Inactive']],s.active!==false?'1':'','full')}${btns}</form>`,
+ d=>{need(d.name,'Name is required');const x={name:d.name.trim(),role:d.role,phone:d.phone,active:!!d.active};if(id)Object.assign(s,x);else DB.staff.push({id:nid(),...x});save();});}
+
+// ---------- orders history ----------
+let ordDay=null;
+PAGE.orders=()=>{ordDay=ordDay||ymd(Date.now());const os=DB.orders.filter(o=>ymd(o.paid_at||o.created_at)===ordDay).sort((a,b)=>(b.paid_at||b.created_at)-(a.paid_at||a.created_at));const paid=os.filter(o=>o.paid);
+ const s=paid.reduce((a,o)=>{const t=totals(o);a.sub+=t.sub;a.tax+=t.tax;a.tip+=t.tip;a[o.method]=(a[o.method]||0)+t.total;return a;},{sub:0,tax:0,tip:0});
+ $('#main').innerHTML=`<div class="row between"><h2>Orders</h2><input type="date" id="od" value="${ordDay}"></div>
+ <div class="grid"><div class="card stat"><div class="v">${paid.length}</div><div class="l">Paid orders</div></div><div class="card stat"><div class="v">${money(s.sub)}</div><div class="l">Net sales · tax ${money(s.tax)}</div></div><div class="card stat"><div class="v">${money(s.tip)}</div><div class="l">Tips</div></div><div class="card stat"><div class="v">${money(s.card)}</div><div class="l">Card · cash ${money(s.cash)}</div></div></div>
+ <div class="tw"><table><tr><th>#</th><th>Time</th><th>Where</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr>${os.map(o=>`<tr><td>${o.id}</td><td>${fmtTime(o.paid_at||o.created_at)}</td><td>${esc(orderLabel(o))}</td><td class="muted">${o.lines.reduce((a,l)=>a+l.qty,0)} items</td><td><b>${money(totals(o).total)}</b></td><td>${o.paid?badge('paid','paid · '+o.method):badge(o.status)}</td><td><button class="sm sec" data-rc="${o.id}">Receipt</button></td></tr>`).join('')||'<tr><td colspan=7 class="muted">No orders this day.</td></tr>'}</table></div>`;
+ $('#od').onchange=e=>{ordDay=e.target.value||null;route();};$$('[data-rc]').forEach(b=>b.onclick=()=>receipt(+b.dataset.rc));};
+
+// ---------- settings ----------
+PAGE.settings=()=>{const s=DB.settings;$('#main').innerHTML=`<h2>Settings</h2><div class="grid two">
+ <div class="card"><h3>Restaurant</h3><form id="sf" class="form">${field('name','Restaurant name',s.name,'text','full')}${field('address','Address (on receipts)',s.address,'text','full')}${field('phone','Phone (on receipts)',s.phone)}${field('tax','Default tax rate %',s.tax,'number')}
+ ${field('pin','PIN lock (optional — blank = none)',s.pin,'password','full','inputmode="numeric" autocomplete="off"')}<div class="full"><button>Save settings</button></div></form></div>
+ <div class="card"><h3>Your data</h3><p class="muted">Everything is stored only in this browser on this device: ${DB.items.length} menu items, ${DB.orders.length} orders, ${DB.reservations.length} reservations, ${DB.ingredients.length} ingredients, ${DB.staff.length} staff. Export a backup regularly.</p>
+ <div class="row"><button id="exp">⬇️ Export backup</button><label class="btn sec">⬆️ Import backup<input type="file" id="imp" accept=".json,application/json" hidden></label></div>
+ <div class="row"><button class="sec" id="demo">✨ Load demo data</button><button class="danger" id="reset">🗑️ Reset all data</button></div></div></div><p class="muted">TableTop single-file edition · works offline · no data leaves this device.</p>`;
+ $('#sf').onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));Object.assign(DB.settings,{name:d.name.trim()||'My Restaurant',address:d.address.trim(),phone:d.phone.trim(),tax:Math.max(0,+d.tax||0),pin:d.pin.trim()});save();if(DB.settings.pin)sessionStorage.tt_unlocked='1';toast('Settings saved');render();};
+ $('#exp').onclick=()=>{const blob=new Blob([JSON.stringify({app:'TableTop',version:1,exported_at:new Date().toISOString(),data:DB},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`tabletop-backup-${ymd(Date.now())}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Backup downloaded');};
+ $('#imp').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text()),d=j.data||j;if(!d.settings||!Array.isArray(d.items)||!Array.isArray(d.orders))throw new Error('Not a TableTop backup file');
+  if(!confirm(`Replace current data with this backup (${d.items.length} menu items, ${d.orders.length} orders)?`))return;const b=blank();for(const k of Object.keys(b))if(d[k]===undefined)d[k]=b[k];DB=d;save();CUR=null;toast('Backup imported');render();}catch(err){toast('Import failed: '+err.message);}e.target.value='';};
+ $('#demo').onclick=()=>{if(!confirm('Replace ALL current data with demo data?'))return;demoData();CUR=null;toast('Demo data loaded');location.hash='#dashboard';render();};
+ $('#reset').onclick=()=>{if(!confirm('Delete ALL data in this browser? This cannot be undone — export a backup first.'))return;const p=DB.settings.pin;DB=blank();DB.settings.pin=p;save();CUR=null;toast('All data reset');render();};};
+
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+render();
+
+</script></body></html>
