@@ -10,13 +10,13 @@
 <a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>Table<b>Top</b></span></a>
 <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav">☰</button>
 <nav class="main" id="nav" aria-label="Main">
-<a href="index.html#features">Features</a><a href="index.html#pricing">Pricing</a><a href="index.html#faq">FAQ</a><a href="app.html">Live demo</a>
+<a href="index.html#features">Features</a><a href="index.html#pricing">Pricing</a><a href="index.html#faq">FAQ</a><a href="demo.html">Product tour</a><a href="app.html">Open the app</a>
 <a class="btn sm" href="index.html#waitlist">Join the waitlist</a></nav></div></header>
 <main id="main">
 <section class="hero"><div class="wrap">
 <h1>Run your restaurant from <em>one simple screen.</em></h1>
 <p class="lead">Orders, kitchen, tables and reservations. One flat price. Works offline.</p>
-<div class="btns"><a class="btn big" href="app.html">Try the live demo</a><a class="btn alt big" href="#pricing">See pricing</a></div>
+<div class="btns"><a class="btn big" href="app.html">Launch TableTop</a><a class="btn alt big" href="#pricing">See pricing</a></div>
 <div class="frame"><div class="bar"><i></i><i></i><i></i></div><img src="assets/dashboard.png" alt="TableTop dashboard showing sales, open orders and best sellers" width="1200" height="750"></div>
 </div></section>
 <div class="wrap strip"><span>One flat price</span><span>Works offline</span><span>Phone, tablet, laptop</span><span>Your data stays on your device</span></div>
@@ -32,13 +32,13 @@
 <div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div><h3>Inventory</h3><p>Low-stock warnings on your dashboard.</p></div>
 </div>
 <div class="v2row now" id="v2"><span class="tag live">Included now</span><span class="chip">Staff schedule</span><span class="chip">Tip splitter</span><span class="chip">End-of-night report</span><span class="chip">Allergy tags</span><span class="chip">Training quiz</span></div>
-<p class="center" style="margin:16px 0 0;color:var(--muted);font-size:15px">Not built yet: guest phone ordering by QR code (it needs a shared server) and syncing between devices.</p>
+<p class="center" style="margin:16px 0 0;color:var(--muted);font-size:15px">Not built yet: guest phone ordering and syncing between devices. The app has a QR codes page for table cards, but a guest's phone cannot send an order to the kitchen until a shared server is added.</p>
 </div></section>
 
 <section class="alt"><div class="wrap">
 <div class="center"><h2>Works on your phone too</h2></div>
 <div class="phones3"><figure class="phone"><img src="assets/mobile-pos.png" alt="TableTop point of sale on a phone" width="390" height="844" loading="lazy"></figure><figure class="phone"><img src="assets/mobile-kitchen.png" alt="TableTop kitchen display on a phone" width="390" height="844" loading="lazy"></figure><figure class="phone"><img src="assets/mobile-tables.png" alt="TableTop tables on a phone" width="390" height="844" loading="lazy"></figure></div>
-<p class="center" style="margin:30px 0 0"><a class="btn" href="app.html">Try the live demo</a></p>
+<p class="center" style="margin:30px 0 0"><a class="btn" href="app.html">Open the app</a></p>
 </div></section>
 
 <section id="pricing"><div class="wrap">
@@ -46,31 +46,31 @@
 <span class="eyebrow">Pricing</span>
 <div class="amt">$25–30<small> / month</small></div>
 <p class="p1">Everything included. Planned pricing.</p>
-<p class="note">Free 30-day trial planned at launch. We will confirm the price before anyone is charged. Nobody can sign up or pay on this demo site.</p>
-<a class="btn light" href="#waitlist">Join the waitlist</a>
+<p class="note"><b>TEST MODE: no real charges, no real payments.</b> The checkout only accepts a test card, so you can try buying without paying anything. Final price is confirmed before launch.</p>
+<a class="btn light" id="buybtn" href="checkout.html?plan=tabletop">Buy TableTop (test mode)</a>
 </div>
 </div></section>
 
 <section class="alt" id="faq"><div class="wrap">
 <div class="center"><h2>Quick answers</h2></div>
-<div class="faq"><details open><summary>Does it work without internet?</summary><p>Yes. It runs in your browser, so a dropped Wi-Fi connection does not stop service.</p></details><details><summary>Where is my data?</summary><p>Only on the device you use. Nothing is uploaded, and devices do not share orders yet.</p></details><details><summary>What does the waitlist do?</summary><p>It is a simple list. When signups open, you will give your name and email and we will message you once TableTop is ready. Nothing else is collected.</p></details></div>
+<div class="faq"><details open><summary>Does it work without internet?</summary><p>Yes. It runs in your browser, so a dropped Wi-Fi connection does not stop service.</p></details><details><summary>Where is my data?</summary><p>Only on the device you use. Nothing is uploaded, and devices do not share orders yet.</p></details><details><summary>Can guests order from their own phone?</summary><p>Not yet. The app has a QR codes page that prints a card for each table, but a guest's phone cannot send an order to the kitchen screen until a shared server is added. Today, staff take orders in the app.</p></details><details><summary>Is the checkout real?</summary><p>No. It is in test mode. It only accepts the test card shown on the checkout page and no money is charged.</p></details><details><summary>What does the waitlist do?</summary><p>It is a simple list. When signups open, you will give your name and email and we will message you once TableTop is ready. Nothing else is collected.</p></details></div>
 </div></section>
 
 <section id="waitlist"><div class="wrap">
 <div class="formcard slim">
 <h2 style="font-size:clamp(26px,4vw,34px);text-align:center;margin:0 0 16px">Be first to try it</h2>
-<div id="soon" class="soon" role="status"><div class="big">📬</div><h3>Waitlist opens soon</h3><p>We are not taking signups just yet. In the meantime you can <a href="demo.html">try the live demo</a> and see everything TableTop does.</p></div>
-<form id="wl" novalidate hidden>
+<form id="wl" action="mailto:lucabomfim3@gmail.com?subject=TableTop%20waitlist" method="post" enctype="text/plain" novalidate>
 <div class="row2"><div class="fld"><label for="wn">Your name</label><input id="wn" name="name" autocomplete="name" required maxlength="80"><div class="err">Please enter your name.</div></div>
 <div class="fld"><label for="we">Email</label><input id="we" name="email" type="email" autocomplete="email" required maxlength="120" placeholder="you@restaurant.com"><div class="err">Please enter a valid email.</div></div></div>
 <div class="fld"><label for="wf">Feature you want most</label><select id="wf" name="feature"><option>Guest phone ordering (QR)</option><option>Syncing between devices</option><option>Something else</option></select></div>
+<noscript><p class="wlerr">JavaScript is off, so this form will open your email app instead. Or write to <a href="mailto:lucabomfim3@gmail.com">lucabomfim3@gmail.com</a>.</p></noscript>
 <div class="hp" aria-hidden="true"><label for="wh">Leave this empty</label><input id="wh" name="_honey" type="text" tabindex="-1" autocomplete="off"></div>
 <div id="wlerr" class="wlerr" role="alert" hidden></div>
 <button class="btn" id="wlbtn" style="width:100%" type="submit">Join the waitlist</button>
 </form>
 <div id="thanks" role="status" aria-live="polite"><div class="big">🎉</div><h3>You're on the list<span id="tname"></span>!</h3><p>Thanks for signing up. We will email you when TableTop opens up.</p>
 <p><button class="btn alt sm" id="againwl" type="button">Add another email</button></p></div>
-<p class="center" style="margin:18px 0 0"><a href="app.html" style="display:inline-block;padding:10px 14px">Or just try the live demo →</a></p>
+<p class="center" style="margin:18px 0 0"><a href="app.html" style="display:inline-block;padding:10px 14px">Or just open the app →</a></p>
 </div></div></section>
 </main>
 <footer><div class="wrap foot1"><a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>Table<b>Top</b></span></a>

@@ -1,5 +1,5 @@
 // ===== WAITLIST SETUP: the ONE line to edit =====
-// Replace REPLACE_WITH_LUCA_EMAIL with the real address (then confirm the first signup from that inbox). Until then the form stays hidden.
+// Waitlist signups are emailed through formsubmit.co to the address in this line.
 var WAITLIST_ENDPOINT='https://formsubmit.co/ajax/lucabomfim3@gmail.com';
 (function(){
 'use strict';
@@ -9,13 +9,12 @@ if(burger&&nav){
  burger.addEventListener('click',function(){var o=nav.classList.toggle('open');burger.setAttribute('aria-expanded',o)});
  nav.addEventListener('click',function(e){if(e.target.tagName==='A'){nav.classList.remove('open');burger.setAttribute('aria-expanded','false')}});
 }
-// Waitlist. While the endpoint below is still the placeholder, the form stays hidden and visitors see "Waitlist opens soon".
+// Waitlist: posts to WAITLIST_ENDPOINT (set at the top of this file). Without JavaScript the form opens the visitor's email app instead.
 var f=$('#wl');
 if(f){
- var soon=$('#soon'),thanks=$('#thanks'),errBox=$('#wlerr'),btn=$('#wlbtn');
+ var thanks=$('#thanks'),errBox=$('#wlerr'),btn=$('#wlbtn');
  var live=WAITLIST_ENDPOINT.indexOf('REPLACE_WITH')<0&&/^https?:\/\//.test(WAITLIST_ENDPOINT);
- if(live){f.hidden=false;if(soon)soon.hidden=true}
- var mailTo=(WAITLIST_ENDPOINT.split('/ajax/')[1]||'');if(mailTo.indexOf('@')<0)mailTo='';
+  var mailTo=(WAITLIST_ENDPOINT.split('/ajax/')[1]||'');if(mailTo.indexOf('@')<0)mailTo='';
  var showErr=function(msg){
   errBox.textContent='';errBox.appendChild(document.createTextNode(msg));
   if(mailTo){errBox.appendChild(document.createTextNode(' You can also email us at '));var a=document.createElement('a');a.href='mailto:'+mailTo+'?subject='+encodeURIComponent('TableTop waitlist');a.textContent=mailTo;errBox.appendChild(a);errBox.appendChild(document.createTextNode('.'))}
@@ -26,10 +25,11 @@ if(f){
   f.style.display='none';thanks.style.display='block';thanks.scrollIntoView({block:'center'});
  };
  f.addEventListener('submit',function(e){
-  e.preventDefault();if(!live||btn.disabled)return;
+  e.preventDefault();if(btn.disabled)return;
   errBox.hidden=true;var ok=true;
   ['wn','we'].forEach(function(id){var el=document.getElementById(id);var bad=!el.value.trim()||(el.type==='email'&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim()));el.classList.toggle('invalid',bad);if(bad)ok=false});
   if(!ok){var first=f.querySelector('.invalid');if(first)first.focus();return}
+  if(!live){showErr('Sorry, the waitlist is not set up yet. Please try again later.');return}
   var d={};
   new FormData(f).forEach(function(v,k){d[k]=String(v).slice(0,500)});
   d.name=(d.name||'').trim();d.email=(d.email||'').trim();
