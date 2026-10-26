@@ -3,11 +3,11 @@
 'use strict';
 var $=function(s){return document.querySelector(s)};
 // Plans and prices exactly as listed in the Pricing section of index.html
-var PLANS={tabletop:{name:'TableTop (everything included)',price:'$25–30 / month',note:'Planned launch pricing. Free 30-day trial planned at launch.'}};
+var PLANS={tabletop:{name:'TableTop (everything included)',price:'$25–30 / month',note:'Planned launch price.'}};
 var q=(location.search.match(/[?&]plan=([^&]*)/)||[])[1]||'tabletop';
 try{q=decodeURIComponent(q)}catch(e){q='tabletop'}
 var key=Object.prototype.hasOwnProperty.call(PLANS,q)?q:'tabletop',plan=PLANS[key];
-$('#planname').textContent=plan.name;$('#planprice').textContent=plan.price;$('#plannote').textContent=plan.note;$('#btnprice').textContent=plan.price.split(' / ')[0];
+$('#planname').textContent=plan.name;$('#planprice').textContent=plan.price;$('#plannote').textContent=plan.note;
 var f=$('#co'),box=$('#cberr');
 var digits=function(v){return String(v).replace(/\D/g,'')};
 function luhn(n){var s=0,alt=false;for(var i=n.length-1;i>=0;i--){var d=+n[i];if(alt){d*=2;if(d>9)d-=9}s+=d;alt=!alt}return n.length>0&&s%10===0}

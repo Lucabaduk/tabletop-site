@@ -17,7 +17,7 @@ if(f){
   var mailTo=(WAITLIST_ENDPOINT.split('/ajax/')[1]||'');if(mailTo.indexOf('@')<0)mailTo='';
  var showErr=function(msg){
   errBox.textContent='';errBox.appendChild(document.createTextNode(msg));
-  if(mailTo){errBox.appendChild(document.createTextNode(' You can also email us at '));var a=document.createElement('a');a.href='mailto:'+mailTo+'?subject='+encodeURIComponent('TableTop waitlist');a.textContent=mailTo;errBox.appendChild(a);errBox.appendChild(document.createTextNode('.'))}
+  if(mailTo){errBox.appendChild(document.createTextNode(' You can also email us at '));var a=document.createElement('a');a.href='mailto:'+mailTo+'?subject='+encodeURIComponent('TableTop product updates');a.textContent=mailTo;errBox.appendChild(a);errBox.appendChild(document.createTextNode('.'))}
   errBox.hidden=false;
  };
  var done=function(name){
@@ -29,7 +29,7 @@ if(f){
   errBox.hidden=true;var ok=true;
   ['wn','we'].forEach(function(id){var el=document.getElementById(id);var bad=!el.value.trim()||(el.type==='email'&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim()));el.classList.toggle('invalid',bad);if(bad)ok=false});
   if(!ok){var first=f.querySelector('.invalid');if(first)first.focus();return}
-  if(!live){showErr('Sorry, the waitlist is not set up yet. Please try again later.');return}
+  if(!live){showErr('Sorry, product updates signup is not set up yet. Please try again later.');return}
   var d={};
   new FormData(f).forEach(function(v,k){d[k]=String(v).slice(0,500)});
   d.name=(d.name||'').trim();d.email=(d.email||'').trim();

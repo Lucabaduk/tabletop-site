@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Checkout (test mode) | TableTop</title>
+<title>Practice checkout (test mode) | TableTop</title>
 <meta name="description" content="TableTop checkout in test mode. No real charges, no real payments.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -8,15 +8,15 @@
 </head><body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap">
-<a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>TableTop</span></a>
+<a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>Table<b>Top</b></span></a>
 <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav">☰</button>
 <nav class="main" id="nav" aria-label="Main">
 <a href="index.html#features">Features</a><a href="index.html#pricing">Pricing</a><a href="tour.html">Product tour</a><a href="app.html">Open the app</a>
 <a class="btn sm" href="index.html#pricing">← Back to pricing</a></nav></div></header>
 <main id="main">
 <div class="wrap co">
-<div class="testbanner" role="note"><b>TEST MODE: no real charges, no real payments.</b> Nothing you type here is sent anywhere. Your test receipt (name, email and last 4 digits) is kept only in this browser; the card number, expiry and CVC are never saved.</div>
-<h1 class="cotitle">Checkout</h1>
+<div class="testbanner" role="note"><b>TEST MODE: no real charges, no real payments.</b> This is a practice checkout: it does not buy or unlock anything. Nothing you type here is sent anywhere. Your test receipt (name, email and last 4 digits) is kept only in this browser; the card number, expiry and CVC are never saved.</div>
+<h1 class="cotitle">Practice checkout</h1>
 <div class="cogrid">
 <section class="formcard" id="coform-wrap" aria-labelledby="cohead">
 <h2 id="cohead">Payment details</h2>
@@ -30,7 +30,7 @@
 <div class="fld"><label for="cc">Card number</label><input id="cc" name="cardnumber" inputmode="numeric" autocomplete="off" maxlength="23" placeholder="4242 4242 4242 4242" required><div class="err" id="ccerr">Please enter a valid card number.</div></div>
 <div class="row2"><div class="fld"><label for="cx">Expiry (MM/YY)</label><input id="cx" name="expiry" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="MM/YY" required><div class="err">Enter a future date as MM/YY.</div></div>
 <div class="fld"><label for="cv">CVC</label><input id="cv" name="cvc" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="123" required><div class="err">Enter the 3-digit CVC.</div></div></div>
-<button class="btn" id="cobtn" style="width:100%" type="submit">Pay <span id="btnprice"></span> (test mode)</button>
+<button class="btn" id="cobtn" style="width:100%" type="submit">Place practice order (test mode)</button>
 <p class="conote">Test mode only. No money will be charged.</p>
 </form>
 </section>
@@ -44,12 +44,12 @@
 <section id="done" class="formcard slim codone" role="status" aria-live="polite" tabindex="-1" hidden>
 <div class="big">✅</div><h2>Test order confirmed</h2>
 <dl class="sumdl"><dt>Plan</dt><dd id="dplan"></dd><dt>Price</dt><dd id="dprice"></dd><dt>Order ID</dt><dd id="did"></dd><dt>Name</dt><dd id="dname"></dd><dt>Card</dt><dd id="dcard"></dd></dl>
-<p><b>No money was charged.</b> This was a test order. It is saved only in this browser.</p>
+<p><b>No money was charged.</b> This was a practice order and it did not unlock anything. It is saved only in this browser.</p>
 <p><a class="btn" href="app.html">Open the app</a> <a class="btn alt" href="index.html">Back to the site</a></p>
 </section>
 </div>
 </main>
-<footer><div class="wrap foot1"><a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>TableTop</span></a>
+<footer><div class="wrap foot1"><a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>Table<b>Top</b></span></a>
 <small>© 2026 TableTop. Checkout is in test mode: no real charges, no real payments.</small></div></footer>
 <script src="js/site.js"></script>
 <script src="js/checkout.js"></script>
