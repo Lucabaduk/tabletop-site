@@ -37,7 +37,7 @@ f.addEventListener('submit',function(e){
  var rec={plan:plan.name,price:plan.price,name:name.value.trim().slice(0,80),email:em.value.trim().slice(0,120),last4:'4242',timestamp:new Date().toISOString(),orderId:id};
  try{localStorage.setItem('tabletop_test_order',JSON.stringify(rec))}catch(err){}
  cc.value='';cx.value='';cv.value='';
- $('#dplan').textContent=rec.plan;$('#dprice').textContent=rec.price;$('#did').textContent=id;$('#dname').textContent=rec.name;$('#dcard').textContent='Visa ending 4242 (test card)';
+ $('#dplan').textContent=rec.plan;$('#dprice').textContent=rec.price+' (planned launch price)';$('#did').textContent=id;$('#dname').textContent=rec.name;$('#dcard').textContent='Visa ending 4242 (test card)';
  document.querySelector('.cogrid').hidden=true;$('.cotitle').hidden=true;
  var done=$('#done');done.hidden=false;done.style.cssText='opacity:1;transform:none;transition:none';done.focus({preventScroll:true});window.scrollTo(0,0);
 });

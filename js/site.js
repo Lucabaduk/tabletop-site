@@ -34,7 +34,7 @@ if(f){
   new FormData(f).forEach(function(v,k){d[k]=String(v).slice(0,500)});
   d.name=(d.name||'').trim();d.email=(d.email||'').trim();
   if(d._honey){done(d.name);return} // bots fill the hidden field: pretend success, send nothing
-  d._subject='TableTop waitlist signup';
+  d._subject='TableTop product updates signup';
   var label=btn.textContent;btn.disabled=true;btn.textContent='Sending...';
   var fail=function(){showErr('Sorry, that did not go through. Please check your connection and try again.')};
   var reset=function(){btn.disabled=false;btn.textContent=label};
