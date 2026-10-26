@@ -56,8 +56,1323 @@ h3{margin:0 0 10px;font-size:16px}.between{justify-content:space-between}.end{ju
 @media(max-width:760px){.layout{flex-direction:column}nav{width:100%;height:auto;padding:8px;flex-direction:row;align-items:center;gap:6px;position:sticky;top:0;z-index:5;overflow-x:auto}
  nav .brand h1{font-size:15px;margin:0;white-space:nowrap}nav .brand .dl{display:none}nav .links{display:flex;gap:2px}nav a{padding:8px 9px;white-space:nowrap;margin:0}nav em{display:none}nav a span{width:auto;font-size:18px}.dot{top:0;right:0;font-size:9px;padding:0 5px}
  main{padding:12px}.form{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr!important}.grid.two{grid-template-columns:1fr!important}.stat .v{font-size:20px}h2{font-size:20px}.items{grid-template-columns:repeat(2,1fr)}.floor{grid-template-columns:repeat(2,1fr)}.chart span{font-size:8px}}
+:root{--brand:#c2410c}body{-webkit-font-smoothing:antialiased}nav{background:#1c1917}nav a.active,nav a:hover{background:#292524}
+button{background:var(--brand)}button.green{background:#16a34a}button.wide,.wide{width:100%}button:disabled{opacity:.5;cursor:not-allowed}a{color:var(--brand)}
+nav{display:flex;flex-direction:column}nav .links{flex:1}nav a{position:relative}nav a span{display:inline-block;width:24px}nav em{font-style:normal}
+.dot{position:absolute;right:10px;top:9px;background:#dc2626;color:#fff;border-radius:99px;font-size:11px;padding:1px 7px}.dot.blue{background:#2563eb}
+.tw{overflow-x:auto;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:8px}.tw table{box-shadow:none}
+.btn{display:inline-block;padding:9px 14px;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;background:var(--brand);color:#fff;text-align:center}.btn.sec{background:#e2e8f0;color:#1c2333}.btn.sm{padding:5px 9px;font-size:12px}
+h3{margin:0 0 10px;font-size:16px}.between{justify-content:space-between}.end{justify-content:flex-end}.nomb{margin-bottom:0}.grow{flex:1}.center{text-align:center;justify-content:center}.nowrap{white-space:nowrap}.small{font-size:12px;margin:4px 0}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}.alert{background:#fef3c7;border:1px solid #fcd34d;color:#78350f;padding:12px 14px;border-radius:10px;margin-bottom:16px}.alert.ok{background:#dcfce7;border-color:#86efac;color:#14532d}
+.li{padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:14px}.hbar{margin-bottom:10px;font-size:14px}.bar{background:var(--brand);height:8px;margin-top:4px}
+.chart{display:flex;align-items:flex-end;gap:3px}.chart>div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;font-size:10px;min-width:0}.chart .b{flex:none!important;width:100%;background:linear-gradient(#fb923c,var(--brand));border-radius:4px 4px 0 0;margin:0}.chart span{margin-top:4px;white-space:nowrap}
+.badge.free,.badge.okk,.badge.paid,.badge.seated{background:#dcfce7;color:#166534}.badge.occupied,.badge.low,.badge.cooking{background:#fee2e2;color:#991b1b}.badge.reserved,.badge.booked{background:#fef9c3;color:#854d0e}.badge.ready{background:#dcfce7;color:#166534}.badge.served{background:#e0e7ff;color:#3730a3}
+.seg{display:inline-flex;background:#e2e8f0;border-radius:9px;padding:3px}.seg button{background:transparent;color:#334155;padding:7px 12px}.seg button.on{background:#fff;color:#0f172a;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.tabs button,.chip{background:#f1f5f9;color:#334155;border-radius:99px;padding:7px 14px}.tabs button.on,.chip.on{background:var(--brand);color:#fff}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.chip{font-size:13px;padding:6px 12px}
+.pos{display:grid;grid-template-columns:1fr 380px;gap:16px;align-items:start}.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.item{background:#fff7ed;color:#431407;border:1px solid #fed7aa;padding:14px 10px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;border-radius:12px}.item:hover{background:#ffedd5}.item span{font-weight:700;color:var(--brand)}.item em{font-size:11px;font-style:normal;color:#9a3412;opacity:.7}.item.off{background:#f1f5f9;border-color:#e2e8f0;color:#94a3b8}
+.pos-right{position:sticky;top:16px}.lines{max-height:42vh;overflow:auto;margin:10px 0;border-top:1px solid #f1f5f9}.line{display:flex;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:14px}
+.qty{display:flex;align-items:center;gap:6px}.amt{width:70px;text-align:right;font-weight:600}button.x{background:transparent;color:#94a3b8;padding:4px}.note{font-size:12px;color:#b45309}
+.tot>div{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px;gap:6px;flex-wrap:wrap}.tot .grand{font-size:22px;font-weight:800;border-top:2px solid #0f172a;margin-top:6px;padding-top:10px}.tiny{width:70px;padding:5px 6px}
+.actions{display:grid;gap:8px;margin-top:12px}.actions button{padding:13px}
+.k4{grid-template-columns:repeat(4,minmax(220px,1fr))}.col h4 span{background:#fff;border-radius:99px;padding:1px 8px;margin-left:4px}.kcard{background:#fff;border-radius:10px;padding:10px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.08);border-left:5px solid #22c55e;font-size:14px}.kcard.warn{border-color:#f59e0b}.kcard.late{border-color:#dc2626;background:#fff5f5}
+.kcard ul{padding-left:18px;margin:8px 0}.kcard li{margin-bottom:4px}.el{font-weight:700;font-variant-numeric:tabular-nums}
+.floor{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}.tbl{background:#fff;border-radius:16px;padding:16px;text-align:center;border:3px solid #22c55e;box-shadow:0 1px 3px rgba(0,0,0,.08)}.tbl.occupied{border-color:#ef4444;background:#fff5f5}.tbl.reserved{border-color:#eab308;background:#fefce8}
+.tn{font-size:22px;font-weight:800}.ts{text-transform:uppercase;font-size:12px;font-weight:700;letter-spacing:.05em;margin:6px 0}.tbl.free .ts{color:#16a34a}.tbl.occupied .ts{color:#dc2626}.tbl.reserved .ts{color:#a16207}
+.switch{position:relative;display:inline-block;width:40px;height:22px}.switch input{display:none}.switch span{position:absolute;inset:0;background:#cbd5e1;border-radius:99px;cursor:pointer;transition:.2s}.switch span:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}.switch input:checked+span{background:#16a34a}.switch input:checked+span:before{transform:translateX(18px)}
+.mods{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chk{flex-direction:row!important;align-items:center;gap:6px!important;background:#f8fafc;border:1px solid #e2e8f0;padding:8px 10px;border-radius:8px;color:#1c2333!important;font-size:14px!important;cursor:pointer}
+.lowrow td{background:#fff7f7}.receipt{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;max-width:320px;margin:0 auto 14px}.receipt h3{text-align:center;font-size:18px;margin-bottom:4px}.receipt>div{text-align:center}.receipt .rl{display:flex;justify-content:space-between;text-align:left}.receipt .rm{text-align:left;padding-left:16px;color:#555}.receipt .big{font-weight:800;font-size:16px}.receipt hr{border:0;border-top:1px dashed #999}
+#print{display:none}code{background:#f1f5f9;padding:1px 5px;border-radius:4px}
+@media print{body>*{display:none!important}#print{display:block!important}.receipt{max-width:none}}
+@media(max-width:1000px){.pos{grid-template-columns:1fr}.pos-right{position:static}.k4{grid-template-columns:repeat(4,240px)}}
+@media(max-width:760px){.layout{flex-direction:column}nav{width:100%;height:auto;padding:8px;flex-direction:row;align-items:center;gap:6px;position:sticky;top:0;z-index:5;overflow-x:auto}
+ nav .brand h1{font-size:15px;margin:0;white-space:nowrap}nav .brand .dl{display:none}nav .links{display:flex;gap:2px}nav a{padding:8px 9px;white-space:nowrap;margin:0}nav em{display:none}nav a span{width:auto;font-size:18px}.dot{top:0;right:0;font-size:9px;padding:0 5px}
+ main{padding:12px}.form{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr!important}.grid.two{grid-template-columns:1fr!important}.stat .v{font-size:20px}h2{font-size:20px}.items{grid-template-columns:repeat(2,1fr)}.floor{grid-template-columns:repeat(2,1fr)}.chart span{font-size:8px}}
+/* ---- v2 ---- */
+.tags{display:flex;flex-wrap:wrap;gap:3px;margin:3px 0}.tag{font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;background:#e2e8f0;color:#334155;white-space:nowrap}
+.tag.good{background:#dcfce7;color:#166534}.tag.warn{background:#fee2e2;color:#991b1b}.tag.hot{background:#ffedd5;color:#9a3412}.tag.custom{background:#ede9fe;color:#5b21b6}
+.item .tags{margin:2px 0}.allg{background:#fee2e2;color:#991b1b;font-weight:700;font-size:12px;padding:4px 8px;border-radius:6px;margin:6px 0}
+.pfilter{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:0 0 10px;font-size:13px}.pfilter .chip{font-size:12px;padding:4px 10px}
+.warnbar{position:fixed;top:0;left:0;right:0;z-index:99;background:#b91c1c;color:#fff;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:14px}.warnbar button{background:#fff;color:#b91c1c}
+table.sched th,table.sched td{text-align:center;vertical-align:top;min-width:92px}table.sched td:first-child,table.sched th:first-child{text-align:left}.sched .today{background:#fff7ed}
+.shift{display:block;width:100%;margin:0 0 4px;padding:5px 4px;font-size:12px;background:#ffedd5;color:#7c2d12;border:1px solid #fed7aa;border-radius:8px;line-height:1.2}.shift small{display:block;font-weight:400;opacity:.75}.shift.clash{background:#fee2e2;border-color:#f87171;color:#991b1b}
+.addsh{background:transparent;color:#94a3b8;border:1px dashed #cbd5e1;padding:2px 8px;font-size:13px;border-radius:6px}.addsh:hover{color:var(--brand);border-color:var(--brand)}tr.tfoot td{background:#f8fafc}
+.rpt{font-size:13px}.rpt h3{font-size:18px;margin-bottom:2px}table.rt{width:100%;margin:12px 0;box-shadow:none;border:1px solid #e2e8f0}table.rt th,table.rt td{padding:6px 10px;border-bottom:1px solid #e2e8f0}table.rt td:last-child,table.rt th:last-child{text-align:right}.sig{margin-top:24px}
+.badge.trained{background:#fef3c7;color:#92400e}.v.big{font-size:44px;font-weight:800}
+.qprog{height:6px;background:#e2e8f0;border-radius:99px;margin-bottom:14px}.qprog div{height:100%;background:var(--brand);border-radius:99px}.qch{display:grid;gap:8px;margin:12px 0}
+.qc{background:#f8fafc;color:#0f172a;border:2px solid #e2e8f0;text-align:left;padding:12px 14px;font-weight:500}.qc:hover:not(:disabled){border-color:var(--brand)}.qc.right{background:#dcfce7;border-color:#16a34a}.qc.wrong{background:#fee2e2;border-color:#dc2626}.qc:disabled{cursor:default}
+.fb{padding:10px 14px;border-radius:8px;margin:8px 0;font-weight:600}.fb.ok{background:#dcfce7;color:#14532d}.fb.bad{background:#fee2e2;color:#7f1d1d}
+@media print{.rpt{font-size:12px;color:#000}table.rt{border-color:#999}}
+
+/* ===== polish pass (MacBook / Safari / Retina) ===== */
+:root{color-scheme:light}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%;text-rendering:optimizeLegibility}
+@media(min-width:761px){nav{position:-webkit-sticky;position:sticky;top:0;height:100vh;align-self:flex-start;overflow-y:auto;overscroll-behavior:contain}}
+.layout{align-items:flex-start}main{min-width:0;align-self:stretch}
+/* focus + hover states */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #ea580c;outline-offset:2px}
+nav a:focus-visible{outline-color:#fdba74;outline-offset:-2px}
+input:focus,select:focus,textarea:focus{border-color:#ea580c;box-shadow:0 0 0 3px rgba(234,88,12,.15);outline:none}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
+button,.btn,select{transition:filter .12s,background-color .12s,transform .06s,box-shadow .12s}
+button:hover:not(:disabled):not(.item):not(.qc){filter:brightness(1.08)}button:active:not(:disabled){transform:translateY(1px)}
+button.sec:hover:not(:disabled){filter:none;background:#cbd5e1}
+select{cursor:pointer}input[type=checkbox],input[type=radio]{accent-color:#c2410c}
+.item:hover:not(:disabled){box-shadow:0 3px 10px rgba(194,65,12,.18);transform:translateY(-1px)}
+.tbl{transition:box-shadow .12s,transform .06s}.tbl:hover{box-shadow:0 3px 10px rgba(0,0,0,.12)}
+table tr:hover td{background-color:rgba(15,23,42,.025)}table.sched tr:hover td,table.rt tr:hover td{background-color:transparent}
+.card{box-shadow:0 1px 3px rgba(15,23,42,.08),0 1px 2px rgba(15,23,42,.04)}
+/* spacing consistency */
+.grid.two,.grid{margin-bottom:16px}.card+.card{margin-top:0}main>.card,main>.tw{margin-bottom:16px}
+main>h2,main>.row.between>h2{letter-spacing:-.01em}
+.dash-gap{margin-bottom:16px}
+/* sizes + readability on Retina (min 11px, 28px targets, darker small gray text) */
+.tag{font-size:11px}.chart span,.chart small,.chart>div>span{font-size:11px;color:#64748b}
+.shift small,small{font-size:11px}
+button.sm,.btn.sm,.chip{min-height:28px}
+.addsh{min-height:26px;color:#64748b}
+.muted,.stat .l{color:#5b6b82}
+::placeholder{color:#8895a7}
+/* toast */
+.toast{box-shadow:0 8px 24px rgba(15,23,42,.28);font-size:14px;max-width:min(420px,calc(100vw - 40px));z-index:200}
+/* schedule: fit 13" screens without a clipped last column */
+table.sched th,table.sched td{min-width:78px;padding:8px 5px}table.sched td:first-child,table.sched th:first-child{min-width:120px}
+.tw{-webkit-overflow-scrolling:touch}
+/* modal */
+#modal .card{max-height:calc(100vh - 40px);overflow:auto;overscroll-behavior:contain}
+@media print{nav,.toast,#savewarn{display:none!important}main{padding:0}.rpt table{page-break-inside:auto}.rpt tr{page-break-inside:avoid}@page{margin:14mm}}
+/* empty states */
+p.empty{text-align:center;padding:22px 10px;font-size:14px;border:1px dashed #cbd5e1;border-radius:10px;background:#f8fafc;margin:8px 0}
+td.muted[colspan]{text-align:center;padding:28px 10px;font-size:14px}
+.ttq-u{font-size:11px!important}
+/* ===== quick-fix round ===== */
+/* save-failed bar sits in the page flow (sticky) and pushes nav/content down instead of covering the logo */
+:root{--wbh:0px}
+.warnbar{position:-webkit-sticky;position:sticky;top:0}
+@media(min-width:761px){nav{top:var(--wbh);height:calc(100vh - var(--wbh))}}
+@media(max-width:760px){nav{top:var(--wbh)}}
+/* POS ticket panel stays in view while the menu scrolls (main must not be its own scroll container here) */
+body[data-page=pos] main{overflow:visible}
+.pos-right{top:16px;max-height:calc(100vh - 32px);overflow-y:auto;align-self:start}
+@media(max-width:1000px){.pos-right{max-height:none;overflow:visible}}
+/* restock amount input */
+input.tiny[data-restock-amt]{width:104px}
+.backup-note{margin:10px 0 0;padding:8px 10px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;color:#78350f}
+/* schedule: hours/labor/action columns no wider than needed; tighter on ~1024px windows */
+table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px}table.sched th:nth-last-child(2),table.sched td:nth-last-child(2){min-width:72px}table.sched th:last-child,table.sched td:last-child{min-width:0;white-space:nowrap}
+@media(min-width:761px) and (max-width:1100px){nav{width:206px;padding:20px 8px}nav a{padding:10px 8px}nav em{right:6px}main{padding:18px}table.sched th,table.sched td{min-width:60px;padding:8px 3px}table.sched td:first-child,table.sched th:first-child{min-width:104px}.shift{font-size:11px;padding:5px 2px}}
 </style></head>
 <body><div id="app"></div><div id="modal" class="modal hidden"><div class="card" id="modal-body"></div></div><div id="toast" class="toast hidden"></div><div id="print"></div>
+<script>
+/* ===== inlined module: modules/inventory.js ===== */
+/*! TableTop Auto Inventory module (plain script, no dependencies, works offline).
+ *  Exposes one global: window.TTInventory (or globalThis in node).
+ *  Own localStorage key: "tabletop_inventory" (never touches orders/menu data).
+ *  See INVENTORY_README.md for how to merge into TableTop.html. */
+(function (root) {
+  'use strict';
+  var KEY = 'tabletop_inventory';
+  var MAX_APPLIED = 500, MAX_LOG = 200;
+
+  // ---------- helpers ----------
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function num(v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? Math.round(n * 1000) / 1000 : 0; }
+  function round(n) { return Math.round(n * 1000) / 1000; }
+  function clean(s, max) { return String(s == null ? '' : s).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, max || 60); }
+  function fresh() { return { v: 1, seq: 1, ingredients: [], recipes: {}, applied: {}, deducted: {}, appliedOrder: [], log: [] }; }
+
+  // ---------- state & persistence ----------
+  var state = fresh();
+  var saveError = '';          // non-empty when the last save failed
+  var listeners = [];          // functions called after any change
+  var store = function () { try { return root.localStorage || null; } catch (e) { return null; } };
+
+  function load() {
+    var s = store(), raw = null;
+    if (!s) { saveError = 'localStorage is not available - inventory will not be saved.'; return; }
+    try { raw = s.getItem(KEY); } catch (e) { saveError = 'Could not read saved inventory: ' + e.message; return; }
+    if (!raw) return;
+    try {
+      var d = JSON.parse(raw), f = fresh();
+      if (d && typeof d === 'object') {
+        state = {
+          v: 1, seq: +d.seq > 0 ? +d.seq : 1,
+          ingredients: Array.isArray(d.ingredients) ? d.ingredients.filter(function (i) { return i && i.id; }) : [],
+          recipes: d.recipes && typeof d.recipes === 'object' ? d.recipes : f.recipes,
+          applied: d.applied && typeof d.applied === 'object' ? d.applied : f.applied,
+          deducted: d.deducted && typeof d.deducted === 'object' ? d.deducted : f.deducted,
+          appliedOrder: Array.isArray(d.appliedOrder) ? d.appliedOrder : f.appliedOrder,
+          log: Array.isArray(d.log) ? d.log : f.log
+        };
+      }
+    } catch (e) { saveError = 'Saved inventory was unreadable and was ignored: ' + e.message; state = fresh(); }
+  }
+  function save() {
+    var s = store();
+    if (!s) { saveError = 'localStorage is not available - inventory is NOT being saved.'; return false; }
+    try { s.setItem(KEY, JSON.stringify(state)); saveError = ''; return true; }
+    catch (e) { saveError = 'Could not save inventory (storage full or blocked): ' + (e && e.message || e); return false; }
+  }
+  function changed() { save(); for (var i = 0; i < listeners.length; i++) { try { listeners[i](); } catch (e) {} } }
+  function log(msg) { state.log.unshift({ t: Date.now(), m: clean(msg, 200) }); if (state.log.length > MAX_LOG) state.log.length = MAX_LOG; }
+  function find(id) { for (var i = 0; i < state.ingredients.length; i++) if (state.ingredients[i].id === id) return state.ingredients[i]; return null; }
+
+  // ---------- ingredients / stock ----------
+  function addIngredient(o) {
+    var name = clean(o && o.name);
+    if (!name) throw new Error('Ingredient name is required');
+    var dup = state.ingredients.some(function (i) { return i.name.toLowerCase() === name.toLowerCase(); });
+    if (dup) throw new Error('"' + name + '" already exists');
+    var low = num(o.low), ing = {
+      id: 'ing' + (state.seq++), name: name, unit: clean(o.unit, 12) || 'pcs',
+      qty: num(o.qty), low: low, target: num(o.target) || low * 2
+    };
+    state.ingredients.push(ing); log('Added ' + name); changed(); return ing;
+  }
+  function updateIngredient(id, o) {
+    var ing = find(id); if (!ing) throw new Error('Unknown ingredient');
+    if (o.name !== undefined) { var n = clean(o.name); if (!n) throw new Error('Ingredient name is required'); ing.name = n; }
+    if (o.unit !== undefined) ing.unit = clean(o.unit, 12) || ing.unit;
+    if (o.qty !== undefined) ing.qty = num(o.qty);
+    if (o.low !== undefined) ing.low = num(o.low);
+    if (o.target !== undefined) ing.target = num(o.target);
+    changed(); return ing;
+  }
+  function removeIngredient(id) {
+    var ing = find(id); if (!ing) return;
+    state.ingredients = state.ingredients.filter(function (i) { return i.id !== id; });
+    Object.keys(state.recipes).forEach(function (k) {
+      state.recipes[k].lines = state.recipes[k].lines.filter(function (l) { return l.ing !== id; });
+      if (!state.recipes[k].lines.length) delete state.recipes[k];
+    });
+    log('Removed ' + ing.name); changed();
+  }
+  function restock(id, amount) {
+    var ing = find(id); if (!ing) throw new Error('Unknown ingredient');
+    var a = num(amount); if (!a) throw new Error('Enter an amount greater than 0');
+    ing.qty = round(ing.qty + a); log('Restocked ' + ing.name + ' +' + a + ' ' + ing.unit); changed(); return ing;
+  }
+  function isLow(i) { return +i.qty <= +i.low; }
+  function lowStock() { return state.ingredients.filter(isLow); }
+
+  // ---------- recipes (menu item -> ingredients used per 1 sold) ----------
+  // lines: [{ing: ingredientId, qty: number}]
+  function setRecipe(itemId, itemName, lines) {
+    var key = String(itemId), seen = {}, out = [];
+    (lines || []).forEach(function (l) {
+      var q = num(l.qty);
+      if (!l.ing || !find(l.ing) || !q || seen[l.ing]) return;
+      seen[l.ing] = 1; out.push({ ing: l.ing, qty: q });
+    });
+    if (!out.length) delete state.recipes[key];
+    else state.recipes[key] = { name: clean(itemName, 80), lines: out };
+    changed();
+  }
+  function getRecipe(itemId) { var r = state.recipes[String(itemId)]; return r ? r.lines.slice() : []; }
+
+  // ---------- order hook ----------
+  // order = {id, lines:[{item_id, name, qty}]} (TableTop's own order shape).
+  // Safe to call repeatedly for the same order (e.g. ticket sent, edited, then paid):
+  // only the DIFFERENCE since the last call is deducted (or returned to stock if lines were removed).
+  function onOrderPlaced(order) {
+    var res = { deducted: [], shortages: [], noRecipe: [], saved: true };
+    if (!order || !Array.isArray(order.lines)) return res;
+    var want = {}, names = {};
+    order.lines.forEach(function (l) {
+      if (l == null || l.item_id == null) return;
+      var k = String(l.item_id), q = Math.max(0, Math.floor(+l.qty || 0));
+      want[k] = (want[k] || 0) + q; names[k] = l.name;
+    });
+    var oid = order.id != null ? String(order.id) : null;
+    var prev = (oid && state.applied[oid]) || {};
+    var keys = {}; Object.keys(want).concat(Object.keys(prev)).forEach(function (k) { keys[k] = 1; });
+    var used = {}; // ingredient id -> signed amount
+    Object.keys(keys).forEach(function (k) {
+      var delta = (want[k] || 0) - (prev[k] || 0); if (!delta) return;
+      var r = state.recipes[k];
+      if (!r) { if (delta > 0) res.noRecipe.push(names[k] || k); return; }
+      r.lines.forEach(function (l) { used[l.ing] = (used[l.ing] || 0) + l.qty * delta; });
+    });
+    Object.keys(used).forEach(function (id) {
+      var ing = find(id), amt = round(used[id]); if (!ing || !amt) return;
+      var before = ing.qty, after = round(before - amt);
+      if (after < 0) { res.shortages.push(ing.name); after = 0; }
+      ing.qty = after;
+      if (oid) { var dd = state.deducted[oid] || (state.deducted[oid] = {}); dd[id] = round((dd[id] || 0) + (before - after)); } // what really left stock
+      res.deducted.push({ id: id, name: ing.name, amount: amt, unit: ing.unit, left: after, low: isLow(ing) });
+    });
+    if (oid) {
+      if (!state.applied[oid]) state.appliedOrder.push(oid);
+      state.applied[oid] = want;
+      while (state.appliedOrder.length > MAX_APPLIED) { var old = state.appliedOrder.shift(); delete state.applied[old]; delete state.deducted[old]; }
+    }
+    if (res.deducted.length) log('Order ' + (oid || '') + ': used ' + res.deducted.map(function (d) { return d.name; }).join(', '));
+    changed(); res.saved = !saveError; return res;
+  }
+
+  // ---------- void ----------
+  // Call when a ticket is deleted/voided. Accepts the order object or its id.
+  // Returns exactly what was deducted for that order back to stock. Idempotent; no-op for unknown orders.
+  function onOrderVoided(orderOrId) {
+    var res = { restored: [], saved: true };
+    var oid = orderOrId != null && typeof orderOrId === 'object' ? orderOrId.id : orderOrId;
+    if (oid == null) return res;
+    oid = String(oid);
+    if (!state.applied[oid] && !state.deducted[oid]) return res;
+    var back = state.deducted[oid];
+    if (!back) { // record from before per-ingredient tracking: rebuild from recipes
+      back = {};
+      Object.keys(state.applied[oid]).forEach(function (k) {
+        var r = state.recipes[k]; if (!r) return;
+        r.lines.forEach(function (l) { back[l.ing] = round((back[l.ing] || 0) + l.qty * state.applied[oid][k]); });
+      });
+    }
+    Object.keys(back).forEach(function (id) {
+      var ing = find(id), amt = round(back[id]); if (!ing || !amt) return; // ingredient deleted since: nothing to restore
+      ing.qty = round(ing.qty + amt);
+      res.restored.push({ id: id, name: ing.name, amount: amt, unit: ing.unit, left: ing.qty });
+    });
+    delete state.applied[oid]; delete state.deducted[oid];
+    state.appliedOrder = state.appliedOrder.filter(function (x) { return x !== oid; });
+    log('Order ' + oid + ' voided: ' + (res.restored.length ? 'returned ' + res.restored.map(function (d) { return d.amount + ' ' + d.unit + ' ' + d.name; }).join(', ') : 'nothing to return'));
+    changed(); res.saved = !saveError; return res;
+  }
+
+  // ---------- shopping list ----------
+  function shoppingList() {
+    return lowStock().map(function (i) {
+      var target = +i.target > +i.qty ? +i.target : (+i.low * 2 || +i.qty + 1);
+      return { id: i.id, name: i.name, unit: i.unit, have: i.qty, buy: round(target - i.qty) };
+    }).filter(function (x) { return x.buy > 0; });
+  }
+  function shoppingText(title) {
+    var l = shoppingList();
+    if (!l.length) return 'Nothing to buy - all ingredients are above their low-stock level.';
+    return (title || 'Shopping list') + ' - ' + new Date().toLocaleDateString() + '\n' +
+      l.map(function (x) { return '[ ] ' + x.name + ': ' + x.buy + ' ' + x.unit + ' (have ' + x.have + ')'; }).join('\n');
+  }
+  /* copyText(text, done): done(ok) is called once the result is known (clipboard promise resolved/rejected, then execCommand fallback). */
+  function copyText(text, done) {
+    function finish(ok) { if (done) { try { done(ok); } catch (e) {} } return ok; }
+    function fallback() {
+      try {
+        var d = root.document, ta = d.createElement('textarea'); ta.value = text; d.body.appendChild(ta); ta.select();
+        var ok = false; try { ok = !!d.execCommand('copy'); } catch (e2) {} d.body.removeChild(ta); return finish(ok);
+      } catch (e) { return finish(false); }
+    }
+    try {
+      if (root.navigator && root.navigator.clipboard && root.navigator.clipboard.writeText) {
+        var p = root.navigator.clipboard.writeText(text);
+        if (p && typeof p.then === 'function') { p.then(function () { finish(true); }, function () { fallback(); }); return; }
+        return finish(true);
+      }
+    } catch (e) {}
+    return fallback();
+  }
+
+  // ---------- import existing TableTop ingredients (optional, one-off) ----------
+  // list = DB.ingredients: [{name, unit, qty, par}] ; skips names that already exist.
+  function importIngredients(list) {
+    var n = 0;
+    (list || []).forEach(function (i) {
+      try { addIngredient({ name: i.name, unit: i.unit, qty: i.qty, low: i.par }); n++; } catch (e) {}
+    });
+    return n;
+  }
+
+  // ---------- UI ----------
+  // mount(el, {getMenuItems: function(){ return [{id,name}] }, toast: function(msg){}})
+  var ui = { el: null, opts: null, recipeItem: '', draft: null, msg: '', err: '', editing: null };
+
+  function numOpt(v) { return esc(v); }
+  function render() {
+    var el = ui.el; if (!el) return;
+    // If the host replaced our page (navigated away) or removed the element, stop touching it.
+    if (ui.rendered && (el.isConnected === false || !el.querySelector('[data-ttinv-root]'))) { unmount(); return; }
+    var low = lowStock(), ings = state.ingredients;
+    var items = (ui.opts.getMenuItems && ui.opts.getMenuItems()) || [];
+    var h = '<div data-ttinv-root></div><div class="row between"><h2>Auto Inventory</h2></div>';
+    if (saveError) h += '<div class="alert" role="alert">&#9888;&#65039; <b>Warning:</b> ' + esc(saveError) + ' Changes may be lost when you close this page.</div>';
+    if (ui.err) h += '<div class="alert" role="alert">' + esc(ui.err) + '</div>';
+    if (ui.msg) h += '<div class="alert ok">' + esc(ui.msg) + '</div>';
+    h += low.length
+      ? '<div class="alert">&#9888;&#65039; <b>' + low.length + ' low-stock item' + (low.length > 1 ? 's' : '') + ':</b> ' + low.map(function (i) { return esc(i.name); }).join(', ') + '</div>'
+      : '<div class="alert ok">&#9989; All ingredients are above their low-stock level.</div>';
+
+    // stock table
+    h += '<div class="card"><h3>Stock</h3><div class="tw"><table><tr><th>Ingredient</th><th>On hand</th><th>Low at</th><th>Status</th><th>Restock</th><th></th></tr>';
+    if (!ings.length) h += '<tr><td colspan="6" class="muted">No ingredients yet. Add one below.</td></tr>';
+    ings.slice().sort(function (a, b) { return (a.qty / (a.low || 1)) - (b.qty / (b.low || 1)); }).forEach(function (i) {
+      var lo = isLow(i);
+      h += '<tr class="' + (lo ? 'lowrow' : '') + '"><td><b>' + esc(i.name) + '</b></td><td><b>' + numOpt(i.qty) + '</b> ' + esc(i.unit) + '</td><td class="muted">' + numOpt(i.low) + ' ' + esc(i.unit) +
+        '</td><td>' + (lo ? '<span class="badge low">LOW STOCK</span>' : '<span class="badge okk">OK</span>') +
+        '</td><td class="nowrap"><input class="tiny" style="width:96px" type="number" min="0" step="any" placeholder="amount" data-restock-amt="' + esc(i.id) + '"> <button class="sm" data-act="restock" data-id="' + esc(i.id) + '">+ Restock</button></td>' +
+        '<td class="nowrap"><button class="sm sec" data-act="edit" data-id="' + esc(i.id) + '">Edit</button> <button class="sm sec" data-act="del" data-id="' + esc(i.id) + '">Del</button></td></tr>';
+    });
+    h += '</table></div>';
+    // add / edit form
+    var ed = ui.editing ? find(ui.editing) : null;
+    h += '<form data-form="ing"><div class="form"><b class="full">' + (ed ? 'Edit ' + esc(ed.name) : 'Add ingredient') + '</b>' +
+      '<label>Name<input name="name" required maxlength="60" value="' + esc(ed ? ed.name : '') + '"></label>' +
+      '<label>Unit (lb, pcs, gal...)<input name="unit" maxlength="12" value="' + esc(ed ? ed.unit : '') + '"></label>' +
+      '<label>On hand<input name="qty" type="number" min="0" step="any" value="' + esc(ed ? ed.qty : '') + '"></label>' +
+      '<label>Low-stock threshold<input name="low" type="number" min="0" step="any" value="' + esc(ed ? ed.low : '') + '"></label>' +
+      '<label>Restock up to (for shopping list)<input name="target" type="number" min="0" step="any" value="' + esc(ed ? ed.target : '') + '"></label>' +
+      '<div class="full row end">' + (ed ? '<button type="button" class="sec" data-act="canceledit">Cancel</button>' : '') + '<button>' + (ed ? 'Save' : '+ Add ingredient') + '</button></div></div></form></div>';
+
+    // shopping list
+    var sl = shoppingText(ui.opts.title);
+    h += '<div class="card"><h3>Shopping list</h3><textarea readonly rows="' + Math.min(12, Math.max(3, sl.split('\n').length + 1)) + '" style="width:100%;font-family:monospace" data-sl>' + esc(sl) + '</textarea>' +
+      '<div class="row end" style="margin-top:8px"><button data-act="copy">Copy list</button></div></div>';
+
+    // recipes
+    h += '<div class="card"><h3>Recipes (ingredients used per item sold)</h3>';
+    if (!items.length) h += '<p class="muted">No menu items found.</p>';
+    else if (!ings.length) h += '<p class="muted">Add ingredients first, then link them to menu items.</p>';
+    else {
+      h += '<label class="muted">Menu item<br><select data-recipe-item><option value="">Choose a menu item...</option>' +
+        items.map(function (m) { var has = state.recipes[String(m.id)] ? ' \u2713' : ''; return '<option value="' + esc(m.id) + '"' + (String(m.id) === ui.recipeItem ? ' selected' : '') + '>' + esc(m.name) + has + '</option>'; }).join('') + '</select></label>';
+      if (ui.recipeItem) {
+        var rows = ui.draft || (getRecipe(ui.recipeItem).length ? getRecipe(ui.recipeItem) : [{ ing: '', qty: '' }]);
+        h += '<div data-recipe-rows style="margin-top:8px">' + rows.map(function (r, n) {
+          return '<div class="row" style="gap:6px;margin-bottom:6px"><select data-r-ing="' + n + '"><option value="">Ingredient...</option>' +
+            ings.map(function (i) { return '<option value="' + esc(i.id) + '"' + (i.id === r.ing ? ' selected' : '') + '>' + esc(i.name) + ' (' + esc(i.unit) + ')</option>'; }).join('') +
+            '</select><input class="tiny" type="number" min="0" step="any" placeholder="qty" data-r-qty="' + n + '" value="' + esc(r.qty) + '"><button type="button" class="sm sec" data-act="rline-del" data-n="' + n + '">&#10005;</button></div>';
+        }).join('') + '</div><div class="row" style="gap:8px"><button type="button" class="sm sec" data-act="rline-add">+ Ingredient</button><button type="button" data-act="rsave">Save recipe</button></div>';
+      }
+    }
+    h += '</div>';
+
+    h += '<div class="card"><h3>Recent activity</h3>' + (state.log.slice(0, 8).map(function (e) { return '<div class="li"><span class="muted">' + esc(new Date(e.t).toLocaleString()) + '</span> ' + esc(e.m) + '</div>'; }).join('') || '<p class="muted">Nothing yet.</p>') + '</div>';
+    el.innerHTML = h; ui.rendered = true;
+  }
+
+  function readDraft() {
+    var rows = [], el = ui.el;
+    var sels = el.querySelectorAll('[data-r-ing]');
+    for (var n = 0; n < sels.length; n++) {
+      var q = el.querySelector('[data-r-qty="' + n + '"]');
+      rows.push({ ing: sels[n].value, qty: q ? q.value : '' });
+    }
+    return rows;
+  }
+  function say(m) { ui.err = m; if (ui.opts.toast) ui.opts.toast(m); render(); }
+
+  function onClick(e) {
+    var b = e.target.closest ? e.target.closest('[data-act]') : null; if (!b || !ui.el.contains(b)) return;
+    var act = b.getAttribute('data-act'), id = b.getAttribute('data-id'); ui.err = '';
+    try {
+      if (act === 'restock') {
+        var inp = ui.el.querySelector('[data-restock-amt="' + id + '"]');
+        restock(id, inp && inp.value); ui.msg = '';
+      } else if (act === 'edit') { ui.editing = id; render(); }
+      else if (act === 'canceledit') { ui.editing = null; render(); }
+      else if (act === 'del') {
+        var ing = find(id);
+        if (ing && root.confirm && !root.confirm('Delete ' + ing.name + ' and remove it from recipes?')) return;
+        removeIngredient(id);
+      } else if (act === 'copy') {
+        copyText(shoppingText(ui.opts.title), function (ok) { ui.msg = ok ? 'Shopping list copied.' : 'Could not copy - select the text and copy it manually.'; render(); });
+      } else if (act === 'rline-add') { ui.draft = readDraft(); ui.draft.push({ ing: '', qty: '' }); render(); }
+      else if (act === 'rline-del') { ui.draft = readDraft(); ui.draft.splice(+b.getAttribute('data-n'), 1); render(); }
+      else if (act === 'rsave') {
+        var items = (ui.opts.getMenuItems && ui.opts.getMenuItems()) || [], nm = '';
+        items.forEach(function (m) { if (String(m.id) === ui.recipeItem) nm = m.name; });
+        setRecipe(ui.recipeItem, nm, readDraft()); ui.draft = null; ui.msg = 'Recipe saved for ' + nm + '.'; render();
+      }
+    } catch (err) { say(err.message); }
+  }
+  function onSubmit(e) {
+    var f = e.target; if (!f.getAttribute || f.getAttribute('data-form') !== 'ing') return;
+    e.preventDefault(); ui.err = '';
+    var d = {}; ['name', 'unit', 'qty', 'low', 'target'].forEach(function (k) { d[k] = f.elements[k].value; });
+    try {
+      if (ui.editing) { updateIngredient(ui.editing, d); ui.editing = null; } else addIngredient(d);
+      ui.msg = '';
+    } catch (err) { say(err.message); }
+  }
+  function onChange(e) {
+    if (e.target.hasAttribute && e.target.hasAttribute('data-recipe-item')) { ui.recipeItem = e.target.value; ui.draft = null; render(); }
+  }
+  function mount(el, opts) {
+    if (ui.el) unmount();
+    ui.el = el; ui.opts = opts || {}; ui.recipeItem = ''; ui.draft = null; ui.editing = null; ui.msg = ''; ui.err = ''; ui.rendered = false;
+    el.addEventListener('click', onClick); el.addEventListener('submit', onSubmit); el.addEventListener('change', onChange);
+    ui.rerender = render; listeners.push(ui.rerender); render();
+  }
+  function unmount() {
+    if (!ui.el) return;
+    ui.el.removeEventListener('click', onClick); ui.el.removeEventListener('submit', onSubmit); ui.el.removeEventListener('change', onChange);
+    listeners = listeners.filter(function (f) { return f !== ui.rerender; }); ui.el = null; ui.rendered = false;
+  }
+
+  load();
+  var api = {
+    KEY: KEY, mount: mount, unmount: unmount, onOrderPlaced: onOrderPlaced, onOrderVoided: onOrderVoided,
+    addIngredient: addIngredient, updateIngredient: updateIngredient, removeIngredient: removeIngredient, restock: restock,
+    setRecipe: setRecipe, getRecipe: getRecipe, lowStock: lowStock, lowCount: function () { return lowStock().length; },
+    shoppingList: shoppingList, shoppingText: shoppingText, importIngredients: importIngredients,
+    getIngredients: function () { return JSON.parse(JSON.stringify(state.ingredients)); },
+    getSaveError: function () { return saveError; }, reload: function () { state = fresh(); load(); changed(); },
+    _reset: function () { state = fresh(); saveError = ''; changed(); }
+  };
+  root.TTInventory = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* ===== inlined module: modules/qrorder.js ===== */
+/*! TableTop QR ordering module (plain script, no dependencies, works offline).
+ *  Exposes one global: window.TTQROrder (or globalThis in node; module.exports only under node for tests).
+ *  Contains: (1) own QR code generator (byte mode, error correction M, versions 1-20) -> SVG,
+ *            (2) per-table QR cards / print sheet, (3) phone-friendly customer ordering view.
+ *  Own localStorage key: "tabletop_qrorder" (cart drafts + print-sheet settings only; never touches
+ *  orders/menu data). See QRORDER_README.md for how to merge into TableTop.html.
+ *  Honest limit: with no shared server, an order only reaches the kitchen screen on the SAME browser. */
+(function (root) {
+  'use strict';
+  var KEY = 'tabletop_qrorder';
+
+  // ====================================================================
+  // 1. QR code generator (ISO/IEC 18004, byte mode, ECC level M, v1..v20)
+  // ====================================================================
+  var MAX_VERSION = 20;
+  // Level M tables, index = version (index 0 unused)
+  var ECC_PER_BLOCK = [-1, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26];
+  var NUM_BLOCKS    = [-1, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16];
+
+  function rawModules(ver) {
+    var r = (16 * ver + 128) * ver + 64;
+    if (ver >= 2) { var na = Math.floor(ver / 7) + 2; r -= (25 * na - 10) * na - 55; if (ver >= 7) r -= 36; }
+    return r;
+  }
+  function dataCodewords(ver) {
+    return Math.floor(rawModules(ver) / 8) - ECC_PER_BLOCK[ver] * NUM_BLOCKS[ver];
+  }
+  // max payload bytes in byte mode for a version (4 mode bits + 8/16 count bits)
+  function byteCapacity(ver) {
+    var bits = dataCodewords(ver) * 8 - 4 - (ver < 10 ? 8 : 16);
+    return Math.floor(bits / 8);
+  }
+
+  function utf8(str) {
+    var out = [];
+    str = String(str);
+    for (var i = 0; i < str.length; i++) {
+      var c = str.charCodeAt(i);
+      if (c >= 0xD800 && c < 0xDC00 && i + 1 < str.length) {
+        var d = str.charCodeAt(i + 1);
+        if (d >= 0xDC00 && d < 0xE000) { c = 0x10000 + ((c - 0xD800) << 10) + (d - 0xDC00); i++; }
+      }
+      if (c < 0x80) out.push(c);
+      else if (c < 0x800) out.push(0xC0 | (c >> 6), 0x80 | (c & 63));
+      else if (c < 0x10000) out.push(0xE0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+      else out.push(0xF0 | (c >> 18), 0x80 | ((c >> 12) & 63), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+    }
+    return out;
+  }
+
+  // GF(256) Reed-Solomon, polynomial 0x11D
+  function gfMul(x, y) {
+    var z = 0;
+    for (var i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; }
+    return z & 255;
+  }
+  function rsDivisor(deg) {
+    var res = [], i, j;
+    for (i = 0; i < deg - 1; i++) res.push(0);
+    res.push(1);
+    var root = 1;
+    for (i = 0; i < deg; i++) {
+      for (j = 0; j < res.length; j++) { res[j] = gfMul(res[j], root); if (j + 1 < res.length) res[j] ^= res[j + 1]; }
+      root = gfMul(root, 2);
+    }
+    return res;
+  }
+  function rsRemainder(data, divisor) {
+    var res = divisor.map(function () { return 0; });
+    data.forEach(function (b) {
+      var f = b ^ res.shift(); res.push(0);
+      divisor.forEach(function (c, i) { res[i] ^= gfMul(c, f); });
+    });
+    return res;
+  }
+
+  function alignPositions(ver) {
+    if (ver === 1) return [];
+    var n = Math.floor(ver / 7) + 2, size = ver * 4 + 17;
+    var step = Math.ceil((ver * 4 + 4) / (n * 2 - 2)) * 2;
+    var res = [6];
+    for (var pos = size - 7; res.length < n; pos -= step) res.splice(1, 0, pos);
+    return res;
+  }
+
+  // Build a QR symbol. Returns {version, size, mask, modules: Array(size) of Array(size) of boolean}
+  function encode(text, opts) {
+    opts = opts || {};
+    var bytes = utf8(text), ver, minVer = Math.max(1, opts.minVersion || 1);
+    for (ver = minVer; ver <= MAX_VERSION; ver++) if (bytes.length <= byteCapacity(ver)) break;
+    if (ver > MAX_VERSION) throw new Error('Text too long for QR (' + bytes.length + ' bytes, max ' + byteCapacity(MAX_VERSION) + ')');
+    var size = ver * 4 + 17, i, j, k;
+
+    // --- data bit stream ---
+    var bits = [];
+    function put(val, len) { for (var b = len - 1; b >= 0; b--) bits.push((val >>> b) & 1); }
+    put(4, 4); put(bytes.length, ver < 10 ? 8 : 16);
+    bytes.forEach(function (b) { put(b, 8); });
+    var capBits = dataCodewords(ver) * 8;
+    put(0, Math.min(4, capBits - bits.length));
+    while (bits.length % 8) bits.push(0);
+    for (var pad = 0xEC; bits.length < capBits; pad ^= 0xEC ^ 0x11) put(pad, 8);
+    var data = [];
+    for (i = 0; i < bits.length; i += 8) { var v = 0; for (j = 0; j < 8; j++) v = (v << 1) | bits[i + j]; data.push(v); }
+
+    // --- split into blocks, add ECC, interleave ---
+    var nb = NUM_BLOCKS[ver], eccLen = ECC_PER_BLOCK[ver], raw = Math.floor(rawModules(ver) / 8);
+    var nShort = nb - raw % nb, shortLen = Math.floor(raw / nb), blocks = [], div = rsDivisor(eccLen);
+    for (i = 0, k = 0; i < nb; i++) {
+      var dat = data.slice(k, k + shortLen - eccLen + (i < nShort ? 0 : 1)); k += dat.length;
+      var ecc = rsRemainder(dat, div);
+      if (i < nShort) dat.push(0);
+      blocks.push(dat.concat(ecc));
+    }
+    var all = [];
+    for (i = 0; i < blocks[0].length; i++) {
+      for (j = 0; j < blocks.length; j++) if (i !== shortLen - eccLen || j >= nShort) all.push(blocks[j][i]);
+    }
+
+    // --- matrix ---
+    var m = [], fn = [];
+    for (i = 0; i < size; i++) { m.push(new Array(size).fill(false)); fn.push(new Array(size).fill(false)); }
+    function setFn(x, y, dark) { m[y][x] = !!dark; fn[y][x] = true; }
+    for (i = 0; i < size; i++) { setFn(6, i, i % 2 === 0); setFn(i, 6, i % 2 === 0); }
+    function finder(cx, cy) {
+      for (var dy = -4; dy <= 4; dy++) for (var dx = -4; dx <= 4; dx++) {
+        var dist = Math.max(Math.abs(dx), Math.abs(dy)), x = cx + dx, y = cy + dy;
+        if (x >= 0 && x < size && y >= 0 && y < size) setFn(x, y, dist !== 2 && dist !== 4);
+      }
+    }
+    finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+    var ap = alignPositions(ver);
+    for (i = 0; i < ap.length; i++) for (j = 0; j < ap.length; j++) {
+      if ((i === 0 && j === 0) || (i === 0 && j === ap.length - 1) || (i === ap.length - 1 && j === 0)) continue;
+      for (var ay = -2; ay <= 2; ay++) for (var ax = -2; ax <= 2; ax++)
+        setFn(ap[i] + ax, ap[j] + ay, Math.max(Math.abs(ax), Math.abs(ay)) !== 1);
+    }
+    function formatBits(mask) {
+      var d = (0 << 3) | mask, rem = d; // ECC level M = 00
+      for (var q = 0; q < 10; q++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+      var f = ((d << 10) | rem) ^ 0x5412;
+      function bit(n) { return ((f >>> n) & 1) !== 0; }
+      for (var a = 0; a <= 5; a++) setFn(8, a, bit(a));
+      setFn(8, 7, bit(6)); setFn(8, 8, bit(7)); setFn(7, 8, bit(8));
+      for (a = 9; a < 15; a++) setFn(14 - a, 8, bit(a));
+      for (a = 0; a < 8; a++) setFn(size - 1 - a, 8, bit(a));
+      for (a = 8; a < 15; a++) setFn(8, size - 15 + a, bit(a));
+      setFn(8, size - 8, true);
+    }
+    formatBits(0); // reserve the area
+    if (ver >= 7) {
+      var rem = ver;
+      for (i = 0; i < 12; i++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1F25);
+      var vb = (ver << 12) | rem;
+      for (i = 0; i < 18; i++) {
+        var dark = ((vb >>> i) & 1) !== 0, a2 = size - 11 + i % 3, b2 = Math.floor(i / 3);
+        setFn(a2, b2, dark); setFn(b2, a2, dark);
+      }
+    }
+    // zig-zag data placement
+    var bi = 0, total = all.length * 8;
+    for (var right = size - 1; right >= 1; right -= 2) {
+      if (right === 6) right = 5;
+      for (var vert = 0; vert < size; vert++) for (j = 0; j < 2; j++) {
+        var x = right - j, up = ((right + 1) & 2) === 0, y = up ? size - 1 - vert : vert;
+        if (!fn[y][x] && bi < total) { m[y][x] = ((all[bi >>> 3] >>> (7 - (bi & 7))) & 1) !== 0; bi++; }
+      }
+    }
+    // masks
+    function maskFn(mask, x, y) {
+      switch (mask) {
+        case 0: return (x + y) % 2 === 0;
+        case 1: return y % 2 === 0;
+        case 2: return x % 3 === 0;
+        case 3: return (x + y) % 3 === 0;
+        case 4: return (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0;
+        case 5: return x * y % 2 + x * y % 3 === 0;
+        case 6: return (x * y % 2 + x * y % 3) % 2 === 0;
+        default: return ((x + y) % 2 + x * y % 3) % 2 === 0;
+      }
+    }
+    function applyMask(mask) {
+      for (var y = 0; y < size; y++) for (var x = 0; x < size; x++) if (!fn[y][x] && maskFn(mask, x, y)) m[y][x] = !m[y][x];
+    }
+    function penalty() {
+      var p = 0, x, y, run, line, dark = 0;
+      function runs(get) {
+        var pp = 0;
+        for (var a = 0; a < size; a++) {
+          var cur = get(a, 0), n = 1, s = '';
+          for (var b = 0; b < size; b++) {
+            var c = get(a, b);
+            s += c ? '1' : '0';
+            if (b > 0) { if (c === cur) { n++; if (n === 5) pp += 3; else if (n > 5) pp++; } else { cur = c; n = 1; } }
+          }
+          var idx = -1;
+          while ((idx = s.indexOf('10111010000', idx + 1)) >= 0) pp += 40;
+          idx = -1;
+          while ((idx = s.indexOf('00001011101', idx + 1)) >= 0) pp += 40;
+        }
+        return pp;
+      }
+      p += runs(function (a, b) { return m[a][b]; });
+      p += runs(function (a, b) { return m[b][a]; });
+      for (y = 0; y < size; y++) for (x = 0; x < size; x++) {
+        if (m[y][x]) dark++;
+        if (x < size - 1 && y < size - 1 && m[y][x] === m[y][x + 1] && m[y][x] === m[y + 1][x] && m[y][x] === m[y + 1][x + 1]) p += 3;
+      }
+      var tot = size * size, kk = Math.ceil(Math.abs(dark * 20 - tot * 10) / tot) - 1;
+      return p + Math.max(0, kk) * 10;
+    }
+    var best = 0, bestP = Infinity;
+    for (var mk = 0; mk < 8; mk++) {
+      applyMask(mk); formatBits(mk);
+      var pn = penalty(); if (pn < bestP) { bestP = pn; best = mk; }
+      applyMask(mk); // undo
+    }
+    applyMask(best); formatBits(best);
+    return { version: ver, size: size, mask: best, modules: m };
+  }
+
+  // Render an SVG string (black on white, with quiet zone). opts: {border=4, size=px (optional), title}
+  function toSVG(text, opts) {
+    opts = opts || {};
+    var qr = encode(text), border = opts.border == null ? 4 : Math.max(0, +opts.border | 0), n = qr.size + border * 2, d = [];
+    for (var y = 0; y < qr.size; y++) {
+      var x = 0;
+      while (x < qr.size) {
+        if (!qr.modules[y][x]) { x++; continue; }
+        var s = x; while (x < qr.size && qr.modules[y][x]) x++;
+        d.push('M' + (s + border) + ',' + (y + border) + 'h' + (x - s) + 'v1h-' + (x - s) + 'z');
+      }
+    }
+    var wh = opts.size ? ' width="' + (+opts.size | 0) + '" height="' + (+opts.size | 0) + '"' : '';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + n + ' ' + n + '"' + wh +
+      ' shape-rendering="crispEdges" role="img" aria-label="' + esc(opts.title || 'QR code') + '">' +
+      '<rect width="100%" height="100%" fill="#fff"/><path d="' + d.join('') + '" fill="#000"/></svg>';
+  }
+
+  // ====================================================================
+  // helpers
+  // ====================================================================
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function clean(s, max) { return String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max || 200); }
+  function r2(n) { return Math.round(n * 100) / 100; }
+  function money(n) { return '$' + (Math.round((+n || 0) * 100) / 100).toFixed(2); }
+  function safeId(v) { v = String(v == null ? '' : v); return /^[A-Za-z0-9_\-]{1,40}$/.test(v) ? v : ''; }
+
+  // ====================================================================
+  // 2. Links, state, saving
+  // ====================================================================
+  // Link for a table: <base>#/order?table=<id>. base defaults to the current page URL without its hash.
+  function currentBase() {
+    try { return String(root.location.href).split('#')[0]; } catch (e) { return 'TableTop.html'; }
+  }
+  function tableLink(base, tableId) {
+    return String(base || currentBase()).split('#')[0] + '#/order?table=' + encodeURIComponent(String(tableId));
+  }
+  // Parse a hash like "#/order?table=3". Returns {table:"3"} or null.
+  function parseHash(hash) {
+    var h = String(hash == null ? (root.location && root.location.hash) || '' : hash);
+    var mm = /^#\/?order\?(.*)$/.exec(h);
+    if (!mm) return null;
+    var table = '', parts = mm[1].split('&');
+    for (var i = 0; i < parts.length; i++) {
+      var kv = parts[i].split('=');
+      if (kv[0] === 'table') { try { table = decodeURIComponent((kv[1] || '').replace(/\+/g, ' ')); } catch (e) { table = ''; } }
+    }
+    return { table: safeId(table) };
+  }
+  function isCustomerHash() { return !!parseHash(); }
+
+  var state = { v: 1, carts: {}, baseUrl: '' };
+  var saveError = '', listeners = [];
+  function store() { try { return root.localStorage || null; } catch (e) { return null; } }
+  function load() {
+    var s = store(), raw;
+    if (!s) { saveError = 'localStorage is not available - your order draft will not be remembered.'; return; }
+    try { raw = s.getItem(KEY); } catch (e) { saveError = 'Could not read saved data: ' + e.message; return; }
+    if (!raw) return;
+    try {
+      var d = JSON.parse(raw);
+      if (d && typeof d === 'object') {
+        state.carts = d.carts && typeof d.carts === 'object' && !Array.isArray(d.carts) ? d.carts : {};
+        state.baseUrl = typeof d.baseUrl === 'string' ? d.baseUrl.slice(0, 500) : '';
+      }
+    } catch (e) { saveError = 'Saved QR-order data was unreadable and was ignored.'; state = { v: 1, carts: {}, baseUrl: '' }; }
+  }
+  function save() {
+    var s = store();
+    if (!s) { saveError = 'localStorage is not available - your order draft is NOT being saved.'; return false; }
+    try {
+      var keys = Object.keys(state.carts); // keep only the 30 newest drafts
+      if (keys.length > 30) keys.sort(function (a, b) { return (state.carts[a].t || 0) - (state.carts[b].t || 0); })
+        .slice(0, keys.length - 30).forEach(function (k) { delete state.carts[k]; });
+      s.setItem(KEY, JSON.stringify(state)); saveError = ''; return true;
+    } catch (e) { saveError = 'Could not save (storage full or blocked): ' + (e && e.message || e); return false; }
+  }
+  function getSaveError() { return saveError; }
+  function onChange(fn) { listeners.push(fn); }
+  function changed() { save(); listeners.forEach(function (f) { try { f(); } catch (e) {} }); }
+
+  // ====================================================================
+  // Menu normalisation + TableTop adapter
+  // ====================================================================
+  function parseMods(m) {
+    var arr = [];
+    if (Array.isArray(m)) arr = m.map(function (x) { return { n: clean(x && (x.n != null ? x.n : x.name), 60), p: +(x && (x.p != null ? x.p : x.price)) || 0 }; });
+    else String(m || '').split(',').forEach(function (s) {
+      s = s.trim(); if (!s) return;
+      var kv = s.split(':'); arr.push({ n: clean(kv[0], 60), p: +kv[1] || 0 });
+    });
+    return arr.filter(function (x) { return x.n; });
+  }
+  function parseAllergens(v) {
+    if (v == null || v === false) return [];
+    var arr = Array.isArray(v) ? v : String(v).split(/[,;]/);
+    var seen = {}, out = [];
+    arr.forEach(function (a) { a = clean(a, 30); var k = a.toLowerCase(); if (a && !seen[k]) { seen[k] = 1; out.push(a); } });
+    return out;
+  }
+  // Positive diet tags are shown in green and are NOT offered in the "I need to avoid" filter.
+  function isGoodTag(t) { return /^(gluten[- ]?free|vegan|vegetarian|dairy[- ]?free|nut[- ]?free|halal|kosher)$/i.test(String(t).trim()); }
+  // Accepts anything shaped like TableTop's DB.items. Allergy/diet tags are read from the first of
+  // item.tags (TableTop v2), item.allergens, item.allergy_tags, item.allergy; array or comma-separated text.
+  function normalizeMenu(raw) {
+    raw = raw || {};
+    var cats = (raw.categories || []).map(function (c) { return { id: c.id, name: clean(c.name, 60) }; });
+    var items = (raw.items || []).map(function (i) {
+      var all = parseAllergens(i.tags).concat(parseAllergens(i.allergens), parseAllergens(i.allergy_tags), parseAllergens(i.allergy));
+      var seen = {}; all = all.filter(function (a) { var k = a.toLowerCase(); if (seen[k]) return false; seen[k] = 1; return true; });
+      return {
+        id: i.id, name: clean(i.name, 80), price: +i.price || 0, cost: +i.cost || 0, cat_id: i.cat_id,
+        mods: parseMods(i.mods), available: i.available !== false && i.available !== 0 && i.available !== '',
+        desc: clean(i.desc || i.description || '', 160), tags: all,
+        allergens: all.filter(function (a) { return !isGoodTag(a); }), diet: all.filter(isGoodTag)
+      };
+    }).filter(function (i) { return i.name && i.id != null; });
+    return { categories: cats, items: items };
+  }
+
+  // Adapter for TableTop.html: pass getters so it always sees the live DB. Example in README.
+  //   TTQROrder.tableTopAdapter({getDB:()=>DB, save:save, nid:nid, reload:()=>{...}})
+  // `reload` (optional but recommended) re-reads the saved data into the app's in-memory DB. It is called
+  // before the customer view reads the menu or places an order, so a second tab/window of the same browser
+  // never overwrites newer data with a stale copy.
+  function tableTopAdapter(a) {
+    function fresh() { if (a.reload) { try { a.reload(); } catch (e) {} } return a.getDB(); }
+    return {
+      restaurantName: function () { var d = a.getDB(); return d && d.settings && d.settings.name || 'Our restaurant'; },
+      taxRate: function () { var d = a.getDB(); return +(d && d.settings && d.settings.tax) || 0; },
+      getMenu: function () { var d = fresh(); return { categories: d.categories, items: d.items }; },
+      getTables: function () { return a.getDB().tables.map(function (t) { return { id: t.id, name: t.name, seats: t.seats }; }); },
+      getTable: function (id) {
+        var t = fresh().tables.filter(function (x) { return String(x.id) === String(id); })[0];
+        return t ? { id: t.id, name: t.name, seats: t.seats } : null;
+      },
+      // Creates a new order for the table or adds the lines to its open (unpaid) order,
+      // using the same order shape as POS commit().
+      placeOrder: function (tableId, items, meta) {
+        var d = fresh(), t = d.tables.filter(function (x) { return String(x.id) === String(tableId); })[0];
+        if (!t) throw new Error('Unknown table');
+        if (!items || !items.length) throw new Error('Nothing to order');
+        var lines = items.map(function (l) { return { item_id: l.item_id, name: l.name, price: l.price, cost: l.cost || 0, qty: l.qty, mods: l.mods || [], note: l.note || '', tags: l.tags || [] }; });
+        if (meta && meta.note) lines[0].note = ('TABLE NOTE: ' + meta.note + (lines[0].note ? ' | ' + lines[0].note : '')).slice(0, 300);
+        var o = d.orders.filter(function (x) { return !x.paid && String(x.table_id) === String(t.id); })[0];
+        if (o) {
+          lines.forEach(function (l) { o.lines.push(l); });
+          o.status = 'new'; // kitchen sees the new items
+        } else {
+          o = { id: a.nid(), type: 'dine', table_id: t.id, customer: '', lines: lines, status: 'new', paid: false, tax_rate: +(d.settings && d.settings.tax) || 0,
+            tip: 0, method: null, server_id: null, created_at: Date.now(), paid_at: null, source: 'qr' };
+          d.orders.push(o);
+        }
+        a.save();
+        return { ok: true, orderId: o.id };
+      }
+    };
+  }
+
+  // ====================================================================
+  // 3. Print sheet (QR card per table)
+  // ====================================================================
+  var SHEET_CSS =
+    '.ttq-sheet{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#111}' +
+    '.ttq-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}' +
+    '.ttq-card{border:2px dashed #94a3b8;border-radius:14px;padding:16px;text-align:center;break-inside:avoid;page-break-inside:avoid;background:#fff}' +
+    '.ttq-card h3{margin:0 0 2px;font-size:20px}.ttq-card .ttq-t{font-size:30px;font-weight:800;margin:4px 0}' +
+    '.ttq-card svg{width:200px;height:200px;max-width:100%}.ttq-card .ttq-s{font-size:15px;margin:6px 0 2px;font-weight:600}' +
+    '.ttq-card .ttq-u{font-size:9px;color:#64748b;word-break:break-all}' +
+    '.ttq-sheet .ttq-lbl{display:block;font-size:13px;color:#64748b;margin:8px 0}.ttq-sheet .ttq-lbl input{width:100%;padding:8px;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:8px;font:inherit}' +
+    '.ttq-sheet .ttq-row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.ttq-sheet .ttq-hint{font-size:13px;color:#64748b}' +
+    '.ttq-sheet .ttq-err{background:#fee2e2;border:1px solid #fca5a5;color:#7f1d1d;padding:10px 12px;border-radius:10px;margin:8px 0}.ttq-sheet .ttq-warn{background:#fef3c7;border:1px solid #fcd34d;color:#78350f;padding:10px 12px;border-radius:10px;margin:8px 0;font-size:14px}' +
+    '.ttq-sheet .ttq-limit{background:#fef3c7;border:3px solid #f59e0b;color:#78350f;font-weight:800;font-size:17px;line-height:1.35;padding:14px 16px;border-radius:12px;margin:0 0 14px}' +
+    '.ttq-sheet button{background:#c2410c;color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}' +
+    '@media print{.ttq-noprint{display:none!important}.ttq-cards{grid-template-columns:repeat(2,1fr);gap:10mm}.ttq-card{margin-bottom:0}}';
+
+  function cardHTML(table, base, restaurant) {
+    var link = tableLink(base, table.id);
+    return '<div class="ttq-card"><h3>' + esc(restaurant || '') + '</h3><div class="ttq-t">' + esc(table.name != null ? table.name : 'Table ' + table.id) + '</div>' +
+      toSVG(link, { title: 'QR code to order from ' + (table.name || table.id) }) +
+      '<div class="ttq-s">Scan to see the menu &amp; order from your phone</div><div class="ttq-u">' + esc(link) + '</div></div>';
+  }
+  // Complete standalone HTML document with all cards (what the print window shows).
+  function sheetHTML(opts) {
+    opts = opts || {};
+    var tables = opts.tables || [], base = opts.baseUrl || currentBase();
+    var csp = "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data: blob:\">";
+    return '<!doctype html><html><head><meta charset="utf-8">' + csp + '<title>' + esc((opts.restaurantName || 'TableTop') + ' - table QR codes') + '</title><style>body{margin:12mm}' +
+      SHEET_CSS + '</style></head><body class="ttq-sheet"><div class="ttq-noprint" style="margin-bottom:12px"><button onclick="window.print()">Print</button> ' +
+      '<span style="color:#64748b;font-size:13px">Tip: cut along the dashed lines and put one card on each table.</span></div><div class="ttq-cards">' +
+      tables.map(function (t) { return cardHTML(t, base, opts.restaurantName); }).join('') +
+      '</div>' + (tables.length ? '' : '<p>No tables yet.</p>') + '</body></html>';
+  }
+  function openPrintSheet(opts) {
+    var w = root.open && root.open('', '_blank');
+    if (!w) return false; // popup blocked: use mountSheet's on-screen cards + browser print instead
+    w.document.open(); w.document.write(sheetHTML(opts)); w.document.close();
+    return true;
+  }
+
+  // Shown at the top of the staff QR page at all times (also in a browser print of that page).
+  // It is NOT part of sheetHTML(), so the cards in the print window stay clean.
+  var LIMIT_WARNING = "Customers' own phones can't send orders to the kitchen yet. Ordering only works on this device/browser (self-order tablet) until a shared server is added. Don't put these cards on tables for guests' phones.";
+
+  var styleDone = false;
+  function ensureCSS(doc) {
+    if (styleDone && doc.getElementById('ttq-style')) return;
+    var st = doc.createElement('style'); st.id = 'ttq-style'; st.textContent = SHEET_CSS + CUSTOMER_CSS;
+    doc.head.appendChild(st); styleDone = true;
+  }
+
+  // Staff page: QR cards for every table with an editable base URL and Print button.
+  // opts: {getTables:()=>[{id,name}], restaurantName:()=>string|string, toast?:fn}
+  var sheetCtl = null;
+  function mountSheet(container, opts) {
+    var doc = container.ownerDocument; ensureCSS(doc);
+    function name() { return typeof opts.restaurantName === 'function' ? opts.restaurantName() : (opts.restaurantName || ''); }
+    function draw() {
+      var base = state.baseUrl || currentBase(), tables = opts.getTables() || [];
+      var warn = /^file:/i.test(base) ? '<div class="ttq-warn">This address starts with <b>file:</b> - it only works on this computer. For customers\' phones, the app must be opened from a web address (for example a free host) and that address typed below.</div>' : '';
+      container.innerHTML = '<div class="ttq-sheet">' +
+        '<div class="ttq-limit" role="alert" id="ttq-limit">&#9888;&#65039; ' + esc(LIMIT_WARNING) + '</div>' +
+        (saveError ? '<div class="ttq-err">&#9888; ' + esc(saveError) + '</div>' : '') +
+        '<div class="ttq-noprint"><div class="ttq-row"><h2 style="margin:0">Table QR codes</h2><button id="ttq-print">Print cards</button></div>' +
+        '<label class="ttq-lbl">Address customers will open (the page TableTop.html is served from)<input id="ttq-base" value="' + esc(base) + '"></label>' + warn +
+        '<p class="ttq-hint">Customers scanning a card open <code>' + esc(String(base).split('#')[0]) + '#/order?table=N</code>. Note: without a shared server an order placed on a phone cannot reach the kitchen screen on another device (see README).</p></div>' +
+        '<div class="ttq-cards">' + tables.map(function (t) { return cardHTML(t, base, name()); }).join('') + '</div>' +
+        (tables.length ? '' : '<p>No tables yet. Add tables on the Tables page first.</p>') + '</div>';
+      container.querySelector('#ttq-base').onchange = function (e) { state.baseUrl = clean(e.target.value, 500); changed(); draw(); };
+      container.querySelector('#ttq-print').onclick = function () {
+        if (!openPrintSheet({ tables: tables, baseUrl: base, restaurantName: name() })) {
+          if (opts.toast) opts.toast('Pop-up blocked - using this page instead'); root.print();
+        }
+      };
+    }
+    sheetCtl = { draw: draw }; draw();
+  }
+
+  // ====================================================================
+  // 4. Customer mode
+  // ====================================================================
+  var CUSTOMER_CSS =
+    '.ttq-c{max-width:560px;margin:0 auto;padding:12px 12px 120px;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#1c2333;font-size:16px}' +
+    '.ttq-c h1{font-size:22px;margin:6px 0 0}.ttq-c .ttq-sub{color:#64748b;font-size:14px;margin-bottom:10px}' +
+    '.ttq-c button{font:inherit;border:0;border-radius:10px;padding:10px 14px;background:#c2410c;color:#fff;font-weight:700;cursor:pointer;min-height:44px}' +
+    '.ttq-c button.sec{background:#e2e8f0;color:#1c2333}.ttq-c button[disabled]{opacity:.5;cursor:not-allowed}' +
+    '.ttq-c input,.ttq-c textarea{font:inherit;width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;box-sizing:border-box}' +
+    '.ttq-tabs{display:flex;gap:6px;overflow-x:auto;padding:6px 0;position:sticky;top:0;background:#f4f6fb;z-index:2}.ttq-tabs button{white-space:nowrap;padding:8px 12px;min-height:40px}' +
+    '.ttq-tabs button:not(.on){background:#e2e8f0;color:#1c2333}' +
+    '.ttq-item,.ttq-box{background:#fff;border-radius:12px;padding:12px;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,.08)}' +
+    '.ttq-item{display:flex;gap:10px;justify-content:space-between;align-items:center}.ttq-item.off{opacity:.55}.ttq-item b{display:block}' +
+    '.ttq-mut{color:#64748b;font-size:13px}.ttq-pill{display:inline-block;background:#fef3c7;color:#78350f;border-radius:99px;padding:1px 8px;font-size:12px;margin:2px 4px 0 0;font-weight:600}' +
+    '.ttq-pill.hit{background:#fee2e2;color:#991b1b}.ttq-pill.good{background:#dcfce7;color:#166534}.ttq-pill.out{background:#e2e8f0;color:#475569}' +
+    '.ttq-line{border-bottom:1px solid #f1f5f9;padding:8px 0}.ttq-qty{display:flex;align-items:center;gap:8px}.ttq-qty button{padding:4px 12px;min-height:36px}' +
+    '.ttq-err{background:#fee2e2;border:1px solid #fca5a5;color:#7f1d1d;padding:10px 12px;border-radius:10px;margin:8px 0;font-size:14px}' +
+    '.ttq-warn{background:#fef3c7;border:1px solid #fcd34d;color:#78350f;padding:10px 12px;border-radius:10px;margin:8px 0;font-size:14px}' +
+    '.ttq-ok{background:#dcfce7;border:1px solid #86efac;color:#14532d;padding:14px;border-radius:12px;margin:12px 0}' +
+    '.ttq-row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.ttq-lbl{display:block;font-size:13px;color:#64748b;margin:8px 0}' +
+    '.ttq-lbl input{margin-top:4px}.ttq-hint{font-size:13px;color:#64748b}.ttq-chk{display:flex;gap:8px;align-items:center;padding:8px 0;font-size:16px}.ttq-chk input{width:22px;height:22px}' +
+    '.ttq-bar{position:fixed;left:0;right:0;bottom:0;background:#fff;box-shadow:0 -2px 8px rgba(0,0,0,.12);padding:10px 12px;z-index:3}.ttq-bar>div{max-width:560px;margin:0 auto}' +
+    '.ttq-bar button{width:100%}.ttq-filter{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.ttq-filter label{background:#fff;border:1px solid #cbd5e1;border-radius:99px;padding:4px 10px;font-size:13px;display:flex;gap:4px;align-items:center}' +
+    '.ttq-filter input{width:auto}' +
+    '.ttq-back{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:4}' +
+    '.ttq-pop{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;max-height:85vh;overflow:auto;background:#fff;border-radius:16px 16px 0 0;padding:16px;z-index:5;box-shadow:0 -4px 16px rgba(0,0,0,.25)}';
+
+  var MAX_QTY = 20, MAX_LINES = 40;
+  var customerCtl = null;
+
+  // opts: {container, getMenu, getTable, placeOrder, restaurantName, taxRate, table (override), onDone}
+  function mountCustomer(container, opts) {
+    var doc = container.ownerDocument; ensureCSS(doc);
+    var hashInfo = opts.table != null ? { table: safeId(opts.table) } : parseHash() || { table: '' };
+    var tableId = hashInfo.table;
+    var ui = { cat: 'all', open: null, avoid: {}, busy: false, error: '', done: null, openOpts: {} };
+    var table = tableId ? opts.getTable(tableId) : null;
+    var cartKey = 't' + tableId;
+
+    function rname() { return typeof opts.restaurantName === 'function' ? opts.restaurantName() : (opts.restaurantName || 'Menu'); }
+    function cart() {
+      var c = state.carts[cartKey];
+      if (!c || !Array.isArray(c.lines)) c = state.carts[cartKey] = { lines: [], note: '', t: Date.now() };
+      return c;
+    }
+    function menu() { return normalizeMenu(opts.getMenu()); }
+    function findItem(m, id) { return m.items.filter(function (i) { return String(i.id) === String(id); })[0]; }
+    function lineKey(l) { return l.item_id + '|' + JSON.stringify(l.mods) + '|' + l.note; }
+    function lineUnit(l) { return l.price + l.mods.reduce(function (a, m) { return a + (+m.p || 0); }, 0); }
+    function allergenHit(item) { return item.allergens.filter(function (a) { return ui.avoid[a.toLowerCase()]; }); }
+
+    function repriced(m) {
+      // rebuild lines from the *current* menu so customers can never send their own prices or items
+      var c = cart(), lines = [], problems = [];
+      c.lines.forEach(function (l) {
+        var it = findItem(m, l.item_id);
+        if (!it) { problems.push((l.name || 'An item') + ' is no longer on the menu'); return; }
+        if (!it.available) { problems.push(it.name + ' just sold out'); return; }
+        var mods = [];
+        (l.modNames || []).forEach(function (n) { var mm = it.mods.filter(function (x) { return x.n === n; })[0]; if (mm) mods.push({ n: mm.n, p: mm.p }); });
+        lines.push({ item_id: it.id, name: it.name, price: it.price, cost: it.cost, qty: Math.min(MAX_QTY, Math.max(1, l.qty | 0)), mods: mods, note: clean(l.note, 200), tags: it.tags.slice() });
+      });
+      return { lines: lines, problems: problems };
+    }
+
+    function draw() {
+      if (!table) {
+        container.innerHTML = '<div class="ttq-c"><h1>' + esc(rname()) + '</h1><div class="ttq-err">' +
+          (tableId ? 'This QR code is for a table we can\'t find (' + esc(tableId) + '). Please ask a team member for help.' : 'This ordering link is missing a table number. Please scan the QR code on your table again.') +
+          '</div><p class="ttq-hint">If the menu does not show up on your phone: this version of TableTop keeps its data on the restaurant\'s own device, so ordering from a phone needs the shared server upgrade. A team member can take your order meanwhile.</p></div>';
+        return;
+      }
+      var m = menu(), c = cart(), html = '';
+      if (!m.items.length) {
+        container.innerHTML = '<div class="ttq-c"><h1>' + esc(rname()) + '</h1><div class="ttq-sub">' + esc(table.name) + '</div><div class="ttq-warn">The menu is not available on this device. A team member can take your order.</div></div>';
+        return;
+      }
+      if (ui.done) {
+        container.innerHTML = '<div class="ttq-c"><h1>' + esc(rname()) + '</h1><div class="ttq-sub">' + esc(table.name) + '</div><div class="ttq-ok"><b>Order sent to the kitchen &#10003;</b><br>' +
+          (ui.done.orderId != null ? 'Order #' + esc(ui.done.orderId) + '. ' : '') + 'Thank you! Your server will bring it to ' + esc(table.name) + '.</div>' +
+          '<button id="ttq-again">Order something else</button></div>';
+        container.querySelector('#ttq-again').onclick = function () { ui.done = null; draw(); };
+        return;
+      }
+      var sheet = '', allergens = {}; m.items.forEach(function (i) { i.allergens.forEach(function (a) { allergens[a.toLowerCase()] = a; }); });
+      var akeys = Object.keys(allergens).sort();
+      html += '<div class="ttq-c"><h1>' + esc(rname()) + '</h1><div class="ttq-sub">Ordering for <b>' + esc(table.name) + '</b></div>';
+      if (saveError) html += '<div class="ttq-err">&#9888; ' + esc(saveError) + '</div>';
+      if (ui.error) html += '<div class="ttq-err">' + ui.error + '</div>';
+      html += '<div class="ttq-warn">Allergies? Please tell your server &mdash; the tags below are a guide, not a guarantee.</div>';
+      if (akeys.length) html += '<div class="ttq-mut">I need to avoid:</div><div class="ttq-filter">' + akeys.map(function (k) {
+        return '<label><input type="checkbox" data-avoid="' + esc(k) + '"' + (ui.avoid[k] ? ' checked' : '') + '>' + esc(allergens[k]) + '</label>';
+      }).join('') + '</div>';
+      html += '<div class="ttq-tabs"><button data-cat="all" class="' + (ui.cat === 'all' ? 'on' : '') + '">All</button>' + m.categories.map(function (cat) {
+        return '<button data-cat="' + esc(cat.id) + '" class="' + (String(ui.cat) === String(cat.id) ? 'on' : '') + '">' + esc(cat.name) + '</button>';
+      }).join('') + '</div>';
+      m.items.filter(function (i) { return ui.cat === 'all' || String(i.cat_id) === String(ui.cat); }).forEach(function (it) {
+        var hit = allergenHit(it), isOpen = ui.open != null && String(ui.open) === String(it.id);
+        html += '<div class="ttq-item' + (it.available ? '' : ' off') + '"><div><b>' + esc(it.name) + '</b><span class="ttq-mut">' + money(it.price) + (it.desc ? ' &middot; ' + esc(it.desc) : '') + '</span><div>' +
+          (it.available ? '' : '<span class="ttq-pill out">Sold out</span>') +
+          it.diet.map(function (a) { return '<span class="ttq-pill good">' + esc(a) + '</span>'; }).join('') +
+          it.allergens.map(function (a) { return '<span class="ttq-pill' + (ui.avoid[a.toLowerCase()] ? ' hit' : '') + '">' + esc(a) + '</span>'; }).join('') + '</div>' +
+          (hit.length ? '<div class="ttq-err" style="margin:6px 0 0;padding:6px 8px">Contains ' + esc(hit.join(', ')) + '</div>' : '') + '</div>' +
+          '<button data-add="' + esc(it.id) + '"' + (it.available ? '' : ' disabled') + '>' + (it.mods.length ? 'Options' : 'Add') + '</button></div>';
+        if (isOpen && it.available) {
+          sheet = '<div class="ttq-back" data-cancel="1"></div><div class="ttq-pop" role="dialog" aria-label="Options for ' + esc(it.name) + '"><b>' + esc(it.name) + ' <span class="ttq-mut">' + money(it.price) + '</span></b>' + it.mods.map(function (md, idx) {
+            return '<label class="ttq-chk"><input type="checkbox" data-mod="' + idx + '"' + (ui.openOpts[idx] ? ' checked' : '') + '> ' + esc(md.n) + (md.p ? ' <span class="ttq-mut">+' + money(md.p) + '</span>' : '') + '</label>';
+          }).join('') + '<label class="ttq-lbl">Note for the kitchen (optional)<input id="ttq-inote" maxlength="200" placeholder="e.g. no salt, on the side"></label>' +
+            '<div class="ttq-row"><button class="sec" data-cancel="1">Cancel</button><button data-confirm="' + esc(it.id) + '">Add to order</button></div></div>';
+        }
+      });
+      // cart
+      var rp = repriced(m), sub = rp.lines.reduce(function (a, l) { return a + lineUnit(l) * l.qty; }, 0), count = 0;
+      html += '<h2 style="font-size:18px;margin:18px 0 4px">Your order</h2>';
+      if (!c.lines.length) html += '<div class="ttq-mut">Nothing yet. Tap Add on a dish.</div>';
+      c.lines.forEach(function (l, idx) {
+        count += l.qty;
+        var it = findItem(m, l.item_id), gone = !it || !it.available;
+        html += '<div class="ttq-box ttq-line"><div class="ttq-row"><div><b>' + esc(l.name) + '</b>' + (gone ? ' <span class="ttq-pill hit">' + (it ? 'Sold out' : 'Unavailable') + '</span>' : '') +
+          ((l.modNames || []).length ? '<div class="ttq-mut">+ ' + esc(l.modNames.join(', ')) + '</div>' : '') + '</div>' +
+          '<div class="ttq-qty"><button class="sec" data-dec="' + idx + '" aria-label="Fewer">&minus;</button><b>' + (l.qty | 0) + '</b><button class="sec" data-inc="' + idx + '" aria-label="More">+</button></div></div>' +
+          '<label class="ttq-lbl">Note<input data-lnote="' + idx + '" maxlength="200" value="' + esc(l.note) + '"></label></div>';
+      });
+      if (c.lines.length) {
+        html += '<label class="ttq-lbl">Note for the table / server (optional)<textarea id="ttq-onote" maxlength="200" rows="2">' + esc(c.note) + '</textarea></label>';
+        html += '<div class="ttq-row"><span>Subtotal</span><b>' + money(r2(sub)) + '</b></div>';
+        var tax = opts.taxRate ? (typeof opts.taxRate === 'function' ? opts.taxRate() : opts.taxRate) : 0;
+        if (tax) html += '<div class="ttq-row ttq-mut"><span>Tax (' + esc(tax) + '%)</span><span>' + money(r2(sub * tax / 100)) + '</span></div>';
+      }
+      html += '<p class="ttq-hint">Pay your server at the end of the meal.</p></div>';
+      html += '<div class="ttq-bar"><div><button id="ttq-place"' + (c.lines.length && !ui.busy ? '' : ' disabled') + '>' + (ui.busy ? 'Sending...' : 'Place order' + (count ? ' (' + count + ')' : '')) + '</button></div></div>';
+      container.innerHTML = html + sheet;
+    }
+
+    function saveOrWarn() { changed(); }
+    function place() {
+      if (ui.busy) return;
+      var m = menu(), rp = repriced(m), c = cart();
+      if (rp.problems.length) {
+        // drop the unavailable lines, tell the guest, let them confirm again
+        c.lines = c.lines.filter(function (l) { var it = findItem(m, l.item_id); return it && it.available; });
+        ui.error = esc(rp.problems.join('. ')) + '. Those items were removed from your order - please check it and place it again.';
+        saveOrWarn(); draw(); return;
+      }
+      if (!rp.lines.length) return;
+      ui.busy = true; ui.error = ''; draw();
+      var finish = function (res) {
+        ui.busy = false;
+        if (res === false || (res && res.ok === false)) { ui.error = esc((res && res.error) || 'The order could not be placed. Please ask a team member.'); draw(); return; }
+        c.lines = []; c.note = ''; saveOrWarn();
+        ui.done = { orderId: res && res.orderId }; draw();
+        if (opts.onDone) { try { opts.onDone(res); } catch (e) {} }
+      };
+      var fail = function (e) { ui.busy = false; ui.error = esc((e && e.message) || 'The order could not be placed. Please ask a team member.'); draw(); };
+      try {
+        var r = opts.placeOrder(table.id, rp.lines, { note: clean(c.note, 200), table: table.name });
+        if (r && typeof r.then === 'function') r.then(finish, fail); else finish(r);
+      } catch (e) { fail(e); }
+    }
+
+    function onClick(e) {
+      var t = e.target.closest ? e.target.closest('button, .ttq-back') : null; if (!t || !container.contains(t)) return;
+      var c = cart(), m, it;
+      if (t.dataset.cat != null) { ui.cat = t.dataset.cat; draw(); }
+      else if (t.dataset.add != null) {
+        m = menu(); it = findItem(m, t.dataset.add); if (!it || !it.available) { ui.error = 'That item just sold out.'; draw(); return; }
+        if (it.mods.length) { ui.open = it.id; ui.openOpts = {}; ui.error = ''; draw(); }
+        else addLine(it, [], '');
+      }
+      else if (t.dataset.cancel != null) { ui.open = null; draw(); }
+      else if (t.dataset.confirm != null) {
+        m = menu(); it = findItem(m, t.dataset.confirm); if (!it || !it.available) { ui.open = null; ui.error = 'That item just sold out.'; draw(); return; }
+        var names = [], boxes = container.querySelectorAll('[data-mod]');
+        for (var i = 0; i < boxes.length; i++) if (boxes[i].checked) names.push(it.mods[+boxes[i].dataset.mod].n);
+        var n = container.querySelector('#ttq-inote'); ui.open = null; addLine(it, names, n ? clean(n.value, 200) : '');
+      }
+      else if (t.dataset.inc != null) { var l = c.lines[+t.dataset.inc]; if (l && l.qty < MAX_QTY) l.qty++; saveOrWarn(); draw(); }
+      else if (t.dataset.dec != null) { var k = +t.dataset.dec, l2 = c.lines[k]; if (l2) { l2.qty--; if (l2.qty < 1) c.lines.splice(k, 1); } saveOrWarn(); draw(); }
+      else if (t.id === 'ttq-place') place();
+    }
+    function addLine(it, modNames, note) {
+      var c = cart(); ui.error = '';
+      var key = it.id + '|' + JSON.stringify(modNames) + '|' + note;
+      var same = c.lines.filter(function (l) { return l.item_id + '|' + JSON.stringify(l.modNames) + '|' + l.note === key; })[0];
+      if (same) same.qty = Math.min(MAX_QTY, same.qty + 1);
+      else if (c.lines.length >= MAX_LINES) { ui.error = 'That is a lot of different items - please place this order first.'; }
+      else c.lines.push({ item_id: it.id, name: it.name, qty: 1, modNames: modNames, note: note });
+      c.t = Date.now(); saveOrWarn(); draw();
+    }
+    function onInput(e) {
+      var t = e.target, c = cart();
+      if (t.dataset && t.dataset.lnote != null) { var l = c.lines[+t.dataset.lnote]; if (l) { l.note = clean(t.value, 200); saveOrWarn(); } }
+      else if (t.id === 'ttq-onote') { c.note = clean(t.value, 200); saveOrWarn(); }
+    }
+    function onChange(e) {
+      var t = e.target;
+      if (t.dataset && t.dataset.avoid != null) { ui.avoid[t.dataset.avoid] = t.checked; draw(); }
+      else if (t.dataset && t.dataset.mod != null) { ui.openOpts[t.dataset.mod] = t.checked; }
+    }
+    if (customerCtl) customerCtl.destroy();
+    container.addEventListener('click', onClick); container.addEventListener('input', onInput); container.addEventListener('change', onChange);
+    customerCtl = {
+      container: container, redraw: draw,
+      destroy: function () { container.removeEventListener('click', onClick); container.removeEventListener('input', onInput); container.removeEventListener('change', onChange); customerCtl = null; }
+    };
+    draw();
+    return customerCtl;
+  }
+
+  // One call for TableTop boot: if the page was opened with #/order?table=N, show customer mode in
+  // opts.container and return true (the caller must then NOT render the staff UI).
+  var hashHooked = false;
+  function autoStart(opts) {
+    if (!hashHooked && root.addEventListener) {
+      hashHooked = true;
+      root.addEventListener('hashchange', function () { if (isCustomerHash()) { mountCustomer(opts.container, opts); } else if (customerCtl) { customerCtl.destroy(); if (opts.onLeave) opts.onLeave(); } });
+    }
+    if (!isCustomerHash()) return false;
+    mountCustomer(opts.container, opts);
+    return true;
+  }
+  function unmount() { if (customerCtl) customerCtl.destroy(); }
+
+  // for tests
+  function _reset() { state = { v: 1, carts: {}, baseUrl: '' }; saveError = ''; var s = store(); try { if (s) s.removeItem(KEY); } catch (e) {} }
+  function _state() { return state; }
+
+  load();
+
+  var api = {
+    encode: encode, toSVG: toSVG, byteCapacity: byteCapacity, MAX_VERSION: MAX_VERSION,
+    tableLink: tableLink, parseHash: parseHash, isCustomerHash: isCustomerHash,
+    sheetHTML: sheetHTML, openPrintSheet: openPrintSheet, mountSheet: mountSheet, LIMIT_WARNING: LIMIT_WARNING,
+    mountCustomer: mountCustomer, autoStart: autoStart, unmount: unmount, tableTopAdapter: tableTopAdapter,
+    normalizeMenu: normalizeMenu, getSaveError: getSaveError, onChange: onChange, esc: esc,
+    _rs: function (d, n) { return rsRemainder(d, rsDivisor(n)); }, _reset: _reset, _state: _state, _load: load
+  };
+  root.TTQROrder = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* ===== inlined module: modules/regulars.js ===== */
+/*! TableTop Regulars notes module (plain script, no dependencies, works offline).
+ *  Exposes one global: TTRegulars. Own localStorage key: "tabletop_guestnotes" (never touches other data).
+ *  Notes are a map: key = lowercase name + "|" + phone digits, value = short note (max 200 chars).
+ *  All typed text is HTML-escaped before it goes into the page. See REGULARS_README.md. */
+(function (root) {
+  'use strict';
+  var KEY = 'tabletop_guestnotes', MAX = 200;
+  var notes = Object.create(null), saveError = '', listeners = [];
+  function store() { try { return root.localStorage || null; } catch (e) { return null; } }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function clean(s) { return String(s == null ? '' : s).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, MAX); }
+  function key(name, phone) {
+    var n = String(name == null ? '' : name).trim().toLowerCase().replace(/\s+/g, ' ');
+    var p = String(phone == null ? '' : phone).replace(/\D/g, '');
+    return n ? n + '|' + p : '';
+  }
+  function load() {
+    notes = Object.create(null);
+    var s = store(); if (!s) return;
+    try {
+      var d = JSON.parse(s.getItem(KEY));
+      if (d && typeof d === 'object' && d.notes && typeof d.notes === 'object') {
+        Object.keys(d.notes).forEach(function (k) {
+          if (typeof d.notes[k] === 'string' && clean(d.notes[k])) notes[k] = clean(d.notes[k]);
+        });
+      }
+    } catch (e) {}
+  }
+  function save() {
+    var s = store(); saveError = '';
+    var out = {}; Object.keys(notes).forEach(function (k) { out[k] = notes[k]; });
+    try { if (!s) throw new Error('no storage'); s.setItem(KEY, JSON.stringify({ v: 1, notes: out })); }
+    catch (e) { saveError = 'Could not save guest notes (browser storage full or blocked).'; }
+    listeners.slice().forEach(function (f) { try { f(); } catch (e) {} });
+    return !saveError;
+  }
+  function get(name, phone) { var k = key(name, phone); return k && notes[k] ? notes[k] : ''; }
+  function set(name, phone, text) {
+    var k = key(name, phone); if (!k) return false;
+    var t = clean(text);
+    if (t) notes[k] = t; else delete notes[k];
+    return save();
+  }
+  /* HTML for a highlighted box showing the note ('' when none). Safe to put into innerHTML. */
+  function noteBoxHtml(name, phone) {
+    var t = get(name, phone);
+    return t ? '<div class="guest-note" role="note" style="background:#fef3c7;border:2px solid #f59e0b;color:#78350f;border-radius:8px;padding:8px 10px;margin:6px 0"><b>Regular guest note:</b> ' + esc(t) + '</div>' : '';
+  }
+  /* Wire live lookup to a reservation form. Options: {form, nameInput, phoneInput, box}
+   * (elements). The box shows the saved note as you type; returns {refresh, destroy}. */
+  function attach(o) {
+    var box = o.box;
+    function refresh() { box.innerHTML = noteBoxHtml(o.nameInput.value, o.phoneInput && o.phoneInput.value); }
+    ['input', 'change'].forEach(function (ev) {
+      o.nameInput.addEventListener(ev, refresh);
+      if (o.phoneInput) o.phoneInput.addEventListener(ev, refresh);
+    });
+    refresh();
+    return { refresh: refresh, destroy: function () {
+      ['input', 'change'].forEach(function (ev) {
+        o.nameInput.removeEventListener(ev, refresh);
+        if (o.phoneInput) o.phoneInput.removeEventListener(ev, refresh);
+      });
+    } };
+  }
+  /* Editor for a reservation card: returns HTML (textarea + save button, escaped). Call bindEditor after inserting. */
+  function editorHtml(name, phone, id) {
+    return '<div class="guest-note-edit"><label>Regular note (max ' + MAX + ')<textarea maxlength="' + MAX + '" data-gn-text="' + esc(id) + '" rows="2">' + esc(get(name, phone)) + '</textarea></label><button type="button" class="sm" data-gn-save="' + esc(id) + '">Save note</button></div>';
+  }
+  function bindEditor(container, id, name, phone, done) {
+    var b = container.querySelector('[data-gn-save="' + String(id).replace(/["\\]/g, '') + '"]');
+    var t = container.querySelector('[data-gn-text="' + String(id).replace(/["\\]/g, '') + '"]');
+    if (!b || !t) return;
+    b.onclick = function () { var ok = set(name, phone, t.value); if (done) done(ok); };
+  }
+  function exportData() { var o = {}; Object.keys(notes).forEach(function (k) { o[k] = notes[k]; }); return o; }
+  function importData(o) {
+    if (!o || typeof o !== 'object') return 0;
+    var n = 0; Object.keys(o).forEach(function (k) { if (typeof o[k] === 'string' && clean(o[k])) { notes[k] = clean(o[k]); n++; } });
+    save(); return n;
+  }
+  function reset() { notes = Object.create(null); save(); }
+  load();
+  var api = { KEY: KEY, MAX: MAX, key: key, get: get, set: set, noteBoxHtml: noteBoxHtml, attach: attach, editorHtml: editorHtml,
+    bindEditor: bindEditor, exportData: exportData, importData: importData, reset: reset, reload: load,
+    error: function () { return saveError; }, onChange: function (f) { listeners.push(f); }, _esc: esc };
+  root.TTRegulars = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* ===== inlined module: modules/banner86.js ===== */
+/*! TableTop 86 list banner module (plain script, no dependencies, works offline).
+ *  Exposes one global: TT86. Stores NOTHING: it reuses the menu's existing sold-out flag (item.available === false).
+ *  Host gives it accessors, so it never touches saved data itself. All names are HTML-escaped. See BANNER86_README.md. */
+(function (root) {
+  'use strict';
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function soldOut(items) {
+    return (Array.isArray(items) ? items : []).filter(function (i) { return i && typeof i === 'object' && !i.available; });
+  }
+  /* Banner HTML; '' when nothing is sold out. */
+  function html(items) {
+    var list = soldOut(items);
+    if (!list.length) return '';
+    return '<div id="tt86" class="banner86" role="status" style="background:#fee2e2;border:2px solid #dc2626;color:#7f1d1d;border-radius:8px;padding:8px 10px;margin:0 0 10px"><b>86 list (sold out):</b> ' +
+      list.map(function (i) {
+        return '<button type="button" class="sm" data-86="' + esc(i.id) + '" title="Tap to turn back on" style="margin:2px 4px 2px 0">' + esc(i.name) + ' ✕</button>';
+      }).join('') + ' <span style="font-size:.85em">Tap an item to turn it back on.</span></div>';
+  }
+  /* Put the banner at the top of `container` (replaces an old one). opts: {getItems:()=>items, restore:(id)=>void}
+   * restore must set item.available=true and save. Returns true if shown. */
+  function render(container, opts) {
+    var old = container.querySelector('#tt86'); if (old) old.remove();
+    var h = html(opts.getItems());
+    if (!h) return false;
+    container.insertAdjacentHTML('afterbegin', h);
+    var bar = container.querySelector('#tt86');
+    Array.prototype.forEach.call(bar.querySelectorAll('[data-86]'), function (b) {
+      b.onclick = function () { opts.restore(b.getAttribute('data-86')); render(container, opts); };
+    });
+    return true;
+  }
+  var api = { soldOut: soldOut, html: html, render: render, _esc: esc };
+  root.TT86 = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
 <script>
 /* TableTop single-file edition. Data is stored in this browser's localStorage. */
 const KEY='tabletop_v1';
@@ -71,21 +1386,27 @@ const ymd=d=>{d=new Date(d);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+p
 const localDT=d=>{d=new Date(d);return ymd(d)+'T'+pad(d.getHours())+':'+pad(d.getMinutes());};
 const fmtTime=t=>new Date(t).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
 const fmtDT=t=>new Date(t).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-const blank=()=>({settings:{name:'My Restaurant',pin:'',tax:6,address:'',phone:''},seq:1,categories:[],items:[],tables:[],orders:[],reservations:[],ingredients:[],staff:[]});
+const blank=()=>({settings:{name:'My Restaurant',pin:'',tax:6,address:'',phone:''},seq:1,categories:[],items:[],tables:[],orders:[],reservations:[],ingredients:[],staff:[],shifts:[],swaps:[],voids:[]});
 let DB;try{DB=JSON.parse(localStorage.getItem(KEY));}catch{DB=null;}
-const save=()=>localStorage.setItem(KEY,JSON.stringify(DB));
+if(DB&&typeof DB==='object'&&Array.isArray(DB.items)&&DB.settings)migrate();else DB=null;
+let saveFailed=false;
+function saveWarn(on){let b=document.getElementById('savewarn');if(!b){if(!on)return;b=document.createElement('div');b.id='savewarn';b.className='warnbar';b.setAttribute('role','alert');b.innerHTML='⚠️ <span><b>Could not save your data</b> — browser storage is full or blocked. Changes will be lost when you close this page. Export a backup now.</span> <button class="sm" id="swexp">Export backup</button>';document.body.prepend(b);document.getElementById('swexp').onclick=()=>exportBackup();}b.style.display=on?'flex':'none';warnPad();}
+function warnPad(){const b=document.getElementById('savewarn'),h=b&&b.style.display!=='none'?b.offsetHeight:0;document.documentElement.style.setProperty('--wbh',h+'px');}
+window.addEventListener('resize',warnPad);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));if(saveFailed){saveFailed=false;saveWarn(false);}return true;}catch(e){saveFailed=true;saveWarn(true);return false;}}
+function migrate(){const b=blank();for(const k of Object.keys(b)){if(DB[k]===undefined||(Array.isArray(b[k])&&!Array.isArray(DB[k])))DB[k]=b[k];}DB.items.forEach(i=>{if(!Array.isArray(i.tags))i.tags=[];});DB.staff.forEach(s=>{if(s.wage===undefined)s.wage=0;});DB.shifts=DB.shifts.filter(s=>s&&typeof s==='object');DB.shifts.forEach(s=>{['start','end'].forEach(k=>{const n=normTime(s[k]);if(n)s[k]=n;});});}
 const nid=()=>(DB.seq=(DB.seq||1)+1);
 const byId=(t,id)=>DB[t].find(x=>x.id==id);
 const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.add('hidden'),2500);};
-const badge=(s,l)=>`<span class="badge ${s}">${esc(l||String(s).replace('_',' '))}</span>`;
+const badge=(s,l)=>`<span class="badge ${String(s).replace(/[^\w-]/g,'')}">${esc(l||String(s).replace('_',' '))}</span>`;
 
 // ---------- calculations ----------
 const lineUnit=l=>l.price+(l.mods||[]).reduce((a,m)=>a+(+m.p||0),0);
 const lineTotal=l=>r2(lineUnit(l)*l.qty);
-function totals(o){const sub=r2(o.lines.reduce((a,l)=>a+lineTotal(l),0)),tax=r2(sub*(+o.tax_rate||0)/100),tip=r2(+o.tip||0),cost=r2(o.lines.reduce((a,l)=>a+(l.cost||0)*l.qty,0));return{sub,tax,tip,total:r2(sub+tax+tip),cost};}
+function totals(o){const sub=r2(o.lines.reduce((a,l)=>a+lineTotal(l),0)),tax=r2(sub*Math.max(0,+o.tax_rate||0)/100),tip=Math.max(0,r2(+o.tip||0)),cost=r2(o.lines.reduce((a,l)=>a+(l.cost||0)*l.qty,0));return{sub,tax,tip,total:r2(sub+tax+tip),cost};}
 const parseMods=s=>String(s||'').split(',').map(x=>x.trim()).filter(Boolean).map(x=>{const[n,p]=x.split(':');return{n:n.trim(),p:+p||0};});
 const margin=i=>i.price?Math.round((i.price-(i.cost||0))/i.price*100):0;
-const lowStock=()=>DB.ingredients.filter(i=>+i.qty<=+i.par);
+const lowStock=()=>{try{return TTInventory.lowStock();}catch(e){return [];}};
 function tableStatus(t){if(DB.orders.some(o=>o.table_id==t.id&&!o.paid))return'occupied';
  const now=Date.now();if(DB.reservations.some(r=>r.table_id==t.id&&r.status==='seated'))return'occupied';
  if(DB.reservations.some(r=>r.table_id==t.id&&r.status==='booked'&&Math.abs(new Date(r.at)-now)<=2*3600e3))return'reserved';return'free';}
@@ -93,19 +1414,26 @@ const orderLabel=o=>o.type==='takeout'?'Takeout'+(o.customer?' · '+o.customer:'
 const elapsed=t=>{const m=Math.floor((Date.now()-t)/60000);return m<60?m+'m':Math.floor(m/60)+'h '+m%60+'m';};
 
 // ---------- demo data ----------
+function seedDemoInventory(d){try{TTInventory._reset();TTInventory.importIngredients(d.ingredients);d.settings.inv_imported=true;const I=n=>TTInventory.getIngredients().find(x=>x.name===n);
+ I&&TTInventory.getIngredients().forEach(g=>TTInventory.updateIngredient(g.id,{target:g.low*2.5}));
+ const R={'Classic Burger':[['Ground beef',0.5],['Burger buns',1]],'Margherita Pizza':[['Pizza dough',1],['Mozzarella',0.4]],'Grilled Salmon':[['Salmon fillet',0.5]],'Chicken Alfredo':[['Chicken breast',0.4]],'Ribeye Steak':[['Ribeye',1]],'Espresso':[['Coffee beans',0.05]],'Wings (8)':[['Fryer oil',0.02]],'Veggie Bowl':[['Romaine',0.5]]};
+ for(const[n,ls]of Object.entries(R)){const it=d.items.find(i=>i.name===n);if(it)TTInventory.setRecipe(it.id,n,ls.map(([g,q])=>({ing:TTInventory.getIngredients().find(x=>x.name===g).id,qty:q})));}}catch(e){}}
 function demoData(){const keepPin=DB?.settings?.pin||'';const d=blank();DB=d;d.settings.name='The Copper Spoon';d.settings.pin=keepPin;d.settings.address='123 Woodward Ave, Detroit, MI';d.settings.phone='(313) 555-0142';
+ const DEMO_TAGS={'Garlic Bread':['Vegetarian','Dairy'],'Wings (8)':['Spicy','Gluten-free'],'Calamari':['Shellfish'],'Soup of the Day':['Vegetarian','Gluten-free'],'Classic Burger':['Dairy','Sesame'],'Margherita Pizza':['Vegetarian','Dairy'],'Grilled Salmon':['Gluten-free'],'Chicken Alfredo':['Dairy'],'Ribeye Steak':['Gluten-free'],'Veggie Bowl':['Vegan','Gluten-free','Contains nuts'],'Cheesecake':['Vegetarian','Dairy'],'Chocolate Lava Cake':['Vegetarian','Dairy','Contains nuts'],'Soda':['Vegan','Gluten-free'],'Iced Tea':['Vegan'],'House Wine':['Vegan'],'Espresso':['Vegan']};
  let seed=42;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;const pick=a=>a[Math.floor(rnd()*a.length)];
  const menu={'Starters':[['Garlic Bread',6.5,1.2,''],['Wings (8)',12.99,3.8,'Buffalo:0,BBQ:0,Extra sauce:0.75'],['Calamari',13.5,4.1,''],['Soup of the Day',7,1.6,'']],
   'Mains':[['Classic Burger',15.99,4.6,'Add cheese:1.5,Add bacon:2,No onions:0,Gluten-free bun:2'],['Margherita Pizza',16,3.9,'Extra cheese:2,Gluten-free crust:3'],['Grilled Salmon',24.5,8.9,'Sub salad:0,Extra veg:2'],['Chicken Alfredo',19.5,5.2,'Add shrimp:5'],['Ribeye Steak',34,13.5,'Rare:0,Medium rare:0,Medium:0,Well done:0'],['Veggie Bowl',14.5,3.6,'Add tofu:3']],
   'Desserts':[['Cheesecake',8.5,2.1,''],['Chocolate Lava Cake',9.5,2.4,'Add ice cream:2']],
   'Drinks':[['Soda',3,0.4,'No ice:0'],['Iced Tea',3.5,0.4,''],['Craft Beer',7,2.2,''],['House Wine',9,2.8,'Red:0,White:0'],['Espresso',3.5,0.6,'Extra shot:1']]};
- for(const[c,items]of Object.entries(menu)){const cid=nid();d.categories.push({id:cid,name:c});items.forEach(([n,p,cost,m])=>d.items.push({id:nid(),cat_id:cid,name:n,price:p,cost,mods:m,available:true}));}
+ for(const[c,items]of Object.entries(menu)){const cid=nid();d.categories.push({id:cid,name:c});items.forEach(([n,p,cost,m])=>d.items.push({id:nid(),cat_id:cid,name:n,price:p,cost,mods:m,available:true,tags:(DEMO_TAGS[n]||[]).slice()}));}
  d.items.find(i=>i.name==='Calamari').available=false;
  [['T1',2],['T2',2],['T3',4],['T4',4],['T5',4],['T6',6],['T7',6],['Bar 1',2],['Patio 1',4],['Patio 2',8]].forEach(([n,s])=>d.tables.push({id:nid(),name:n,seats:s}));
- [['Ana Torres','Manager','313-555-0101'],['Ben Ford','Server','313-555-0102'],['Chloe Wu','Server','313-555-0103'],['Diego Ruiz','Head Chef','313-555-0104'],['Eve Adams','Line Cook','313-555-0105'],['Frank Moss','Host','313-555-0106']].forEach(([n,r,p])=>d.staff.push({id:nid(),name:n,role:r,phone:p,active:true}));
+ const STAFF=[['Ana Torres','Manager','313-555-0101',32],['Ben Ford','Server','313-555-0102',11],['Chloe Wu','Server','313-555-0103',11],['Diego Ruiz','Head Chef','313-555-0104',30],['Eve Adams','Line Cook','313-555-0105',20],['Frank Moss','Host','313-555-0106',14],['Gina Park','Busser','313-555-0107',12],['Hank Lee','Bartender','313-555-0108',13]];
+ STAFF.forEach(([n,r,p,w])=>d.staff.push({id:nid(),name:n,role:r,phone:p,wage:w,active:true}));
  [['Ground beef','lb',18,10],['Burger buns','pcs',22,24],['Mozzarella','lb',6,8],['Salmon fillet','lb',9,6],['Chicken breast','lb',14,10],['Pizza dough','balls',30,20],['Romaine','heads',5,8],['Ribeye','pcs',7,6],['Coffee beans','lb',3,4],['Fryer oil','gal',4,3]].forEach(([n,u,q,p])=>d.ingredients.push({id:nid(),name:n,unit:u,qty:q,par:p}));
+ DB=d;seedDemoInventory(d);
  const avail=d.items.filter(i=>i.available),servers=d.staff.filter(s=>s.role==='Server');
- const mk=(t,status,paid)=>{const lines=[];const n=1+Math.floor(rnd()*4);for(let k=0;k<n;k++){const it=pick(avail);const mods=parseMods(it.mods);lines.push({item_id:it.id,name:it.name,price:it.price,cost:it.cost,qty:1+Math.floor(rnd()*2),mods:mods.length&&rnd()<.4?[pick(mods)]:[],note:''});}
+ const mk=(t,status,paid)=>{const lines=[];const n=1+Math.floor(rnd()*4);for(let k=0;k<n;k++){const it=pick(avail);const mods=parseMods(it.mods);lines.push({item_id:it.id,name:it.name,price:it.price,cost:it.cost,qty:1+Math.floor(rnd()*2),mods:mods.length&&rnd()<.4?[pick(mods)]:[],note:'',tags:(it.tags||[]).slice()});}
   const take=rnd()<.25;const o={id:nid(),type:take?'takeout':'dine',table_id:take?null:pick(d.tables).id,customer:take?pick(['Sam','Lee','Jo','Max','Ivy']):'',lines,status,paid,tax_rate:6,tip:0,method:null,server_id:pick(servers).id,created_at:t,paid_at:null};
   if(paid){const s=totals(o).sub;o.tip=take?0:r2(s*pick([.15,.18,.2]));o.method=rnd()<.7?'card':'cash';o.paid_at=t+(30+rnd()*50)*60000;o.status='served';}return o;};
  const now=new Date();for(let day=30;day>=0;day--){const base=new Date(now.getFullYear(),now.getMonth(),now.getDate()-day);const dow=base.getDay();const n=(dow===5||dow===6?26:16)+Math.floor(rnd()*8);
@@ -115,13 +1443,20 @@ function demoData(){const keepPin=DB?.settings?.pin||'';const d=blank();DB=d;d.s
  const tm=(dd,h,m)=>{const x=new Date(now.getFullYear(),now.getMonth(),now.getDate()+dd,h,m);return localDT(x);};
  const nh=Math.min(22,now.getHours()+1);
  [['Grace Hall','313-555-0199',4,tm(0,nh,0),d.tables[8].id,'booked'],['Omar Ali','313-555-0177',2,tm(0,nh,30),d.tables[7].id,'booked'],['Priya Patel','313-555-0133',6,tm(1,19,0),d.tables[6].id,'booked'],['Tom Wilson','313-555-0122',8,tm(2,18,30),d.tables[9].id,'booked'],['Lisa Ray','313-555-0111',2,tm(-1,19,0),d.tables[0].id,'completed']].forEach(([n,p,ps,at,tid,st])=>d.reservations.push({id:nid(),name:n,phone:p,party:ps,at,table_id:tid,status:st,notes:''}));
+
+ // a week of shifts (Mon..Sun of the current week) + a pending swap
+ const sid=n=>d.staff.find(s=>s.name===n).id,mon=mondayOf(Date.now());
+ const pat={'Ana Torres':[[0,1,2,3,4],'10:00','18:00'],'Ben Ford':[[1,2,3,4,5],'16:00','23:00'],'Chloe Wu':[[0,2,3,6],'11:00','19:00'],'Diego Ruiz':[[1,2,3,4,5],'10:00','19:00'],'Eve Adams':[[0,1,2,4,5,6],'15:00','23:00'],'Frank Moss':[[4,5,6],'16:00','22:00'],'Gina Park':[[3,4,5,6],'17:00','22:00'],'Hank Lee':[[2,3,4,5],'17:00','01:00']};
+ for(const[n,[dd,a,b]]of Object.entries(pat))dd.forEach(k=>d.shifts.push({id:nid(),staff_id:sid(n),date:addDays(mon,k),start:a,end:b,role:d.staff.find(s=>s.name===n).role}));
+ [4,5].forEach(k=>d.shifts.push({id:nid(),staff_id:sid('Chloe Wu'),date:addDays(mon,k),start:'16:00',end:'23:00',role:'Server'}));
+ const bs=d.shifts.find(h=>h.staff_id===sid('Ben Ford')&&h.date===addDays(mon,2));if(bs)d.swaps.push({id:nid(),shift_id:bs.id,from_id:sid('Ben Ford'),to_id:sid('Chloe Wu'),note:'Dentist appointment',status:'pending',at:Date.now()-3600e3});
+ [['T3','cooking',24.5],['Takeout','new',18.0]].forEach(([lab,st,tot],i)=>d.voids.push({id:nid(),at:Date.now()-(i+1)*5400e3,order_id:nid(),label:lab,status:st,total:tot,sub:tot,items:2,server_id:sid(i?'Chloe Wu':'Ben Ford')}));
  save();}
-if(!DB){DB=null;demoData();}
 
 // ---------- modal & forms ----------
-function modal(html,onSubmit){$('#modal-body').innerHTML=html;$('#modal').classList.remove('hidden');const f=$('#modal-body form');
+function modal(html,onSubmit){$('#modal-body').innerHTML=html;modalFrom=document.activeElement;$('#modal').setAttribute('role','dialog');$('#modal').setAttribute('aria-modal','true');$('#modal').classList.remove('hidden');const f=$('#modal-body form');setTimeout(()=>{const x=$('#modal-body input:not([type=hidden]):not([type=checkbox]),#modal-body select,#modal-body textarea');if(x&&!$('#modal').classList.contains('hidden'))try{x.focus({preventScroll:true});}catch(e){}},30);
  if(f)f.addEventListener('submit',e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));$$('#modal-body input[type=checkbox][name]').forEach(c=>d[c.name]=c.checked);try{if(onSubmit(d)!==false){closeModal();route();}}catch(err){toast(err.message);}});}
-const closeModal=()=>$('#modal').classList.add('hidden');
+let modalFrom=null;const closeModal=()=>{const m=$('#modal');if(!m.classList.contains('hidden')){m.classList.add('hidden');try{if(modalFrom&&document.body.contains(modalFrom))modalFrom.focus({preventScroll:true});}catch(e){}modalFrom=null;}};
 const field=(n,l,v='',t='text',x='',extra='')=>`<label class="${x}">${l}<input name="${n}" type="${t}" value="${esc(v??'')}" ${t==='number'?'step="any"':''} ${extra}></label>`;
 const sel=(n,l,opts,v,x='')=>`<label class="${x}">${l}<select name="${n}">${opts.map(([k,t])=>`<option value="${esc(k)}" ${String(k)===String(v??'')?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
 const btns=`<div class="full row end"><button type="button" class="sec" onclick="closeModal()">Cancel</button><button>Save</button></div>`;
@@ -129,25 +1464,26 @@ const need=(v,m)=>{if(v===undefined||v===null||String(v).trim()==='')throw new E
 function delRec(t,id,msg){if(!confirm(msg||'Delete this record?'))return;DB[t]=DB[t].filter(x=>x.id!=id);save();toast('Deleted');route();}
 
 // ---------- shell ----------
-const PAGES=[['dashboard','📊','Dashboard'],['pos','🧾','POS'],['kitchen','👨‍🍳','Kitchen'],['tables','🪑','Tables'],['reservations','📅','Reservations'],['menu','🍔','Menu'],['inventory','📦','Inventory'],['staff','🧑‍🤝‍🧑','Staff'],['orders','🗂️','Orders'],['settings','⚙️','Settings']];
+const PAGES=[['dashboard','📊','Dashboard'],['pos','🧾','POS'],['kitchen','👨‍🍳','Kitchen'],['tables','🪑','Tables'],['reservations','📅','Reservations'],['menu','🍔','Menu'],['autoinv','📦','Auto Inventory'],['staff','🧑‍🤝‍🧑','Staff'],['schedule','🕒','Schedule'],['tips','💵','Tip Split'],['report','🌙','Night Report'],['quiz','🎓','Training'],['qrcodes','🔳','QR codes'],['orders','🗂️','Orders'],['settings','⚙️','Settings']];
 function render(){if(DB.settings.pin&&!sessionStorage.tt_unlocked)return lockView();
  const low=lowStock().length,kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length;
  $('#app').innerHTML=`<div class="layout"><nav><div class="brand"><h1>🍽️ TableTop</h1><div class="dl" id="rname">${esc(DB.settings.name)}</div></div><div class="links">
- ${PAGES.map(([h,i,t])=>`<a href="#${h}" data-r="${h}"><span>${i}</span><em>${t}</em>${h==='inventory'&&low?`<b class="dot">${low}</b>`:''}${h==='kitchen'&&kit?`<b class="dot blue">${kit}</b>`:''}</a>`).join('')}</div>
+ ${PAGES.map(([h,i,t])=>`<a href="#${h}" data-r="${h}"><span>${i}</span><em>${t}</em>${h==='autoinv'&&low?`<b class="dot">${low}</b>`:''}${h==='kitchen'&&kit?`<b class="dot blue">${kit}</b>`:''}</a>`).join('')}</div>
  ${DB.settings.pin?'<a href="#" id="lock" class="lockbtn"><span>🔒</span><em>Lock</em></a>':''}</nav><main id="main"></main></div>`;
  const lk=$('#lock');if(lk)lk.onclick=e=>{e.preventDefault();sessionStorage.removeItem('tt_unlocked');render();};route();}
 function lockView(){$('#app').innerHTML=`<div class="login card"><h2>🔒 ${esc(DB.settings.name)}</h2><p class="muted">Enter PIN to unlock TableTop</p><form id="lf"><input name="pin" type="password" inputmode="numeric" placeholder="PIN" autofocus required><button class="wide">Unlock</button></form></div>`;
  $('#lf').onsubmit=e=>{e.preventDefault();if(e.target.pin.value===DB.settings.pin){sessionStorage.tt_unlocked='1';render();}else{toast('Wrong PIN');e.target.pin.value='';}};}
 let timer=null;
-function route(){if(!$('#main'))return;clearInterval(timer);const r=(location.hash||'#dashboard').slice(1).split('/')[0];
+function route(){if(!$('#main'))return;clearInterval(timer);try{TTInventory.unmount();}catch(e){}const r=(location.hash||'#dashboard').slice(1).split('/')[0];document.body.setAttribute('data-page',r);
  $$('nav a[data-r]').forEach(a=>a.classList.toggle('active',a.dataset.r===r));
  const low=lowStock().length,kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length;
- $$('nav a[data-r]').forEach(a=>{const b=a.querySelector('.dot');if(b)b.remove();const n=a.dataset.r==='inventory'?low:a.dataset.r==='kitchen'?kit:0;if(n)a.insertAdjacentHTML('beforeend',`<b class="dot ${a.dataset.r==='kitchen'?'blue':''}">${n}</b>`);});
+ $$('nav a[data-r]').forEach(a=>{const b=a.querySelector('.dot');if(b)b.remove();const n=a.dataset.r==='autoinv'?low:a.dataset.r==='kitchen'?kit:0;if(n)a.insertAdjacentHTML('beforeend',`<b class="dot ${a.dataset.r==='kitchen'?'blue':''}">${n}</b>`);});
  (PAGE[r]||PAGE.dashboard)();}
 window.addEventListener('hashchange',route);
 
 // ---------- dashboard ----------
 const PAGE={};
+PAGE.qrcodes=()=>{TTQROrder.mountSheet($('#main'),{getTables:QRO.getTables,restaurantName:QRO.restaurantName,toast:toast});};
 PAGE.dashboard=()=>{const paid=DB.orders.filter(o=>o.paid),today=ymd(Date.now());const tdy=paid.filter(o=>ymd(o.paid_at)===today);
  const T=os=>os.reduce((a,o)=>{const t=totals(o);a.sub+=t.sub;a.cost+=t.cost;a.tip+=t.tip;a.tax+=t.tax;return a;},{sub:0,cost:0,tip:0,tax:0});
  const tt=T(tdy),since=Date.now()-30*864e5,p30=paid.filter(o=>o.paid_at>=since),t30=T(p30);
@@ -155,31 +1491,31 @@ PAGE.dashboard=()=>{const paid=DB.orders.filter(o=>o.paid),today=ymd(Date.now())
  const hs=hours.filter(x=>x.h>=10&&x.h<=23);
  const days=[];for(let i=29;i>=0;i--){const dd=new Date();dd.setDate(dd.getDate()-i);days.push({d:ymd(dd),v:0,n:0});}
  const dm=Object.fromEntries(days.map(x=>[x.d,x]));p30.forEach(o=>{const x=dm[ymd(o.paid_at)];if(x){x.v+=totals(o).sub;x.n++;}});
- const top={};p30.forEach(o=>o.lines.forEach(l=>{top[l.name]=top[l.name]||{q:0,v:0};top[l.name].q+=l.qty;top[l.name].v+=lineTotal(l);}));
+ const top=Object.create(null);p30.forEach(o=>o.lines.forEach(l=>{top[l.name]=top[l.name]||{q:0,v:0};top[l.name].q+=l.qty;top[l.name].v+=lineTotal(l);}));
  const tops=Object.entries(top).sort((a,b)=>b[1].q-a[1].q).slice(0,6),tmax=Math.max(1,...tops.map(x=>x[1].q));
  const open=DB.orders.filter(o=>!o.paid),low=lowStock(),resToday=DB.reservations.filter(r=>r.at.slice(0,10)===today&&r.status==='booked');
  const bars=(arr,lab,h=150)=>{const m=Math.max(1,...arr.map(x=>x.v));return`<div class="chart" style="height:${h+40}px">${arr.map(x=>`<div title="${esc(lab(x))}: ${money(x.v)}"><div class="b" style="height:${Math.max(x.v?2:0,x.v/m*h)}px"></div><span>${esc(lab(x,true))}</span></div>`).join('')}</div>`;};
  $('#main').innerHTML=`<div class="row between"><h2>Dashboard</h2><span class="muted">${new Date().toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'})}</span></div>
- ${low.length?`<div class="alert">⚠️ <b>${low.length} ingredient${low.length>1?'s':''} low on stock:</b> ${low.map(i=>esc(i.name)).join(', ')} — <a href="#inventory">review inventory</a></div>`:''}
+ ${low.length?`<div class="alert">⚠️ <b>${low.length} ingredient${low.length>1?'s':''} low on stock:</b> ${low.map(i=>esc(i.name)).join(', ')} — <a href="#autoinv">review inventory</a></div>`:''}
  <div class="grid">
  <div class="card stat"><div class="v" id="k-sales">${money(tt.sub)}</div><div class="l">Today's sales (net, excl. tax &amp; tips)</div></div>
  <div class="card stat"><div class="v" id="k-orders">${tdy.length}</div><div class="l">Orders paid today · ${open.length} open</div></div>
  <div class="card stat"><div class="v">${money(tdy.length?tt.sub/tdy.length:0)}</div><div class="l">Average ticket today</div></div>
  <div class="card stat"><div class="v">${t30.sub?Math.round(t30.cost/t30.sub*1000)/10:0}%</div><div class="l">Food cost % (30 days) · tips today ${money(tt.tip)}</div></div></div>
- <div class="grid two"><div class="card"><h3>Sales by hour — today</h3>${tdy.length?bars(hs,(x,s)=>s?(x.h%12||12)+(x.h<12?'a':'p'):x.h+':00'):'<p class="muted">No paid orders yet today.</p>'}</div>
- <div class="card"><h3>Top items (30 days)</h3>${tops.map(([n,x])=>`<div class="hbar"><div class="row between"><span>${esc(n)}</span><b>${x.q} · ${money0(x.v)}</b></div><div class="bar" style="width:${x.q/tmax*100}%"></div></div>`).join('')||'<p class="muted">No sales yet.</p>'}</div></div>
+ <div class="grid two"><div class="card"><h3>Sales by hour — today</h3>${tdy.length?bars(hs,(x,s)=>s?(x.h%12||12)+(x.h<12?'a':'p'):x.h+':00'):'<p class="muted empty">No paid orders yet today.</p>'}</div>
+ <div class="card"><h3>Top items (30 days)</h3>${tops.map(([n,x])=>`<div class="hbar"><div class="row between"><span>${esc(n)}</span><b>${x.q} · ${money0(x.v)}</b></div><div class="bar" style="width:${x.q/tmax*100}%"></div></div>`).join('')||'<p class="muted empty">No sales yet.</p>'}</div></div>
  <div class="card"><div class="row between"><h3>Last 30 days</h3><span class="muted">${money0(t30.sub)} net · ${p30.length} orders · avg ${money(p30.length?t30.sub/p30.length:0)}</span></div>${bars(days,(x,s)=>s?(x.d.slice(8)):x.d+' ('+x.n+' orders)',130)}</div>
- <div class="grid two"><div class="card"><h3>Today's reservations</h3>${resToday.length?resToday.sort((a,b)=>a.at<b.at?-1:1).map(r=>`<div class="li"><b>${fmtTime(r.at)}</b> ${esc(r.name)} · party of ${r.party} · ${esc(byId('tables',r.table_id)?.name||'no table')}</div>`).join(''):'<p class="muted">None booked.</p>'}</div>
- <div class="card"><h3>Open orders</h3>${open.length?open.map(o=>`<div class="li"><b>${esc(orderLabel(o))}</b> ${badge(o.status)} <span class="muted">${elapsed(o.created_at)} · ${money(totals(o).total)}</span></div>`).join(''):'<p class="muted">No open orders.</p>'}</div></div>`;};
+ <div class="grid two"><div class="card"><h3>Today's reservations</h3>${resToday.length?resToday.sort((a,b)=>a.at<b.at?-1:1).map(r=>`<div class="li"><b>${fmtTime(r.at)}</b> ${esc(r.name)} · party of ${r.party} · ${esc(byId('tables',r.table_id)?.name||'no table')}</div>`).join(''):'<p class="muted empty">None booked.</p>'}</div>
+ <div class="card"><h3>Open orders</h3>${open.length?open.map(o=>`<div class="li"><b>${esc(orderLabel(o))}</b> ${badge(o.status)} <span class="muted">${elapsed(o.created_at)} · ${money(totals(o).total)}</span></div>`).join(''):'<p class="muted empty">No open orders.</p>'}</div></div>`;};
 
 // ---------- POS ----------
-let CUR=null,posCat=null;
+let CUR=null,posCat=null,lastShort='';
 const newTicket=()=>({id:null,type:'dine',table_id:null,customer:'',lines:[],status:'new',paid:false,tax_rate:+DB.settings.tax||0,tip:0,method:null,server_id:null,created_at:null,paid_at:null});
 PAGE.pos=()=>{const q=(location.hash.split('/')[1]||'');if(q.startsWith('o')){const o=byId('orders',q.slice(1));if(o&&!o.paid)CUR=JSON.parse(JSON.stringify(o));history.replaceState(null,'','#pos');}
  else if(q.startsWith('t')){CUR=newTicket();const open=DB.orders.find(o=>!o.paid&&o.table_id==q.slice(1));if(open)CUR=JSON.parse(JSON.stringify(open));else CUR.table_id=+q.slice(1);history.replaceState(null,'','#pos');}
  if(!CUR)CUR=newTicket();if(!posCat||!byId('categories',posCat))posCat=DB.categories[0]?.id;drawPOS();};
 function drawPOS(){const o=CUR,t=totals(o),open=DB.orders.filter(x=>!x.paid);
- const items=DB.items.filter(i=>i.cat_id==posCat);
+ const allItems=DB.items.filter(i=>i.cat_id==posCat),items=allItems.filter(itemVisible),hiddenN=allItems.length-items.length;
  $('#main').innerHTML=`<div class="row between"><h2>Point of Sale</h2><div class="row nomb"><button class="sec" id="newt">+ New ticket</button></div></div>
  ${open.length?`<div class="chips"><span class="muted">Open tickets:</span>${open.map(x=>`<button class="chip ${x.id===o.id?'on':''}" data-open="${x.id}">${esc(orderLabel(x))} · ${money(totals(x).total)}</button>`).join('')}</div>`:''}
  <div class="pos"><div class="pos-left card">
@@ -187,12 +1523,13 @@ function drawPOS(){const o=CUR,t=totals(o),open=DB.orders.filter(x=>!x.paid);
   ${o.type==='dine'?`<select id="tsel"><option value="">Choose table…</option>${DB.tables.map(x=>{const s=tableStatus(x);const mine=x.id==o.table_id;return`<option value="${x.id}" ${mine?'selected':''} ${s==='occupied'&&!mine?'disabled':''}>${esc(x.name)} (${x.seats}) ${s!=='free'&&!mine?'— '+s:''}</option>`}).join('')}</select>`:`<input id="cust" placeholder="Customer name" value="${esc(o.customer)}">`}
   <select id="srv"><option value="">Server…</option>${DB.staff.filter(s=>s.active!==false).map(s=>`<option value="${s.id}" ${s.id==o.server_id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
   <div class="tabs">${DB.categories.map(c=>`<button class="${c.id==posCat?'on':''}" data-cat="${c.id}">${esc(c.name)}</button>`).join('')}</div>
-  <div class="items">${items.map(i=>`<button class="item ${i.available?'':'off'}" data-item="${i.id}" ${i.available?'':'disabled'}><b>${esc(i.name)}</b><span>${money(i.price)}</span>${i.available?(i.mods?'<em>options</em>':''):'<em>86’d</em>'}</button>`).join('')||'<p class="muted">No items in this category.</p>'}</div></div>
+  ${posFilterHtml()}${hiddenN?`<div class="muted" id="hiddenn">${hiddenN} item${hiddenN>1?'s':''} hidden by allergy/diet filter</div>`:''}
+  <div class="items">${items.map(i=>`<button class="item ${i.available?'':'off'}" data-item="${i.id}" ${i.available?'':'disabled'}><b>${esc(i.name)}</b>${tagsHtml(i.tags)}<span>${money(i.price)}</span>${i.available?(i.mods?'<em>options</em>':''):'<em>86’d</em>'}</button>`).join('')||'<p class="muted empty">No items in this category.</p>'}</div></div>
  <div class="pos-right card"><div class="row between nomb"><h3>${o.id?'Ticket #'+o.id:'New ticket'}</h3>${o.id?badge(o.status):''}</div><div class="muted">${o.type==='dine'?esc(byId('tables',o.table_id)?.name||'No table selected'):'Takeout'}</div>
   <div class="lines">${o.lines.map((l,i)=>`<div class="line"><div class="grow"><b>${esc(l.name)}</b>${l.mods.length?`<div class="muted">${l.mods.map(m=>esc(m.n)+(m.p?' +'+money(m.p):'')).join(', ')}</div>`:''}${l.note?`<div class="note">📝 ${esc(l.note)}</div>`:''}</div>
    <div class="qty"><button class="sm sec" data-dec="${i}">−</button><span>${l.qty}</span><button class="sm sec" data-inc="${i}">+</button></div><div class="amt">${money(lineTotal(l))}</div><button class="sm x" data-rm="${i}" title="Remove">✕</button></div>`).join('')||'<p class="muted center">Tap menu items to add them.</p>'}</div>
-  <div class="tot"><div><span>Subtotal</span><span>${money(t.sub)}</span></div><div><span>Tax <input id="tax" type="number" step="0.01" value="${o.tax_rate}" class="tiny">%</span><span>${money(t.tax)}</span></div>
-  <div><span>Tip ${[0,15,18,20].map(p=>`<button class="sm sec" data-tip="${p}">${p}%</button>`).join('')} <input id="tip" type="number" step="0.01" value="${o.tip||''}" placeholder="$" class="tiny"></span><span>${money(t.tip)}</span></div>
+  <div class="tot"><div><span>Subtotal</span><span>${money(t.sub)}</span></div><div><span>Tax <input id="tax" type="number" step="0.01" min="0" value="${o.tax_rate}" class="tiny">%</span><span>${money(t.tax)}</span></div>
+  <div><span>Tip ${[0,15,18,20].map(p=>`<button class="sm sec" data-tip="${p}">${p}%</button>`).join('')} <input id="tip" type="number" step="0.01" min="0" value="${o.tip||''}" placeholder="$" class="tiny"></span><span>${money(t.tip)}</span></div>
   <div class="grand"><span>Total</span><span id="gtotal">${money(t.total)}</span></div></div>
   <div class="actions"><button id="send" class="wide">${o.id?'💾 Update order':'🔥 Send to kitchen'}</button><div class="row nomb"><button id="paycard" class="green grow">💳 Card</button><button id="paycash" class="green grow">💵 Cash</button></div>
   ${o.id?`<button id="voidt" class="danger sm">Void ticket</button>`:''}</div></div></div>`;
@@ -203,27 +1540,30 @@ function drawPOS(){const o=CUR,t=totals(o),open=DB.orders.filter(x=>!x.paid);
  if($('#cust'))$('#cust').onchange=e=>o.customer=e.target.value;
  $('#srv').onchange=e=>o.server_id=+e.target.value||null;
  $$('[data-cat]').forEach(b=>b.onclick=()=>{posCat=+b.dataset.cat;drawPOS();});
+ $$('[data-hide]').forEach(b=>b.onclick=()=>{const k=b.dataset.hide;posHide.has(k)?posHide.delete(k):posHide.add(k);drawPOS();});$$('[data-only]').forEach(b=>b.onclick=()=>{const k=b.dataset.only;posOnly.has(k)?posOnly.delete(k):posOnly.add(k);drawPOS();});if($('#pclr'))$('#pclr').onclick=()=>{posHide.clear();posOnly.clear();drawPOS();};
  $$('[data-item]').forEach(b=>b.onclick=()=>addItem(byId('items',b.dataset.item)));
  $$('[data-inc]').forEach(b=>b.onclick=()=>{o.lines[b.dataset.inc].qty++;drawPOS();});
  $$('[data-dec]').forEach(b=>b.onclick=()=>{const l=o.lines[b.dataset.dec];if(--l.qty<1)o.lines.splice(b.dataset.dec,1);drawPOS();});
  $$('[data-rm]').forEach(b=>b.onclick=()=>{o.lines.splice(b.dataset.rm,1);drawPOS();});
- $('#tax').onchange=e=>{o.tax_rate=+e.target.value||0;drawPOS();};
- $('#tip').onchange=e=>{o.tip=r2(+e.target.value||0);drawPOS();};
+ $('#tax').onchange=e=>{o.tax_rate=Math.max(0,+e.target.value||0);if(e.target.value!==''&&+e.target.value<0)toast('Tax can’t be negative — set to 0');drawPOS();};
+ $('#tip').onchange=e=>{o.tip=Math.max(0,r2(+e.target.value||0));if(+e.target.value<0)toast('Tip can’t be negative — set to 0');drawPOS();};
  $$('[data-tip]').forEach(b=>b.onclick=()=>{o.tip=r2(totals(o).sub*b.dataset.tip/100);drawPOS();});
- $('#send').onclick=()=>{try{commit();toast(o.id&&DB.orders.find(x=>x.id===o.id)?'Order sent to kitchen':'Saved');CUR=newTicket();drawPOS();}catch(e){toast(e.message);}};
+ $('#send').onclick=()=>{try{commit();toast(lastShort?'Sent to kitchen — Out of stock: '+lastShort:'Order sent to kitchen');CUR=newTicket();drawPOS();}catch(e){toast(e.message);}};
  $('#paycard').onclick=()=>pay('card');$('#paycash').onclick=()=>pay('cash');
- if($('#voidt'))$('#voidt').onclick=()=>{if(!confirm('Void this ticket? It will be removed.'))return;DB.orders=DB.orders.filter(x=>x.id!==o.id);save();CUR=newTicket();toast('Ticket voided');route();};}
-function addItem(it){const mods=parseMods(it.mods);const push=(ms,note)=>{const same=CUR.lines.find(l=>l.item_id===it.id&&!note&&!l.note&&JSON.stringify(l.mods)===JSON.stringify(ms));if(same)same.qty++;else CUR.lines.push({item_id:it.id,name:it.name,price:it.price,cost:+it.cost||0,qty:1,mods:ms,note:note||''});drawPOS();};
+ if($('#voidt'))$('#voidt').onclick=()=>{if(!confirm('Void this ticket? It will be removed.'))return;{const t=totals(o);DB.voids.push({id:nid(),at:Date.now(),order_id:o.id,label:orderLabel(o),status:o.status,total:t.total,sub:t.sub,items:o.lines.reduce((a,l)=>a+l.qty,0),server_id:o.server_id});}try{TTInventory.onOrderVoided(o)}catch(e){}
+DB.orders=DB.orders.filter(x=>x.id!==o.id);save();CUR=newTicket();toast('Ticket voided');route();};}
+function addItem(it){const mods=parseMods(it.mods);const push=(ms,note)=>{const same=CUR.lines.find(l=>l.item_id===it.id&&!note&&!l.note&&JSON.stringify(l.mods)===JSON.stringify(ms));if(same)same.qty++;else CUR.lines.push({item_id:it.id,name:it.name,price:it.price,cost:+it.cost||0,qty:1,mods:ms,note:note||'',tags:(it.tags||[]).slice()});drawPOS();};
  modal(`<h3>${esc(it.name)} <span class="muted">${money(it.price)}</span></h3><form class="form">${mods.length?`<div class="full"><div class="muted">Modifiers</div><div class="mods">${mods.map((m,i)=>`<label class="chk"><input type="checkbox" data-mod="${i}"> ${esc(m.n)}${m.p?` <span class="muted">+${money(m.p)}</span>`:''}</label>`).join('')}</div></div>`:''}
  <label class="full">Kitchen note<input name="note" placeholder="e.g. allergy, no salt, on the side"></label>${field('qty','Quantity',1,'number')}<div class="full row end"><button type="button" class="sec" onclick="closeModal()">Cancel</button><button>Add to ticket</button></div></form>`,
  d=>{const ms=$$('#modal-body [data-mod]').filter(c=>c.checked).map(c=>mods[c.dataset.mod]);const q=Math.max(1,Math.floor(+d.qty||1));push(ms,d.note.trim());if(q>1)CUR.lines[CUR.lines.length-1].qty+=q-1;closeModal();drawPOS();return false;});}
 function commit(){const o=CUR;if(!o.lines.length)throw new Error('Add at least one item');if(o.type==='dine'&&!o.table_id)throw new Error('Choose a table (or switch to Takeout)');
  if(o.type==='dine'&&DB.orders.some(x=>!x.paid&&x.table_id==o.table_id&&x.id!==o.id))throw new Error('That table already has an open ticket');
  if(!o.id){o.id=nid();o.created_at=Date.now();o.status='new';DB.orders.push(o);}else{const i=DB.orders.findIndex(x=>x.id===o.id);if(i<0)throw new Error('Ticket no longer exists');const prev=DB.orders[i];if(o.lines.length>prev.lines.length&&prev.status!=='new')o.status='new';DB.orders[i]=o;}
+ lastShort='';try{const r=TTInventory.onOrderPlaced(o);lastShort=r.shortages.join(', ');if(lastShort)toast('Out of stock: '+lastShort);}catch(e){}
  save();return o;}
 function pay(method){try{const o=commit();o.paid=true;o.method=method;o.paid_at=Date.now();if(o.status!=='served')o.status='served';
  if(o.type==='dine'){const r=DB.reservations.find(r=>r.table_id==o.table_id&&r.status==='seated');if(r)r.status='completed';}
- save();CUR=newTicket();receipt(o.id);}catch(e){toast(e.message);}}
+ save();CUR=newTicket();receipt(o.id);if(lastShort)toast('Out of stock: '+lastShort);}catch(e){toast(e.message);}}
 function receipt(id){const o=byId('orders',id),t=totals(o),s=DB.settings;
  const html=`<div class="receipt"><h3>${esc(s.name)}</h3>${s.address?`<div>${esc(s.address)}</div>`:''}${s.phone?`<div>${esc(s.phone)}</div>`:''}<hr>
  <div>Ticket #${o.id} · ${esc(orderLabel(o))}</div><div>${new Date(o.paid_at||o.created_at).toLocaleString()}</div>${o.server_id?`<div>Server: ${esc(byId('staff',o.server_id)?.name||'')}</div>`:''}<hr>
@@ -234,24 +1574,24 @@ function receipt(id){const o=byId('orders',id),t=totals(o),s=DB.settings;
 
 // ---------- kitchen ----------
 const KS=['new','cooking','ready','served'],KN={new:'cooking',cooking:'ready',ready:'served'};
-PAGE.kitchen=()=>{const os=DB.orders.filter(o=>!o.paid||(o.status!=='served'));const draw=()=>{if(!$('#kds'))return;$('#kds').innerHTML=KS.map(s=>{const list=os.filter(o=>o.status===s).sort((a,b)=>a.created_at-b.created_at);
- return`<div class="col"><h4>${s} <span>${list.length}</span></h4>${list.map(o=>{const m=(Date.now()-o.created_at)/60000;return`<div class="kcard ${s!=='served'&&m>20?'late':m>12&&s!=='served'?'warn':''}"><div class="row between nomb"><b>${esc(orderLabel(o))}</b><span class="el">⏱ ${elapsed(o.created_at)}</span></div><div class="muted">#${o.id} · ${fmtTime(o.created_at)}</div>
- <ul>${o.lines.map(l=>`<li><b>${l.qty}×</b> ${esc(l.name)}${l.mods.length?`<div class="muted">${l.mods.map(x=>esc(x.n)).join(', ')}</div>`:''}${l.note?`<div class="note">📝 ${esc(l.note)}</div>`:''}</li>`).join('')}</ul>
+PAGE.kitchen=()=>{clearInterval(timer);const os=DB.orders.filter(o=>!o.paid||(o.status!=='served'));const draw=()=>{if(!$('#kds'))return;$('#kds').innerHTML=KS.map(s=>{const list=os.filter(o=>o.status===s).sort((a,b)=>a.created_at-b.created_at);
+ return`<div class="col"><h4>${s} <span>${list.length}</span></h4>${list.map(o=>{const m=(Date.now()-o.created_at)/60000;return`<div class="kcard ${s!=='served'&&m>20?'late':m>12&&s!=='served'?'warn':''}"><div class="row between nomb"><b>${esc(orderLabel(o))}</b><span class="el">⏱ ${elapsed(o.created_at)}</span></div><div class="muted">#${o.id} · ${fmtTime(o.created_at)}</div>${(()=>{const a=[...new Set(o.lines.flatMap(l=>tagsOf(l)).filter(isAllergen).map(t=>t))];return a.length?`<div class="allg">⚠ ALLERGENS: ${a.map(esc).join(', ')}</div>`:'';})()}
+ <ul>${o.lines.map(l=>`<li><b>${l.qty}×</b> ${esc(l.name)}${tagsHtml(tagsOf(l))}${l.mods.length?`<div class="muted">${l.mods.map(x=>esc(x.n)).join(', ')}</div>`:''}${l.note?`<div class="note">📝 ${esc(l.note)}</div>`:''}</li>`).join('')}</ul>
  <div class="row nomb">${KN[s]?`<button class="sm grow" data-adv="${o.id}">→ ${KN[s]}</button>`:`<a class="btn sm sec grow" href="#pos/o${o.id}">Go to POS to pay</a>`}${s!=='new'?`<button class="sm sec" data-back="${o.id}" title="Move back">↩</button>`:''}</div></div>`;}).join('')||'<p class="muted center">—</p>'}</div>`;}).join('');
  $$('[data-adv]').forEach(b=>b.onclick=()=>{const o=byId('orders',b.dataset.adv);o.status=KN[o.status];save();route();});
  $$('[data-back]').forEach(b=>b.onclick=()=>{const o=byId('orders',b.dataset.back);o.status=KS[KS.indexOf(o.status)-1];save();route();});};
- $('#main').innerHTML=`<div class="row between"><h2>Kitchen Display</h2><span class="muted">Auto-refreshes every 15s · cards turn amber at 12 min, red at 20 min</span></div><div class="kanban k4" id="kds"></div>`;draw();timer=setInterval(()=>{if(!$('#kds'))return clearInterval(timer);PAGE.kitchen();},15000);};
+ $('#main').innerHTML=`<div class="row between"><h2>Kitchen Display</h2><span class="muted">Auto-refreshes every 15s · cards turn amber at 12 min, red at 20 min</span></div><div class="kanban k4" id="kds"></div>`;draw();TT86.render($('#main'),{getItems:()=>DB.items,restore:id=>{const it=byId('items',+id);if(it){it.available=true;save();toast(it.name+' is back on');}}});timer=setInterval(()=>{if(!$('#kds'))return clearInterval(timer);PAGE.kitchen();},15000);};
 
 // ---------- tables ----------
 PAGE.tables=()=>{const c={free:0,occupied:0,reserved:0};DB.tables.forEach(t=>c[tableStatus(t)]++);
  $('#main').innerHTML=`<div class="row between"><h2>Floor</h2><button id="add">+ Add table</button></div><div class="row"><span class="badge free">${c.free} free</span><span class="badge occupied">${c.occupied} occupied</span><span class="badge reserved">${c.reserved} reserved</span></div>
  <div class="floor">${DB.tables.map(t=>{const s=tableStatus(t),o=DB.orders.find(o=>!o.paid&&o.table_id==t.id),r=DB.reservations.filter(r=>r.table_id==t.id&&r.status==='booked'&&new Date(r.at)>=Date.now()-3600e3).sort((a,b)=>a.at<b.at?-1:1)[0];
  return`<div class="tbl ${s}" data-t="${t.id}"><div class="tn">${esc(t.name)}</div><div class="muted">${t.seats} seats</div><div class="ts">${s}</div>${o?`<div class="small">${badge(o.status)} ${money(totals(o).total)} · ${elapsed(o.created_at)}</div>`:''}${r?`<div class="small">📅 ${esc(r.name)} ${fmtDT(r.at)}</div>`:''}
- <div class="row nomb center"><a class="btn sm" href="#pos/t${t.id}">${o?'Open ticket':'New order'}</a><button class="sm sec" data-edit="${t.id}">Edit</button></div></div>`;}).join('')||'<p class="muted">No tables yet.</p>'}</div>`;
+ <div class="row nomb center"><a class="btn sm" href="#pos/t${t.id}">${o?'Open ticket':'New order'}</a><button class="sm sec" data-edit="${t.id}">Edit</button></div></div>`;}).join('')||'<p class="muted empty">No tables yet.</p>'}</div>`;
  $('#add').onclick=()=>editTable();$$('[data-edit]').forEach(b=>b.onclick=()=>editTable(+b.dataset.edit));};
-function editTable(id){const t=id?byId('tables',id):{seats:4};modal(`<h3>${id?'Edit':'Add'} table</h3><form class="form">${field('name','Table name',t.name)}${field('seats','Seats',t.seats,'number')}
+function editTable(id){const t=id?byId('tables',id):{seats:4};modal(`<h3>${id?'Edit':'Add'} table</h3><form class="form">${field('name','Table name',t.name)}${field('seats','Seats',t.seats,'number','','min="1" max="200" step="1"')}
  ${id?`<div class="full"><button type="button" class="danger sm" onclick="closeModal();if(DB.orders.some(o=>!o.paid&&o.table_id==${id}))toast('Table has an open ticket');else delRec('tables',${id},'Delete this table?')">Delete table</button></div>`:''}${btns}</form>`,
- d=>{need(d.name,'Name is required');const x={name:d.name.trim(),seats:+d.seats||1};if(DB.tables.some(o=>o.name.toLowerCase()===x.name.toLowerCase()&&o.id!==id))throw new Error('Table name already used');if(id)Object.assign(t,x);else DB.tables.push({id:nid(),...x});save();});}
+ d=>{need(d.name,'Name is required');const x={name:d.name.trim(),seats:Math.min(200,Math.max(1,Math.round(+d.seats)||1))};if(DB.tables.some(o=>o.name.toLowerCase()===x.name.toLowerCase()&&o.id!==id))throw new Error('Table name already used');if(id)Object.assign(t,x);else DB.tables.push({id:nid(),...x});save();});}
 
 // ---------- reservations ----------
 let resFilter='upcoming';
@@ -260,26 +1600,27 @@ PAGE.reservations=()=>{let rs=DB.reservations.slice().sort((a,b)=>a.at<b.at?-1:1
  if(resFilter==='upcoming')rs=rs.filter(r=>r.at.slice(0,10)>=today&&['booked','seated'].includes(r.status));else if(resFilter==='today')rs=rs.filter(r=>r.at.slice(0,10)===today);
  $('#main').innerHTML=`<div class="row between"><h2>Reservations</h2><button id="add">+ New reservation</button></div>
  <div class="row"><div class="seg">${[['upcoming','Upcoming'],['today','Today'],['all','All']].map(([k,l])=>`<button class="${resFilter===k?'on':''}" data-f="${k}">${l}</button>`).join('')}</div></div>
- <div class="tw"><table><tr><th>When</th><th>Name</th><th>Phone</th><th>Party</th><th>Table</th><th>Status</th><th></th></tr>${rs.map(r=>`<tr><td><b>${fmtDT(r.at)}</b></td><td>${esc(r.name)}${r.notes?`<div class="muted">${esc(r.notes)}</div>`:''}</td><td>${esc(r.phone)}</td><td>${r.party}</td><td>${esc(byId('tables',r.table_id)?.name||'—')}</td><td>${badge(r.status)}</td>
+ <div class="tw"><table><tr><th>When</th><th>Name</th><th>Phone</th><th>Party</th><th>Table</th><th>Status</th><th></th></tr>${rs.map(r=>`<tr><td><b>${fmtDT(r.at)}</b></td><td>${esc(r.name)}${r.notes?`<div class="muted">${esc(r.notes)}</div>`:''}${TTRegulars.noteBoxHtml(r.name,r.phone)}</td><td>${esc(r.phone)}</td><td>${r.party}</td><td>${esc(byId('tables',r.table_id)?.name||'—')}</td><td>${badge(r.status)}</td>
  <td class="nowrap">${r.status==='booked'?`<button class="sm green" data-seat="${r.id}">Seat</button> `:''}<button class="sm sec" data-edit="${r.id}">Edit</button> <button class="sm danger" data-del="${r.id}">Del</button></td></tr>`).join('')||'<tr><td colspan=7 class="muted">No reservations.</td></tr>'}</table></div>`;
  $$('[data-f]').forEach(b=>b.onclick=()=>{resFilter=b.dataset.f;route();});$('#add').onclick=()=>editRes();
  $$('[data-edit]').forEach(b=>b.onclick=()=>editRes(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('reservations',+b.dataset.del,'Delete this reservation?'));
  $$('[data-seat]').forEach(b=>b.onclick=()=>{const r=byId('reservations',b.dataset.seat);if(r.table_id&&DB.orders.some(o=>!o.paid&&o.table_id==r.table_id))return toast('Table is still occupied');r.status='seated';save();toast(r.name+' seated');if(r.table_id)location.hash='#pos/t'+r.table_id;else route();});};
 function editRes(id){const r=id?byId('reservations',id):{party:2,status:'booked',at:localDT(Date.now()+3600e3).slice(0,14)+'00'};
- modal(`<h3>${id?'Edit':'New'} reservation</h3><form class="form">${field('name','Guest name',r.name,'text','full')}${field('phone','Phone',r.phone,'tel')}${field('party','Party size',r.party,'number')}
+ modal(`<h3>${id?'Edit':'New'} reservation</h3><form class="form">${field('name','Guest name',r.name,'text','full')}${field('phone','Phone',r.phone,'tel')}<div id="gnbox" class="full"></div><label class="full">Regular guest note (saved for this name + phone, max 200)<textarea name="gnote" maxlength="200" rows="2" placeholder="Likes the corner booth, nut allergy…">${esc(TTRegulars.get(r.name,r.phone))}</textarea></label>${field('party','Party size',r.party,'number')}
  ${field('at','Date & time',r.at,'datetime-local')}${sel('table_id','Table',[['','Assign later']].concat(DB.tables.map(t=>[t.id,`${t.name} (${t.seats} seats)`])),r.table_id)}${sel('status','Status',RS.map(s=>[s,s.replace('_',' ')]),r.status)}
  <label class="full">Notes<input name="notes" value="${esc(r.notes)}" placeholder="Birthday, high chair, allergies…"></label>${btns}</form>`,
- d=>{need(d.name,'Guest name is required');need(d.at,'Date & time is required');const x={name:d.name.trim(),phone:d.phone,party:Math.max(1,+d.party||1),at:d.at,table_id:+d.table_id||null,status:d.status,notes:d.notes};
+ d=>{need(d.name,'Guest name is required');need(d.at,'Date & time is required');const gnDirty=d.gnote!==undefined&&d.gnote.trim()!==TTRegulars.get(d.name,d.phone);const x={name:d.name.trim(),phone:d.phone,party:Math.max(1,+d.party||1),at:d.at,table_id:+d.table_id||null,status:d.status,notes:d.notes};
   const t=x.table_id&&byId('tables',x.table_id);if(t&&x.party>t.seats&&!confirm(`Party of ${x.party} exceeds ${t.name}'s ${t.seats} seats. Save anyway?`))return false;
   if(x.table_id&&x.status==='booked'&&DB.reservations.some(o=>o.id!==id&&o.table_id==x.table_id&&o.status==='booked'&&Math.abs(new Date(o.at)-new Date(x.at))<2*3600e3))throw new Error('Table already booked within 2 hours of that time');
-  if(id)Object.assign(r,x);else DB.reservations.push({id:nid(),...x});save();});}
+  if(id)Object.assign(r,x);else DB.reservations.push({id:nid(),...x});save();if(gnDirty&&gnTouched&&!TTRegulars.set(d.name,d.phone,d.gnote))toast(TTRegulars.error());});
+ const gf=$('#modal-body form');let gnTouched=false;if(gf){gf.gnote.addEventListener('input',()=>{gnTouched=true;});const sync=()=>{if(!gnTouched)gf.gnote.value=TTRegulars.get(gf.name.value,gf.phone.value);};['input','change'].forEach(ev=>{gf.name.addEventListener(ev,sync);gf.phone.addEventListener(ev,sync);});TTRegulars.attach({nameInput:gf.name,phoneInput:gf.phone,box:$('#gnbox')});}}
 
 // ---------- menu ----------
 let menuCat='all';
 PAGE.menu=()=>{const its=DB.items.filter(i=>menuCat==='all'||i.cat_id==menuCat);
  $('#main').innerHTML=`<div class="row between"><h2>Menu</h2><div class="row nomb"><button class="sec" id="cats">Categories</button><button id="add">+ Add item</button></div></div>
  <div class="tabs"><button class="${menuCat==='all'?'on':''}" data-c="all">All (${DB.items.length})</button>${DB.categories.map(c=>`<button class="${menuCat==c.id?'on':''}" data-c="${c.id}">${esc(c.name)} (${DB.items.filter(i=>i.cat_id==c.id).length})</button>`).join('')}</div>
- <div class="tw"><table><tr><th>Item</th><th>Category</th><th>Price</th><th>Food cost</th><th>Margin</th><th>Available</th><th></th></tr>${its.map(i=>{const m=margin(i);return`<tr><td><b>${esc(i.name)}</b>${i.mods?`<div class="muted">${esc(parseMods(i.mods).map(x=>x.n).join(', '))}</div>`:''}</td><td>${esc(byId('categories',i.cat_id)?.name||'—')}</td><td>${money(i.price)}</td><td class="muted">${money(i.cost)} (${i.price?Math.round(i.cost/i.price*100):0}%)</td>
+ <div class="tw"><table><tr><th>Item</th><th>Category</th><th>Price</th><th>Food cost</th><th>Margin</th><th>Available</th><th></th></tr>${its.map(i=>{const m=margin(i);return`<tr><td><b>${esc(i.name)}</b>${tagsHtml(i.tags)}${i.mods?`<div class="muted">${esc(parseMods(i.mods).map(x=>x.n).join(', '))}</div>`:''}</td><td>${esc(byId('categories',i.cat_id)?.name||'—')}</td><td>${money(i.price)}</td><td class="muted">${money(i.cost)} (${i.price?Math.round(i.cost/i.price*100):0}%)</td>
  <td><b style="color:${m>=65?'#16a34a':m>=50?'#ca8a04':'#dc2626'}">${m}%</b></td><td><label class="switch"><input type="checkbox" data-av="${i.id}" ${i.available?'checked':''}><span></span></label></td><td class="nowrap"><button class="sm sec" data-edit="${i.id}">Edit</button> <button class="sm danger" data-del="${i.id}">Del</button></td></tr>`}).join('')||'<tr><td colspan=7 class="muted">No items.</td></tr>'}</table></div>
  <p class="muted">Margin = (price − food cost) ÷ price. Green ≥ 65%, amber ≥ 50%. Modifiers format: <code>Add cheese:1.5, No onions:0</code></p>`;
  $$('[data-c]').forEach(b=>b.onclick=()=>{menuCat=b.dataset.c==='all'?'all':+b.dataset.c;route();});
@@ -287,8 +1628,8 @@ PAGE.menu=()=>{const its=DB.items.filter(i=>menuCat==='all'||i.cat_id==menuCat);
  $('#add').onclick=()=>editItem();$$('[data-edit]').forEach(b=>b.onclick=()=>editItem(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('items',+b.dataset.del,'Delete this menu item?'));$('#cats').onclick=catsModal;};
 function editItem(id){if(!DB.categories.length)return toast('Add a category first');const i=id?byId('items',id):{available:true,cat_id:menuCat==='all'?DB.categories[0].id:menuCat};
  modal(`<h3>${id?'Edit':'Add'} menu item</h3><form class="form">${field('name','Name',i.name,'text','full')}${sel('cat_id','Category',DB.categories.map(c=>[c.id,c.name]),i.cat_id)}<label>Available<select name="available"><option value="1" ${i.available?'selected':''}>Yes</option><option value="" ${i.available?'':'selected'}>No (86’d)</option></select></label>
- ${field('price','Price',i.price,'number')}${field('cost','Food cost',i.cost,'number')}${field('mods','Modifiers (name:price, comma separated)',i.mods,'text','full')}<div class="full muted" id="mg"></div>${btns}</form>`,
- d=>{need(d.name,'Name is required');if(!(+d.price>0))throw new Error('Price must be greater than 0');const x={name:d.name.trim(),cat_id:+d.cat_id,price:r2(+d.price),cost:r2(+d.cost||0),mods:d.mods.trim(),available:!!d.available};if(id)Object.assign(i,x);else DB.items.push({id:nid(),...x});save();});
+ ${field('price','Price',i.price,'number','','min="0" max="100000"')}${field('cost','Food cost',i.cost,'number','','min="0" max="100000"')}${field('mods','Modifiers (name:price, comma separated)',i.mods,'text','full')}${tagFields(i)}<div class="full muted" id="mg"></div>${btns}</form>`,
+ d=>{need(d.name,'Name is required');if(!(+d.price>0)||!isFinite(+d.price))throw new Error('Price must be greater than 0');const MAXP=100000;let pr=r2(+d.price),co=r2(+d.cost||0);if(pr>MAXP||co>MAXP||+d.cost<0)toast('Price/cost limited to $0 – $'+MAXP.toLocaleString());pr=Math.min(MAXP,pr);co=Math.min(MAXP,Math.max(0,co));const x={name:d.name.trim(),cat_id:+d.cat_id,price:pr,cost:co,mods:d.mods.trim(),available:!!d.available,tags:readTags(d)};if(id)Object.assign(i,x);else DB.items.push({id:nid(),...x});save();});
  const f=$('#modal-body form'),upd=()=>$('#mg').textContent=`Margin: ${margin({price:+f.price.value,cost:+f.cost.value})}% · Food cost: ${+f.price.value?Math.round(+f.cost.value/+f.price.value*100):0}%`;f.price.oninput=f.cost.oninput=upd;upd();}
 function catsModal(){modal(`<h3>Categories</h3>${DB.categories.map(c=>`<div class="row between li"><span>${esc(c.name)} <span class="muted">(${DB.items.filter(i=>i.cat_id==c.id).length} items)</span></span><span><button class="sm sec" data-ren="${c.id}">Rename</button> <button class="sm danger" data-cdel="${c.id}">Del</button></span></div>`).join('')}
  <form class="form" style="margin-top:12px">${field('name','New category','','text','full')}<div class="full row end"><button type="button" class="sec" onclick="closeModal();route()">Done</button><button>Add category</button></div></form>`,
@@ -297,22 +1638,17 @@ function catsModal(){modal(`<h3>Categories</h3>${DB.categories.map(c=>`<div clas
  $$('[data-cdel]').forEach(b=>b.onclick=()=>{const id=+b.dataset.cdel;if(DB.items.some(i=>i.cat_id==id))return toast('Move or delete its items first');DB.categories=DB.categories.filter(c=>c.id!==id);save();catsModal();});}
 
 // ---------- inventory ----------
-PAGE.inventory=()=>{const low=lowStock();$('#main').innerHTML=`<div class="row between"><h2>Inventory</h2><button id="add">+ Add ingredient</button></div>
- ${low.length?`<div class="alert">⚠️ <b>${low.length} low-stock item${low.length>1?'s':''}</b> at or below par level: ${low.map(i=>esc(i.name)).join(', ')}</div>`:'<div class="alert ok">✅ All ingredients above par level.</div>'}
- <div class="tw"><table><tr><th>Ingredient</th><th>On hand</th><th>Par level</th><th>Status</th><th>Adjust</th><th></th></tr>${DB.ingredients.slice().sort((a,b)=>(+a.qty/(+a.par||1))-(+b.qty/(+b.par||1))).map(i=>{const lo=+i.qty<=+i.par;return`<tr class="${lo?'lowrow':''}"><td><b>${esc(i.name)}</b></td><td><b>${+i.qty}</b> ${esc(i.unit)}</td><td class="muted">${+i.par} ${esc(i.unit)}</td><td>${lo?badge('low','LOW STOCK'):badge('okk','OK')}</td>
- <td class="nowrap"><button class="sm sec" data-adj="${i.id}" data-d="-1">−1</button> <button class="sm sec" data-adj="${i.id}" data-d="1">+1</button> <button class="sm sec" data-adj="${i.id}" data-d="10">+10</button></td><td class="nowrap"><button class="sm sec" data-edit="${i.id}">Edit</button> <button class="sm danger" data-del="${i.id}">Del</button></td></tr>`}).join('')||'<tr><td colspan=6 class="muted">No ingredients.</td></tr>'}</table></div>`;
- $$('[data-adj]').forEach(b=>b.onclick=()=>{const i=byId('ingredients',b.dataset.adj);i.qty=Math.max(0,r2(+i.qty+ +b.dataset.d));save();route();});
- $('#add').onclick=()=>editIng();$$('[data-edit]').forEach(b=>b.onclick=()=>editIng(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('ingredients',+b.dataset.del,'Delete this ingredient?'));};
-function editIng(id){const i=id?byId('ingredients',id):{unit:'lb',qty:0,par:0};modal(`<h3>${id?'Edit':'Add'} ingredient</h3><form class="form">${field('name','Name',i.name,'text','full')}${field('qty','On hand',i.qty,'number')}${field('unit','Unit',i.unit)}${field('par','Par level (alert at or below)',i.par,'number','full')}${btns}</form>`,
- d=>{need(d.name,'Name is required');const x={name:d.name.trim(),qty:Math.max(0,+d.qty||0),unit:d.unit.trim(),par:Math.max(0,+d.par||0)};if(id)Object.assign(i,x);else DB.ingredients.push({id:nid(),...x});save();});}
+// One inventory: the old #inventory route now opens Auto Inventory (TTInventory module, inlined above).
+PAGE.inventory=()=>{location.hash='#autoinv';};
+PAGE.autoinv=()=>{TTInventory.mount($('#main'),{getMenuItems:()=>DB.items.map(i=>({id:i.id,name:i.name})),toast:toast,title:DB.settings.name+' shopping list'});};
 
 // ---------- staff ----------
 PAGE.staff=()=>{const since=Date.now()-30*864e5;const st=id=>{const os=DB.orders.filter(o=>o.paid&&o.server_id==id&&o.paid_at>=since);return[os.length,os.reduce((a,o)=>a+totals(o).sub,0),os.reduce((a,o)=>a+totals(o).tip,0)];};
- $('#main').innerHTML=`<div class="row between"><h2>Staff</h2><button id="add">+ Add staff</button></div><div class="tw"><table><tr><th>Name</th><th>Role</th><th>Phone</th><th>Status</th><th>Orders (30d)</th><th>Sales (30d)</th><th>Tips (30d)</th><th></th></tr>
- ${DB.staff.map(s=>{const x=st(s.id);return`<tr><td><b>${esc(s.name)}</b></td><td>${esc(s.role)}</td><td>${esc(s.phone)}</td><td>${s.active!==false?badge('free','active'):badge('cancelled','inactive')}</td><td>${x[0]}</td><td>${money0(x[1])}</td><td>${money0(x[2])}</td><td class="nowrap"><button class="sm sec" data-edit="${s.id}">Edit</button> <button class="sm danger" data-del="${s.id}">Del</button></td></tr>`}).join('')||'<tr><td colspan=8 class="muted">No staff.</td></tr>'}</table></div>`;
- $('#add').onclick=()=>editStaff();$$('[data-edit]').forEach(b=>b.onclick=()=>editStaff(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('staff',+b.dataset.del,'Remove this staff member?'));};
-function editStaff(id){const s=id?byId('staff',id):{role:'Server',active:true};modal(`<h3>${id?'Edit':'Add'} staff</h3><form class="form">${field('name','Name',s.name,'text','full')}${sel('role','Role',['Manager','Server','Bartender','Host','Head Chef','Line Cook','Dishwasher','Other'].map(r=>[r,r]),s.role)}${field('phone','Phone',s.phone,'tel')}${sel('active','Status',[['1','Active'],['','Inactive']],s.active!==false?'1':'','full')}${btns}</form>`,
- d=>{need(d.name,'Name is required');const x={name:d.name.trim(),role:d.role,phone:d.phone,active:!!d.active};if(id)Object.assign(s,x);else DB.staff.push({id:nid(),...x});save();});}
+ $('#main').innerHTML=`<div class="row between"><h2>Staff</h2><button id="add">+ Add staff</button></div><div class="tw"><table><tr><th>Name</th><th>Role</th><th>Phone</th><th>Wage/hr</th><th>Training</th><th>Status</th><th>Orders (30d)</th><th>Sales (30d)</th><th>Tips (30d)</th><th></th></tr>
+ ${DB.staff.map(s=>{const x=st(s.id);return`<tr><td><b>${esc(s.name)}</b></td><td>${esc(s.role)}</td><td>${esc(s.phone)}</td><td>${s.wage?money(s.wage):'—'}</td><td>${s.quiz_best!=null?s.quiz_best+'% ':'—'}${s.quiz_best>=80?'<span class="badge trained">🎓 Trained</span>':''}</td><td>${s.active!==false?badge('free','active'):badge('cancelled','inactive')}</td><td>${x[0]}</td><td>${money0(x[1])}</td><td>${money0(x[2])}</td><td class="nowrap"><button class="sm sec" data-edit="${s.id}">Edit</button> <button class="sm danger" data-del="${s.id}">Del</button></td></tr>`}).join('')||'<tr><td colspan=10 class="muted">No staff.</td></tr>'}</table></div>`;
+ $('#add').onclick=()=>editStaff();$$('[data-edit]').forEach(b=>b.onclick=()=>editStaff(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delStaff(+b.dataset.del));};
+function editStaff(id){const s=id?byId('staff',id):{role:'Server',active:true};modal(`<h3>${id?'Edit':'Add'} staff</h3><form class="form">${field('name','Name',s.name,'text','full')}${sel('role','Role',ROLES.map(r=>[r,r]),s.role)}${field('phone','Phone',s.phone,'tel')}${field('wage','Hourly wage ($)',s.wage||0,'number')}${sel('active','Status',[['1','Active'],['','Inactive']],s.active!==false?'1':'','full')}${btns}</form>`,
+ d=>{need(d.name,'Name is required');const x={name:d.name.trim(),role:d.role,phone:d.phone,wage:Math.max(0,r2(+d.wage||0)),active:!!d.active};if(id)Object.assign(s,x);else DB.staff.push({id:nid(),...x});save();});}
 
 // ---------- orders history ----------
 let ordDay=null;
@@ -324,21 +1660,220 @@ PAGE.orders=()=>{ordDay=ordDay||ymd(Date.now());const os=DB.orders.filter(o=>ymd
  $('#od').onchange=e=>{ordDay=e.target.value||null;route();};$$('[data-rc]').forEach(b=>b.onclick=()=>receipt(+b.dataset.rc));};
 
 // ---------- settings ----------
+function exportBackup(){const blob=new Blob([JSON.stringify({app:'TableTop',version:1,exported_at:new Date().toISOString(),data:DB,inventory:(()=>{try{return JSON.parse(localStorage.getItem(TTInventory.KEY));}catch(e){return null;}})(),guestnotes:TTRegulars.exportData()},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`tabletop-backup-${ymd(Date.now())}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Backup downloaded');}
 PAGE.settings=()=>{const s=DB.settings;$('#main').innerHTML=`<h2>Settings</h2><div class="grid two">
  <div class="card"><h3>Restaurant</h3><form id="sf" class="form">${field('name','Restaurant name',s.name,'text','full')}${field('address','Address (on receipts)',s.address,'text','full')}${field('phone','Phone (on receipts)',s.phone)}${field('tax','Default tax rate %',s.tax,'number')}
  ${field('pin','PIN lock (optional — blank = none)',s.pin,'password','full','inputmode="numeric" autocomplete="off"')}<div class="full"><button>Save settings</button></div></form></div>
- <div class="card"><h3>Your data</h3><p class="muted">Everything is stored only in this browser on this device: ${DB.items.length} menu items, ${DB.orders.length} orders, ${DB.reservations.length} reservations, ${DB.ingredients.length} ingredients, ${DB.staff.length} staff. Export a backup regularly.</p>
+ <div class="card"><h3>Your data</h3><p class="muted">Everything is stored only in this browser on this device: ${DB.items.length} menu items, ${DB.orders.length} orders, ${DB.reservations.length} reservations, ${TTInventory.getIngredients().length} ingredients, ${DB.staff.length} staff. Export a backup regularly.</p>
  <div class="row"><button id="exp">⬇️ Export backup</button><label class="btn sec">⬆️ Import backup<input type="file" id="imp" accept=".json,application/json" hidden></label></div>
- <div class="row"><button class="sec" id="demo">✨ Load demo data</button><button class="danger" id="reset">🗑️ Reset all data</button></div></div></div><p class="muted">TableTop single-file edition · works offline · no data leaves this device.</p>`;
+ <p class="muted backup-note">💾 <b>Back up your data weekly.</b> Safari can clear stored data for pages opened from a file (file://), so keep an exported copy.</p>
+ <div class="row"><button class="sec" id="demo">✨ Load demo data</button><button class="danger" id="reset">🗑️ Reset all data</button></div></div></div><p class="muted">TableTop single-file edition v2 · works offline · no data leaves this device.</p>`;
  $('#sf').onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));Object.assign(DB.settings,{name:d.name.trim()||'My Restaurant',address:d.address.trim(),phone:d.phone.trim(),tax:Math.max(0,+d.tax||0),pin:d.pin.trim()});save();if(DB.settings.pin)sessionStorage.tt_unlocked='1';toast('Settings saved');render();};
- $('#exp').onclick=()=>{const blob=new Blob([JSON.stringify({app:'TableTop',version:1,exported_at:new Date().toISOString(),data:DB},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`tabletop-backup-${ymd(Date.now())}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Backup downloaded');};
+ $('#exp').onclick=exportBackup;
  $('#imp').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text()),d=j.data||j;if(!d.settings||!Array.isArray(d.items)||!Array.isArray(d.orders))throw new Error('Not a TableTop backup file');
-  if(!confirm(`Replace current data with this backup (${d.items.length} menu items, ${d.orders.length} orders)?`))return;const b=blank();for(const k of Object.keys(b))if(d[k]===undefined)d[k]=b[k];DB=d;save();CUR=null;toast('Backup imported');render();}catch(err){toast('Import failed: '+err.message);}e.target.value='';};
+  if(!confirm(`Replace current data with this backup (${d.items.length} menu items, ${d.orders.length} orders)?`))return;const b=blank();for(const k of Object.keys(b))if(d[k]===undefined)d[k]=b[k];DB=d;migrate();try{if(j.inventory&&typeof j.inventory==='object'){localStorage.setItem(TTInventory.KEY,JSON.stringify(j.inventory));TTInventory.reload();}else{TTInventory._reset();TTInventory.importIngredients(DB.ingredients);}DB.settings.inv_imported=true;}catch(e){}try{TTRegulars.reset();if(j.guestnotes&&typeof j.guestnotes==='object')TTRegulars.importData(j.guestnotes);}catch(e){}save();CUR=null;toast('Backup imported');render();}catch(err){toast('Import failed: '+err.message);}finally{e.target.value='';}};
  $('#demo').onclick=()=>{if(!confirm('Replace ALL current data with demo data?'))return;demoData();CUR=null;toast('Demo data loaded');location.hash='#dashboard';render();};
- $('#reset').onclick=()=>{if(!confirm('Delete ALL data in this browser? This cannot be undone — export a backup first.'))return;const p=DB.settings.pin;DB=blank();DB.settings.pin=p;save();CUR=null;toast('All data reset');render();};};
+ $('#reset').onclick=()=>{if(!confirm('Delete ALL data in this browser? This cannot be undone — export a backup first.'))return;const p=DB.settings.pin;DB=blank();DB.settings.pin=p;DB.settings.inv_imported=true;try{TTInventory._reset();}catch(e){}try{TTRegulars.reset();}catch(e){}save();CUR=null;toast('All data reset');render();};};
+
+// ======================= v2: schedule, report, tips, tags, quiz =======================
+const ROLES=['Manager','Server','Bartender','Host','Busser','Head Chef','Line Cook','Dishwasher','Other'];
+const DOW=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const mondayOf=d=>{d=new Date(d);d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return ymd(d);};
+const addDays=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+n);return ymd(d);};
+function normTime(s){const m=/^\s*(\d{1,2})(?::(\d{1,2}))?\s*$/.exec(typeof s==='string'||typeof s==='number'?String(s):'');if(!m)return null;const h=+m[1],mi=+(m[2]||0);if(h>23||mi>59)return null;return String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0');}
+const timeOk=s=>normTime(s)!==null;
+const hm=s=>{const n=normTime(s);if(!n)return 0;const[h,m]=n.split(':');return+h*60+ +m;};
+const shiftMin=s=>{if(!timeOk(s.start)||!timeOk(s.end))return 0;const a=hm(s.start);let b=hm(s.end);if(b<=a)b+=1440;return b-a;};
+const shiftHrs=s=>r2(shiftMin(s)/60);
+const fmtHM=t=>{const n=normTime(t);if(!n)return'?';const[h,m]=n.split(':');const H=+h;return(H%12||12)+(m==='00'?'':':'+m)+(H<12?'a':'p');};
+const shiftTxt=s=>timeOk(s.start)&&timeOk(s.end)?fmtHM(s.start)+'–'+fmtHM(s.end):'time not set';
+const shiftAbs=s=>{if(!timeOk(s.start)||!timeOk(s.end))return[NaN,NaN];const base=new Date(s.date+'T00:00:00').getTime();const a=base+hm(s.start)*60000;let b=base+hm(s.end)*60000;if(b<=a)b+=864e5;return[a,b];};
+const overlaps=(a,b)=>{const[a1,a2]=shiftAbs(a),[b1,b2]=shiftAbs(b);return a1<b2&&b1<a2;};
+const clashes=s=>DB.shifts.filter(o=>o.id!==s.id&&o.staff_id==s.staff_id&&overlaps(s,o));
+const staffName=id=>byId('staff',id)?.name||'(removed)';
+const cmpShift=(a,b)=>a.date<b.date?-1:a.date>b.date?1:hm(a.start)-hm(b.start);
+const dayLabel=s=>new Date(s+'T12:00:00').toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
+const hoursOn=(sid,date)=>r2(DB.shifts.filter(h=>h.staff_id==sid&&h.date===date).reduce((a,h)=>a+shiftHrs(h),0));
+const smsLink=(phone,body)=>'sms:'+String(phone||'').replace(/[^\d+]/g,'')+'?&body='+encodeURIComponent(body);
+const firstName=s=>String(s?.name||'').split(' ')[0];
+const shiftSms=s=>`Hi ${firstName(byId('staff',s.staff_id))}, your shift at ${DB.settings.name}: ${dayLabel(s.date)}, ${shiftTxt(s)}${s.role?' ('+s.role+')':''}.`;
+function weekShifts(sid,days){return DB.shifts.filter(h=>h.staff_id==sid&&h.date>=days[0]&&h.date<=days[6]).sort(cmpShift);}
+function weekSms(st,days){const x=weekShifts(st.id,days);if(!x.length)return`Hi ${firstName(st)}, you have no shifts at ${DB.settings.name} for ${dayLabel(days[0])} – ${dayLabel(days[6])}.`;
+ return`Hi ${firstName(st)}, your schedule at ${DB.settings.name} for ${dayLabel(days[0])} – ${dayLabel(days[6])}:\n`+x.map(h=>`${dayLabel(h.date)}: ${shiftTxt(h)}${h.role?' ('+h.role+')':''}`).join('\n')+`\nTotal: ${r2(x.reduce((a,h)=>a+shiftHrs(h),0))} hrs`;}
+
+// ---------- schedule ----------
+let schedWeek=null;
+PAGE.schedule=()=>{schedWeek=schedWeek||mondayOf(Date.now());const days=Array.from({length:7},(_,i)=>addDays(schedWeek,i)),today=ymd(Date.now());
+ const wk=DB.shifts.filter(s=>s.date>=days[0]&&s.date<=days[6]);
+ const staff=DB.staff.filter(s=>s.active!==false||wk.some(h=>h.staff_id==s.id));
+ const per=s=>{const x=wk.filter(h=>h.staff_id==s.id);const hrs=r2(x.reduce((a,h)=>a+shiftHrs(h),0));return{hrs,cost:r2(hrs*(+s.wage||0))};};
+ const T=staff.reduce((a,s)=>{const p=per(s);a.h+=p.hrs;a.c+=p.cost;return a;},{h:0,c:0});
+ const clashList=[];wk.forEach(h=>{if(clashes(h).length)clashList.push(h);});
+ const swaps=DB.swaps.slice().sort((a,b)=>(a.status==='pending'?0:1)-(b.status==='pending'?0:1)||b.at-a.at);
+ const sales=DB.orders.filter(o=>o.paid&&ymd(o.paid_at)>=days[0]&&ymd(o.paid_at)<=days[6]).reduce((a,o)=>a+totals(o).sub,0);
+ $('#main').innerHTML=`<div class="row between"><h2>Staff Schedule</h2><div class="row nomb"><button class="sec" id="wp">◀</button><button class="sec" id="wt">This week</button><button class="sec" id="wn">▶</button></div></div>
+ <div class="row"><b id="wlabel">${dayLabel(days[0])} – ${dayLabel(days[6])}</b><span class="muted">${r2(T.h)} hrs scheduled · labor ${money(T.c)}${sales?` · ${Math.round(T.c/sales*1000)/10}% of net sales that week`:''}</span></div>
+ ${clashList.length?`<div class="alert" id="clashwarn">⚠️ <b>Overlapping shifts:</b> ${[...new Set(clashList.map(h=>esc(staffName(h.staff_id))+' ('+esc(dayLabel(h.date))+')'))].join(', ')}</div>`:''}
+ <div class="tw"><table class="sched"><tr><th>Staff</th>${days.map((d,i)=>`<th class="${d===today?'today':''}">${DOW[i]}<div class="muted">${d.slice(5)}</div></th>`).join('')}<th>Hours</th><th>Labor</th><th></th></tr>
+ ${staff.map(s=>{const p=per(s);const ph=String(s.phone||'').replace(/[^\d+]/g,'');return`<tr><td class="nowrap"><b>${esc(s.name)}</b><div class="muted">${esc(s.role)} · ${s.wage?money(s.wage)+'/hr':'no wage'}</div></td>
+ ${days.map(d=>`<td class="${d===today?'today':''}">${wk.filter(h=>h.staff_id==s.id&&h.date===d).sort(cmpShift).map(h=>{const c=clashes(h).length;return`<button class="shift ${c?'clash':''}" data-sh="${h.id}" title="${c?'Overlaps another shift':'Edit shift'}">${esc(shiftTxt(h))}${c?' ⚠':''}<small>${esc(h.role||'')}</small></button>`;}).join('')}<button class="addsh" data-add="${s.id}|${d}" title="Add shift">＋</button></td>`).join('')}
+ <td><b>${p.hrs}</b></td><td>${money(p.cost)}</td><td class="nowrap">${ph?`<a class="btn sm sec" data-txtw="${s.id}" href="${esc(smsLink(s.phone,weekSms(s,days)))}">📱 Text week</a>`:'<span class="muted">no phone</span>'}</td></tr>`}).join('')||'<tr><td colspan=11 class="muted">No staff yet — add staff first.</td></tr>'}
+ <tr class="tfoot"><td colspan=8><b>Total</b></td><td><b>${r2(T.h)}</b></td><td><b>${money(T.c)}</b></td><td></td></tr></table></div>
+ <div class="card"><h3>Shift swap requests</h3>${swaps.length?swaps.slice(0,12).map(w=>{const s=byId('shifts',w.shift_id);return`<div class="li row between"><span><b>${esc(staffName(w.from_id))}</b> → <b>${esc(staffName(w.to_id))}</b> · ${s?esc(dayLabel(s.date)+', '+shiftTxt(s)):'(shift gone)'} ${w.note?`<span class="muted">“${esc(w.note)}”</span>`:''}</span>
+ <span class="nowrap">${w.status==='pending'?`<button class="sm green" data-ap="${w.id}">Approve</button> <button class="sm danger" data-dn="${w.id}">Deny</button>`:badge(w.status==='approved'?'free':'cancelled',w.status)}</span></div>`;}).join(''):'<p class="muted empty">No swap requests. Open a shift and choose “Request swap”.</p>'}</div>`;
+ $('#wp').onclick=()=>{schedWeek=addDays(schedWeek,-7);route();};$('#wn').onclick=()=>{schedWeek=addDays(schedWeek,7);route();};$('#wt').onclick=()=>{schedWeek=mondayOf(Date.now());route();};
+ $$('[data-sh]').forEach(b=>b.onclick=()=>editShift(+b.dataset.sh));$$('[data-add]').forEach(b=>b.onclick=()=>{const[s,d]=b.dataset.add.split('|');editShift(null,+s,d);});
+ $$('[data-ap]').forEach(b=>b.onclick=()=>resolveSwap(+b.dataset.ap,true));$$('[data-dn]').forEach(b=>b.onclick=()=>resolveSwap(+b.dataset.dn,false));};
+function editShift(id,sid,date){if(!DB.staff.length)return toast('Add staff first');const s=id?byId('shifts',id):{staff_id:sid||DB.staff[0].id,date:date||ymd(Date.now()),start:'16:00',end:'23:00',role:byId('staff',sid)?.role||DB.staff[0].role};
+ const st=byId('staff',s.staff_id);
+ modal(`<h3>${id?'Edit':'Add'} shift</h3><form class="form">${sel('staff_id','Staff',DB.staff.map(x=>[x.id,x.name+' ('+x.role+')']),s.staff_id,'full')}${field('date','Date',s.date,'date')}${sel('role','Role this shift',ROLES.map(r=>[r,r]),s.role)}${field('start','Start',s.start,'time')}${field('end','End (earlier than start = ends next day)',s.end,'time')}${btns}</form>
+ ${id?`<div class="row" style="margin-top:12px">${st?.phone?`<a class="btn sm sec" id="txtshift" href="${esc(smsLink(st.phone,shiftSms(s)))}">📱 Text shift</a>`:'<span class="muted">No phone on file</span>'}<button type="button" class="sm sec" id="swapb">🔁 Request swap</button><button type="button" class="sm danger" id="delsh">Delete shift</button></div>`:''}`,
+ d=>{need(d.date,'Date is required');need(d.start,'Start time is required');need(d.end,'End time is required');if(d.start===d.end)throw new Error('Start and end can’t be the same');
+  const x={staff_id:+d.staff_id,date:d.date,start:d.start,end:d.end,role:d.role};const c=clashes({...x,id:id||-1});
+  if(c.length&&!confirm(`⚠️ Overlap: ${staffName(x.staff_id)} already works ${shiftTxt(c[0])} on ${dayLabel(c[0].date)}. Save anyway?`))return false;
+  if(id)Object.assign(s,x);else DB.shifts.push({id:nid(),...x});save();});
+ if(id){const f=$('#modal-body form');f.staff_id.onchange=()=>{f.role.value=byId('staff',f.staff_id.value)?.role||f.role.value;};
+  $('#delsh').onclick=()=>{if(!confirm('Delete this shift?'))return;DB.shifts=DB.shifts.filter(h=>h.id!==id);DB.swaps=DB.swaps.filter(w=>w.shift_id!==id);save();closeModal();toast('Shift deleted');route();};
+  $('#swapb').onclick=()=>{closeModal();swapModal(id);};}
+ else{const f=$('#modal-body form');f.staff_id.onchange=()=>{f.role.value=byId('staff',f.staff_id.value)?.role||f.role.value;};}}
+function swapModal(shiftId){const s=byId('shifts',shiftId);const others=DB.staff.filter(x=>x.id!==s.staff_id&&x.active!==false);if(!others.length)return toast('No one else to swap with');
+ modal(`<h3>Shift swap request</h3><p class="muted">${esc(staffName(s.staff_id))} · ${esc(dayLabel(s.date))}, ${esc(shiftTxt(s))}</p><form class="form">${sel('to_id','Swap to',others.map(x=>[x.id,x.name+' ('+x.role+')']),others[0].id,'full')}${field('note','Reason (optional)','','text','full')}${btns}</form>`,
+ d=>{if(DB.swaps.some(w=>w.shift_id===shiftId&&w.status==='pending'))throw new Error('This shift already has a pending swap request');DB.swaps.push({id:nid(),shift_id:shiftId,from_id:s.staff_id,to_id:+d.to_id,note:d.note.trim(),status:'pending',at:Date.now()});save();toast('Swap request sent for manager approval');});}
+function resolveSwap(id,approve){const w=byId('swaps',id),s=w&&byId('shifts',w.shift_id);if(!w||!s)return toast('Shift no longer exists');
+ if(approve){const c=clashes({...s,staff_id:w.to_id});if(c.length&&!confirm(`⚠️ ${staffName(w.to_id)} already works ${shiftTxt(c[0])} on ${dayLabel(c[0].date)}. Approve anyway?`))return;s.staff_id=w.to_id;s.role=byId('staff',w.to_id)?.role||s.role;}
+ w.status=approve?'approved':'denied';w.decided_at=Date.now();save();toast(approve?'Swap approved — shift reassigned':'Swap denied');route();}
+function delStaff(id){if(!confirm('Remove this staff member (and their shifts)?'))return;DB.staff=DB.staff.filter(s=>s.id!=id);const sh=DB.shifts.filter(h=>h.staff_id==id).map(h=>h.id);DB.shifts=DB.shifts.filter(h=>h.staff_id!=id);DB.swaps=DB.swaps.filter(w=>!sh.includes(w.shift_id)&&w.from_id!=id&&w.to_id!=id);save();toast('Deleted');route();}
+
+// ---------- end-of-night report ----------
+let rptDate=null;
+function reportData(date){const paid=DB.orders.filter(o=>o.paid&&ymd(o.paid_at)===date);const R={paid,sub:0,tax:0,tip:0,card:0,cash:0,nCard:0,nCash:0,srv:Object.create(null),items:Object.create(null)};
+ paid.forEach(o=>{const t=totals(o);R.sub+=t.sub;R.tax+=t.tax;R.tip+=t.tip;if(o.method==='card'){R.card+=t.total;R.nCard++;}else{R.cash+=t.total;R.nCash++;}
+  const k=o.server_id||0,s=R.srv[k]=R.srv[k]||{n:0,sub:0,tip:0};s.n++;s.sub+=t.sub;s.tip+=t.tip;o.lines.forEach(l=>{const i=R.items[l.name]=R.items[l.name]||{q:0,v:0};i.q+=l.qty;i.v+=lineTotal(l);});});
+ R.voids=DB.voids.filter(v=>ymd(v.at)===date);R.voidTotal=R.voids.reduce((a,v)=>a+v.total,0);R.open=DB.orders.filter(o=>!o.paid&&ymd(o.created_at)===date).length;
+ R.top=Object.entries(R.items).sort((a,b)=>b[1].q-a[1].q||b[1].v-a[1].v).slice(0,10);return R;}
+function reportHtml(date){const R=reportData(date),n=R.paid.length,s=DB.settings;
+ return`<div class="rpt"><h3>${esc(s.name)} — End-of-Night Report</h3><div class="muted">${esc(new Date(date+'T12:00:00').toLocaleDateString([],{weekday:'long',year:'numeric',month:'long',day:'numeric'}))} · printed ${esc(new Date().toLocaleString())}</div>
+ <table class="rt"><tr><th colspan=2>Sales summary</th></tr><tr><td>Orders paid</td><td>${n}</td></tr><tr><td>Net sales (before tax &amp; tips)</td><td><b>${money(R.sub)}</b></td></tr><tr><td>Tax collected</td><td>${money(R.tax)}</td></tr><tr><td>Tips</td><td>${money(R.tip)}</td></tr>
+ <tr><td>Total collected</td><td><b>${money(R.sub+R.tax+R.tip)}</b></td></tr><tr><td>Average ticket (net)</td><td>${money(n?R.sub/n:0)}</td></tr>
+ <tr><td>Card (${R.nCard} orders)</td><td>${money(R.card)}</td></tr><tr><td>Cash (${R.nCash} orders)</td><td>${money(R.cash)}</td></tr>${R.open?`<tr><td>Still-open orders from this day</td><td>${R.open}</td></tr>`:''}</table>
+ <table class="rt"><tr><th>Server</th><th>Orders</th><th>Net sales</th><th>Tips</th></tr>${Object.entries(R.srv).sort((a,b)=>b[1].sub-a[1].sub).map(([k,v])=>`<tr><td>${esc(+k?staffName(+k):'Unassigned')}</td><td>${v.n}</td><td>${money(v.sub)}</td><td>${money(v.tip)}</td></tr>`).join('')||'<tr><td colspan=4>No sales</td></tr>'}</table>
+ <table class="rt"><tr><th>Top 10 items</th><th>Qty</th><th>Sales</th></tr>${R.top.map(([nm,v])=>`<tr><td>${esc(nm)}</td><td>${v.q}</td><td>${money(v.v)}</td></tr>`).join('')||'<tr><td colspan=3>No sales</td></tr>'}</table>
+ <table class="rt"><tr><th>Voids</th><th>${R.voids.length} · ${money(R.voidTotal)}</th></tr>${R.voids.map(v=>`<tr><td>#${v.order_id} ${esc(v.label)} (${esc(v.status||'')})${v.server_id?' · '+esc(staffName(v.server_id)):''}</td><td>${money(v.total)}</td></tr>`).join('')||'<tr><td colspan=2>None</td></tr>'}</table>
+ <div class="sig">Cash counted: ________ &nbsp;&nbsp; Manager signature: ______________________</div></div>`;}
+PAGE.report=()=>{rptDate=rptDate||ymd(Date.now());$('#main').innerHTML=`<div class="row between"><h2>End-of-Night Report</h2><div class="row nomb"><input type="date" id="rd" value="${esc(rptDate)}"><button id="prt">🖨️ Print report</button></div></div><p class="muted">Preview below. “Print report” prints only the report (no menus or buttons).</p><div class="card">${reportHtml(rptDate)}</div>`;
+ $('#rd').onchange=e=>{rptDate=e.target.value||ymd(Date.now());route();};$('#prt').onclick=()=>{$('#print').innerHTML=reportHtml(rptDate);window.print();};};
+
+// ---------- tip splitter ----------
+let tipS={date:null,total:null,mode:'schedule',k:0,b:0,manual:{},inc:{}};
+const KITCHEN=['Head Chef','Line Cook','Dishwasher'],BUSS=['Busser'];
+const tipsOn=date=>r2(DB.orders.filter(o=>o.paid&&ymd(o.paid_at)===date).reduce((a,o)=>a+totals(o).tip,0));
+function alloc(cents,w){const S=w.reduce((a,x)=>a+x,0);if(!(S>0)||!cents)return w.map(()=>0);const raw=w.map(x=>cents*x/S),fl=raw.map(Math.floor);let rem=cents-fl.reduce((a,x)=>a+x,0);
+ raw.map((x,i)=>[x-fl[i],i]).sort((a,b)=>b[0]-a[0]||a[1]-b[1]).forEach(([,i])=>{if(rem>0){fl[i]++;rem--;}});return fl;}
+function tipRows(){const date=tipS.date;let rows=DB.staff.filter(s=>s.active!==false).map(s=>({s,h:tipS.mode==='manual'?(tipS.manual[s.id]!==undefined?Math.max(0,+tipS.manual[s.id]||0):hoursOn(s.id,date)):hoursOn(s.id,date)}));
+ if(tipS.mode==='schedule')rows=rows.filter(r=>r.h>0);return rows;}
+function tipCalc(){const T=Math.max(0,Math.round((tipS.total!==null?(+tipS.total||0):tipsOn(tipS.date))*100))||0,rows=tipRows();const notes=[];
+ rows.forEach(r=>{r.inc=tipS.inc[r.s.id]!==undefined?tipS.inc[r.s.id]:r.s.role!=='Manager';r.g=KITCHEN.includes(r.s.role)?'k':BUSS.includes(r.s.role)?'b':'p';r.main=r.ko=0;});
+ const act=g=>rows.filter(r=>r.inc&&r.g===g&&r.h>0),pc=v=>Math.min(100,Math.max(0,+v||0));
+ const pk=pc(tipS.k),pb=Math.min(pc(tipS.b),100-pk);let kc=Math.round(T*pk/100),bc=Math.round(T*pb/100);
+ if(kc&&!act('k').length){notes.push('Kitchen tip-out not applied: no kitchen staff with hours.');kc=0;}if(bc&&!act('b').length){notes.push('Busser tip-out not applied: no bussers with hours.');bc=0;}
+ const main=T-kc-bc;const P=act('p');if(main&&!P.length)notes.push('No one with hours is in the tip pool — nothing to split among.');
+ alloc(main,P.map(r=>r.h)).forEach((v,i)=>P[i].main=v);alloc(kc,act('k').map(r=>r.h)).forEach((v,i)=>act('k')[i].ko=v);alloc(bc,act('b').map(r=>r.h)).forEach((v,i)=>act('b')[i].ko=v);
+ rows.forEach(r=>r.tot=r.main+r.ko);return{T,kc,bc,main,rows,notes,paid:rows.reduce((a,r)=>a+r.tot,0)};}
+function tipTable(c,live){const m=x=>money(x/100);return`<table class="rt"><tr><th>Name</th><th>Role</th><th>Hours</th>${live?'<th>In split</th>':''}<th>Pool share</th><th>Tip-out</th><th>Total</th></tr>${c.rows.map(r=>`<tr><td>${esc(r.s.name)}</td><td>${esc(r.s.role)}</td><td>${live?(tipS.mode==='manual'?`<input class="tiny" type="number" step="0.25" min="0" data-hrs="${r.s.id}" value="${r.h}">`:r.h):r.h}</td>${live?`<td><input type="checkbox" data-inc="${r.s.id}" ${r.inc?'checked':''}></td>`:''}<td id="tp-m-${r.s.id}">${m(r.main)}</td><td id="tp-o-${r.s.id}">${m(r.ko)}</td><td><b id="tp-t-${r.s.id}">${m(r.tot)}</b></td></tr>`).join('')||`<tr><td colspan=${live?7:6}>No one with hours on this date.</td></tr>`}
+ <tr class="tfoot"><td colspan=${live?4:3}><b>Distributed</b></td><td></td><td></td><td><b id="tp-sum">${m(c.paid)}</b></td></tr></table>`;}
+PAGE.tips=()=>{tipS.date=tipS.date||ymd(Date.now());const auto=tipsOn(tipS.date);
+ $('#main').innerHTML=`<div class="row between"><h2>Tip Splitter</h2><button id="prt">🖨️ Print</button></div><div class="card"><div class="form">
+ ${field('date','Date',tipS.date,'date','','id="td"')}<label>Total tips ($) — auto-filled from paid orders, editable<input id="tt" type="number" step="0.01" min="0" value="${tipS.total!==null?tipS.total:auto}"></label>
+ <label>Split by<select id="tm"><option value="schedule" ${tipS.mode==='schedule'?'selected':''}>Hours from the schedule</option><option value="manual" ${tipS.mode==='manual'?'selected':''}>Manual hours</option></select></label>
+ <label>&nbsp;<button class="sec" id="ta" type="button">Reset total to auto (${money(auto)})</button></label>
+ ${field('k','Tip-out to kitchen % (optional)',tipS.k,'number','','id="tk" step="0.5" min="0" max="100"')}${field('b','Tip-out to bussers % (optional)',tipS.b,'number','','id="tb" step="0.5" min="0" max="100"')}</div>
+ <p class="muted">Servers, bartenders and hosts share the main pool by hours. Kitchen (chef/cook/dishwasher) and bussers receive only their tip-out, split by hours. Managers are excluded by default — tick “In split” to include.</p></div>
+ <div id="tipbox" class="tw"></div><div id="tipnotes"></div>`;
+ const draw=()=>{const c=tipCalc();$('#tipbox').innerHTML=tipTable(c,true);$('#tipnotes').innerHTML=`<div class="grid"><div class="card stat"><div class="v" id="tp-total">${money(c.T/100)}</div><div class="l">Total tips</div></div><div class="card stat"><div class="v" id="tp-main">${money(c.main/100)}</div><div class="l">Main pool</div></div><div class="card stat"><div class="v" id="tp-k">${money(c.kc/100)}</div><div class="l">Kitchen tip-out</div></div><div class="card stat"><div class="v" id="tp-b">${money(c.bc/100)}</div><div class="l">Busser tip-out</div></div></div>${c.notes.map(n=>`<div class="alert">⚠️ ${esc(n)}</div>`).join('')}`;
+  $$('[data-hrs]').forEach(i=>i.oninput=()=>{tipS.manual[i.dataset.hrs]=i.value;upd();});$$('[data-inc]').forEach(i=>i.onchange=()=>{tipS.inc[i.dataset.inc]=i.checked;upd();});};
+ const upd=()=>{const c=tipCalc(),m=x=>money(x/100);c.rows.forEach(r=>{const a=$('#tp-m-'+r.s.id);if(a){a.textContent=m(r.main);$('#tp-o-'+r.s.id).textContent=m(r.ko);$('#tp-t-'+r.s.id).textContent=m(r.tot);}});$('#tp-sum').textContent=m(c.paid);
+  $('#tp-total').textContent=m(c.T);$('#tp-main').textContent=m(c.main);$('#tp-k').textContent=m(c.kc);$('#tp-b').textContent=m(c.bc);$('#tipnotes').querySelectorAll('.alert').forEach(a=>a.remove());c.notes.forEach(n=>{const d=document.createElement('div');d.className='alert';d.textContent='⚠️ '+n;$('#tipnotes').appendChild(d);});};
+ draw();
+ $('#td').onchange=e=>{tipS.date=e.target.value||ymd(Date.now());tipS.total=null;tipS.manual={};tipS.inc={};route();};
+ $('#tt').oninput=e=>{let v=e.target.value===''?null:+e.target.value;if(v!==null&&!(v>=0)){v=0;e.target.value='0';toast('Total tips can’t be negative — set to 0');}tipS.total=v;upd();};$('#ta').onclick=()=>{tipS.total=null;route();};
+ $('#tm').onchange=e=>{tipS.mode=e.target.value;tipS.manual={};route();};const outClamp=(me,other,key,okey)=>e=>{let v=Math.max(0,+e.target.value||0);const o=Math.min(100,Math.max(0,+tipS[okey]||0));if(v>100-o){v=100-o;e.target.value=String(v);toast('Kitchen + busser tip-out can’t exceed 100% — set to '+v+'%');}else if(e.target.value!==''&&+e.target.value<0){v=0;e.target.value='0';}tipS[key]=e.target.value;upd();};
+ $('#tk').oninput=outClamp('#tk','#tb','k','b');$('#tb').oninput=outClamp('#tb','#tk','b','k');
+ $('#prt').onclick=()=>{const c=tipCalc();$('#print').innerHTML=`<div class="rpt"><h3>${esc(DB.settings.name)} — Tip Split</h3><div class="muted">${esc(dayLabel(tipS.date))} · total tips ${money(c.T/100)} · kitchen tip-out ${esc(+tipS.k||0)}% · busser tip-out ${esc(+tipS.b||0)}% · by ${tipS.mode==='manual'?'manual':'scheduled'} hours</div>${tipTable(c,false)}${c.notes.map(n=>`<p>⚠ ${esc(n)}</p>`).join('')}<div class="sig">Manager signature: ______________________</div></div>`;window.print();};};
+
+// ---------- allergy / diet tags ----------
+const STDTAGS=['Gluten-free','Vegan','Vegetarian','Contains nuts','Dairy','Shellfish','Spicy'];
+const TAGCLS={'gluten-free':'good','vegan':'good','vegetarian':'good','contains nuts':'warn','dairy':'warn','shellfish':'warn','spicy':'hot'};
+const tkey=t=>String(t).trim().toLowerCase();
+const canonTag=t=>{const k=tkey(t);const s=STDTAGS.find(x=>tkey(x)===k);if(s)return s;for(const i of DB.items||[])for(const x of tagArr(i))if(tkey(x)===k)return x;return String(t).trim();};
+const isAllergen=t=>TAGCLS[tkey(t)]!=='good';
+const tagBadge=t=>`<span class="tag ${TAGCLS[tkey(t)]||'custom'}">${esc(t)}</span>`;
+const tagArr=i=>Array.isArray(i&&i.tags)?i.tags.filter(t=>typeof t==='string'&&t.trim()):[];
+const tagsHtml=ts=>(Array.isArray(ts)&&ts.length)?`<div class="tags">${ts.map(tagBadge).join('')}</div>`:'';
+const tagsOf=l=>Array.isArray(l.tags)?l.tags:tagArr(byId('items',l.item_id));
+const hasTag=(i,k)=>tagArr(i).some(t=>tkey(t)===k);
+function readTags(d){const out=STDTAGS.filter((t,i)=>d['tg'+i]);String(d.ctags||'').split(',').map(x=>x.trim().slice(0,24)).filter(Boolean).forEach(x=>{const t=canonTag(x);if(!out.some(o=>tkey(o)===tkey(t)))out.push(t);});return out;}
+function tagFields(i){const cur=tagArr(i);const custom=cur.filter(t=>!STDTAGS.some(s=>tkey(s)===tkey(t)));
+ return`<div class="full"><div class="muted">Allergy &amp; diet tags</div><div class="mods">${STDTAGS.map((t,k)=>`<label class="chk"><input type="checkbox" name="tg${k}" ${cur.some(c=>tkey(c)===tkey(t))?'checked':''}> ${esc(t)}</label>`).join('')}</div></div>${field('ctags','Custom tags (comma separated, e.g. Sesame, Soy)',custom.join(', '),'text','full')}`;}
+let posHide=new Set(),posOnly=new Set();
+function allergenChips(){const used=new Map();DB.items.forEach(i=>tagArr(i).forEach(t=>{if(isAllergen(t))used.set(tkey(t),t);}));STDTAGS.filter(isAllergen).forEach(t=>{if(!used.has(tkey(t)))used.set(tkey(t),t);});return[...used.entries()];}
+function posFilterHtml(){const act=posHide.size+posOnly.size;return`<div class="pfilter"><span class="muted">Hide items with:</span> ${allergenChips().map(([k,t])=>`<button class="chip ${posHide.has(k)?'on':''}" data-hide="${esc(k)}">${esc(t)}</button>`).join('')}
+ <span class="muted">Only:</span> ${STDTAGS.filter(t=>!isAllergen(t)).map(t=>`<button class="chip ${posOnly.has(tkey(t))?'on':''}" data-only="${esc(tkey(t))}">${esc(t)}</button>`).join('')}${act?'<button class="chip" id="pclr">Clear filter</button>':''}</div>`;}
+const itemVisible=i=>![...posHide].some(k=>hasTag(i,k))&&[...posOnly].every(k=>hasTag(i,k));
+
+// ---------- training quiz ----------
+const QF=[{"q": "A guest says they have a food allergy. What is the first thing you do?", "choices": ["Tell them it is probably fine", "Write the allergy on the order and tell the kitchen and manager", "Skip it if the kitchen is busy", "Guess based on the item name"], "answer": 1}, {"q": "What does '86' mean in a restaurant?", "choices": ["Table 86 is ready", "An item is sold out", "The kitchen is closing", "A discount"], "answer": 1}, {"q": "Which steak temperature is cooked the least?", "choices": ["Medium", "Medium rare", "Rare", "Well done"], "answer": 2}, {"q": "A guest's food is taking a long time. Best move?", "choices": ["Ignore them", "Check with the kitchen, then update the guest and apologize for the wait", "Tell them to be patient", "Cancel the order"], "answer": 1}, {"q": "How should you carry hot plates?", "choices": ["Bare hands as fast as possible", "With a dry towel or tray, and warn guests the plate is hot", "Stacked on one arm without warning", "Let the guest take it"], "answer": 1}, {"q": "When do you wash your hands?", "choices": ["Only at the start of a shift", "After using the restroom, touching your face or trash, and before handling food", "Only when they look dirty", "Once an hour"], "answer": 1}, {"q": "A guest spills a drink on the floor. What do you do?", "choices": ["Walk around it", "Clean it up right away or put out a wet floor sign", "Wait for the end of the shift", "Tell the guest to clean it"], "answer": 1}, {"q": "Why do you repeat the order back to the guest?", "choices": ["To be polite only", "To catch mistakes before they reach the kitchen", "To slow things down", "It is not needed"], "answer": 1}, {"q": "A guest asks a question about an ingredient you are not sure of. Best answer?", "choices": ["Make something up", "Say 'Let me check with the chef' and find out", "Say no", "Change the subject"], "answer": 1}, {"q": "A reservation guest arrives and their table is not ready yet. Best move?", "choices": ["Say nothing", "Greet them, give an honest wait time, and offer a seat at the bar if possible", "Give their table away", "Ask them to leave and come back"], "answer": 1}];
+let QZ=null;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const sample=(a,n)=>shuffle(a).slice(0,n);
+function mkChoices(correct,pool,n){const w=sample([...new Set(pool.filter(x=>x!==correct))],n-1);if(!w.length)return null;const ch=shuffle([correct,...w]);return{choices:ch,a:ch.indexOf(correct)};}
+function menuQuestions(){const out=[],cnt=new Map();DB.items.forEach(i=>{const k=String(i.name).trim().toLowerCase();cnt.set(k,(cnt.get(k)||0)+1);});const items=DB.items.filter(i=>cnt.get(String(i.name).trim().toLowerCase())===1),cats=DB.categories.map(c=>c.name);const prices=[...new Set(items.map(i=>money(i.price)))];
+ const allMods=[...new Set(items.flatMap(x=>parseMods(x.mods).map(m=>m.n)))];const modPrices=[...new Set([...items.flatMap(x=>parseMods(x.mods).map(m=>m.p)).filter(p=>p>0),1,2,3,4,5])].map(money);
+ const tmap=new Map();[...STDTAGS,...items.flatMap(tagArr)].forEach(x=>{const k=tkey(x);if(k&&!tmap.has(k))tmap.set(k,canonTag(x));});const allTags=[...tmap.values()];
+ const push=(t,q,c,extra={})=>{if(c)out.push({t,q,choices:c.choices,a:c.a,...extra});};
+ items.forEach(it=>{const full=c=>c&&c.choices.length===4?c:null;
+  push('price',`How much is the ${it.name}?`,full(mkChoices(money(it.price),prices,4)));
+  const cn=byId('categories',it.cat_id)?.name;if(cn){const c=mkChoices(cn,cats,4);if(c&&c.choices.length>=2)push('category',`Which section of the menu is the ${it.name} in?`,c);}
+  const mods=parseMods(it.mods);if(mods.length){const pick1=sample(mods.map(m=>m.n),1)[0];push('options',`Which of these can a guest add or change on the ${it.name}?`,full(mkChoices(pick1,allMods.filter(n=>!mods.some(m=>m.n===n)),4)));
+   const mp=mods.filter(m=>m.p>0);if(mp.length){const m=sample(mp,1)[0];push('modprice',`How much extra is “${m.n}” on the ${it.name}?`,full(mkChoices(money(m.p),modPrices,4)));}}
+  push('soldout',`Is the ${it.name} currently sold out (86’d)?`,{choices:['Yes — it is sold out','No — it is available'],a:it.available?1:0},{soldout:!it.available});
+  const tg=tagArr(it);if(tg.length){const t=canonTag(sample(tg,1)[0]);push('allergen',`Which of these tags is on the ${it.name}?`,full(mkChoices(t,allTags.filter(x=>!tg.some(y=>tkey(y)===tkey(x))),4)));}});
+ allTags.forEach(t=>{const w=items.filter(i=>hasTag(i,tkey(t))),wo=items.filter(i=>!hasTag(i,tkey(t)));if(w.length){const c=mkChoices(sample(w,1)[0].name,wo.map(i=>i.name),4);if(c&&c.choices.length===4)push('allergen',`Which of these items is tagged “${t}”?`,c);}});
+ for(let k=0;k<3;k++){const four=sample(items,4);if(four.length===4&&new Set(four.map(i=>i.price)).size===4){const top=four.slice().sort((a,b)=>b.price-a.price)[0];push('maxprice','Which of these costs the most?',{choices:four.map(i=>i.name),a:four.indexOf(top)});}}
+ return out;}
+function buildRound(){const fixed=shuffle(QF.map(f=>{const ans=f.choices[f.answer],ch=shuffle(f.choices);return{t:'service',q:f.q,choices:ch,a:ch.indexOf(ans)};}));
+ const groups={};menuQuestions().forEach(q=>{(groups[q.t]=groups[q.t]||[]).push(q);});Object.values(groups).forEach((g,i,all)=>{});
+ const types=shuffle(Object.keys(groups));types.forEach(t=>{groups[t]=shuffle(groups[t]);if(t==='soldout')groups[t].sort((a,b)=>(b.soldout?1:0)-(a.soldout?1:0));});
+ const want=Math.min(10,Math.max(10-3,10-fixed.length)),menu=[];const seen=new Set();
+ for(let round=0;menu.length<want&&round<50;round++){let any=false;for(const t of types){const q=groups[t].shift();if(q){any=true;if(!seen.has(q.q)){seen.add(q.q);menu.push(q);if(menu.length>=want)break;}}}if(!any)break;}
+ const pickF=fixed.slice(0,10-menu.length);return shuffle([...menu,...pickF]).slice(0,10);}
+PAGE.quiz=()=>{if(QZ&&QZ.qs)return drawQuiz();const staff=DB.staff.filter(s=>s.active!==false);
+ $('#main').innerHTML=`<h2>Staff Training Quiz</h2><div class="card"><p>10 random questions built from your live menu (prices, sections, add-ons, sold-out items, allergy tags) plus general service questions. Score <b>80%+</b> to earn the 🎓 Trained badge.</p>
+ <div class="row"><select id="qs"><option value="">Who is taking the quiz?</option>${staff.map(s=>`<option value="${s.id}">${esc(s.name)} (${esc(s.role)})</option>`).join('')}</select><button id="qstart">Start round</button></div></div>
+ <div class="card"><h3>Best scores</h3>${staff.map(s=>`<div class="li row between"><span>${esc(s.name)}</span><span>${s.quiz_best!=null?`<b>${s.quiz_best}%</b> ${s.quiz_best>=80?'<span class="badge trained">🎓 Trained</span>':''}`:'<span class="muted">not taken</span>'}</span></div>`).join('')||'<p class="muted">Add staff first.</p>'}</div>`;
+ $('#qstart').onclick=()=>{const sid=+$('#qs').value;if(!sid)return toast('Choose who is taking the quiz');QZ={sid,qs:buildRound(),i:0,score:0,ans:null,done:false};route();};};
+function drawQuiz(){const q=QZ.qs[QZ.i],s=byId('staff',QZ.sid);
+ if(QZ.done){const pct=Math.round(QZ.score/QZ.qs.length*100);$('#main').innerHTML=`<h2>Quiz result</h2><div class="card center"><div class="v big" id="qscore">${QZ.score} / ${QZ.qs.length}</div><div class="v" id="qpct">${pct}%</div><p>${esc(s?.name||'')} ${pct>=80?'<span class="badge trained">🎓 Trained</span> — great job!':'needs 80% to be Trained. Review the menu and try again.'}</p><p class="muted">Best score: ${s?.quiz_best??pct}%</p><div class="row center"><button id="qagain">Try again</button><button class="sec" id="qdone">Done</button></div></div>`;
+  $('#qagain').onclick=()=>{QZ={sid:QZ.sid,qs:buildRound(),i:0,score:0,ans:null,done:false};route();};$('#qdone').onclick=()=>{QZ=null;route();};return;}
+ $('#main').innerHTML=`<div class="row between"><h2>Staff Training Quiz</h2><span class="muted">${esc(s?.name||'')} · question ${QZ.i+1} of ${QZ.qs.length} · score ${QZ.score}</span></div><div class="card"><div class="qprog"><div style="width:${QZ.i/QZ.qs.length*100}%"></div></div><h3 id="qq">${esc(q.q)}</h3>
+ <div class="qch">${q.choices.map((c,i)=>`<button class="qc ${QZ.ans!==null?(i===q.a?'right':i===QZ.ans?'wrong':''):''}" data-c="${i}" ${QZ.ans!==null?'disabled':''}>${esc(c)}</button>`).join('')}</div>
+ ${QZ.ans!==null?`<div class="fb ${QZ.ans===q.a?'ok':'bad'}" id="qfb">${QZ.ans===q.a?'✅ Correct!':'❌ Wrong. Correct answer: <b>'+esc(q.choices[q.a])+'</b>'}</div><div class="row end"><button id="qnext">${QZ.i+1<QZ.qs.length?'Next question →':'Finish & see score'}</button></div>`:''}</div><div class="row end"><button class="sec sm" id="qquit">Quit round</button></div>`;
+ $$('[data-c]').forEach(b=>b.onclick=()=>{QZ.ans=+b.dataset.c;if(QZ.ans===q.a)QZ.score++;drawQuiz();});
+ if($('#qnext'))$('#qnext').onclick=()=>{if(QZ.i+1<QZ.qs.length){QZ.i++;QZ.ans=null;}else{QZ.done=true;const pct=Math.round(QZ.score/QZ.qs.length*100);if(s){s.quiz_rounds=(s.quiz_rounds||0)+1;if(s.quiz_best==null||pct>s.quiz_best){s.quiz_best=pct;s.quiz_date=ymd(Date.now());}save();}}drawQuiz();};
+ $('#qquit').onclick=()=>{if(confirm('Quit this round? Your score will not be saved.')){QZ=null;route();}};}
 
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
-render();
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();
+ if(e.key==='Tab'){const m=$('#modal');if(!m||m.classList.contains('hidden'))return;const fs=[...m.querySelectorAll('a[href],button,input,select,textarea,[tabindex]')].filter(x=>!x.disabled&&x.type!=='hidden'&&x.tabIndex>=0&&x.getClientRects().length);if(!fs.length){e.preventDefault();return;}const first=fs[0],last=fs[fs.length-1],a=document.activeElement;
+  if(!m.contains(a)){e.preventDefault();(e.shiftKey?last:first).focus();}else if(e.shiftKey&&a===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&a===last){e.preventDefault();first.focus();}}});
+const CUSTOMER=TTQROrder.isCustomerHash();   // QR customer link: never create demo data or write anything on a customer's phone
+if(!DB){if(CUSTOMER)DB=blank();else demoData();}
+if(!CUSTOMER){try{if(!DB.settings.inv_imported){if(!TTInventory.getIngredients().length&&DB.ingredients.length)TTInventory.importIngredients(DB.ingredients);DB.settings.inv_imported=true;save();}}catch(e){}}
+const reloadDB=()=>{try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.items)&&d.settings){DB=d;migrate();}}catch(e){}};
+const QRO=TTQROrder.tableTopAdapter({getDB:()=>DB,save:save,nid:nid,reload:reloadDB});
+window.addEventListener('storage',e=>{if(e.key===TTRegulars.KEY){try{TTRegulars.reload();}catch(x){}if((location.hash||'').startsWith('#reservations')&&$('#main')&&$('#modal').classList.contains('hidden'))route();return;}if(e.key===TTInventory.KEY){try{TTInventory.reload();}catch(x){}if((location.hash||'').startsWith('#autoinv')&&$('#main'))route();return;}if(e.key!==KEY||TTQROrder.isCustomerHash())return;reloadDB();
+  if(['dashboard','kitchen','tables','orders'].includes((location.hash||'#dashboard').slice(1).split('/')[0])&&$('#main'))route();});
+if(!TTQROrder.autoStart({container:$('#app'),getMenu:QRO.getMenu,getTable:QRO.getTable,
+  placeOrder:(tid,items,meta)=>{const r=QRO.placeOrder(tid,items,meta);try{TTInventory.onOrderPlaced(byId('orders',r.orderId));}catch(e){}return r;},
+  restaurantName:QRO.restaurantName,taxRate:QRO.taxRate,onLeave:()=>{location.hash='#tables';render();}}))render();
 
 </script></body></html>

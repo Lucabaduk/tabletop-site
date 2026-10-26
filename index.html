@@ -24,12 +24,12 @@
 <section id="features"><div class="wrap">
 <div class="center"><h2>Everything you need. Nothing you don't.</h2></div>
 <div class="grid fgrid">
-<div class="card"><div class="ico">🧾</div><h3>Take orders fast</h3><p>A few taps, then card or cash.</p></div>
-<div class="card"><div class="ico">👨‍🍳</div><h3>Kitchen screen</h3><p>No more lost paper tickets.</p></div>
-<div class="card"><div class="ico">🪑</div><h3>Table map</h3><p>See your whole floor at a glance.</p></div>
-<div class="card"><div class="ico">📊</div><h3>Daily numbers</h3><p>Sales and best sellers, no spreadsheet.</p></div>
-<div class="card"><div class="ico">📅</div><h3>Reservations</h3><p>Seat a party in one tap.</p></div>
-<div class="card"><div class="ico">📦</div><h3>Inventory</h3><p>Low-stock warnings on your dashboard.</p></div>
+<div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></div><h3>Take orders fast</h3><p>A few taps, then card or cash.</p></div>
+<div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"/><path d="M6 17h12"/></svg></div><h3>Kitchen screen</h3><p>No more lost paper tickets.</p></div>
+<div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></div><h3>Table map</h3><p>See your whole floor at a glance.</p></div>
+<div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div><h3>Daily numbers</h3><p>Sales and best sellers, no spreadsheet.</p></div>
+<div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></div><h3>Reservations</h3><p>Seat a party in one tap.</p></div>
+<div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div><h3>Inventory</h3><p>Low-stock warnings on your dashboard.</p></div>
 </div>
 <div class="v2row" id="v2"><span class="tag soon">Coming in v2</span><span class="chip">Staff schedule</span><span class="chip">Tip splitter</span><span class="chip">End-of-night report</span><span class="chip">Allergy tags</span><span class="chip">Training quiz</span></div>
 </div></section>
@@ -42,7 +42,7 @@
 
 <section id="pricing"><div class="wrap">
 <div class="price1">
-<span class="eyebrow" style="color:#fdba74">Pricing</span>
+<span class="eyebrow">Pricing</span>
 <div class="amt">$25–30<small> / month</small></div>
 <p class="p1">Everything included. Planned pricing.</p>
 <p class="note">Free 30-day trial planned at launch. We will confirm the price before anyone is charged. Nobody can sign up or pay on this demo site.</p>
@@ -52,25 +52,27 @@
 
 <section class="alt" id="faq"><div class="wrap">
 <div class="center"><h2>Quick answers</h2></div>
-<div class="faq"><details open><summary>Does it work without internet?</summary><p>Yes. It runs in your browser, so a dropped Wi-Fi connection does not stop service.</p></details><details><summary>Where is my data?</summary><p>Only on the device you use. Nothing is uploaded, and devices do not share orders yet.</p></details><details><summary>What does the waitlist do?</summary><p>On this demo site, nothing is sent anywhere. Your answers stay in your browser.</p></details></div>
+<div class="faq"><details open><summary>Does it work without internet?</summary><p>Yes. It runs in your browser, so a dropped Wi-Fi connection does not stop service.</p></details><details><summary>Where is my data?</summary><p>Only on the device you use. Nothing is uploaded, and devices do not share orders yet.</p></details><details><summary>What does the waitlist do?</summary><p>It is a simple list. When signups open, you will give your name and email and we will message you once TableTop is ready. Nothing else is collected.</p></details></div>
 </div></section>
 
 <section id="waitlist"><div class="wrap">
 <div class="formcard slim">
 <h2 style="font-size:clamp(26px,4vw,34px);text-align:center;margin:0 0 16px">Be first to try it</h2>
-<div class="demo-badge"><b>Demo form.</b> Your answers are saved only in this browser (localStorage). Nothing is sent anywhere, and nobody receives it.</div>
-<form id="wl" novalidate>
+<div id="soon" class="soon" role="status"><div class="big">📬</div><h3>Waitlist opens soon</h3><p>We are not taking signups just yet. In the meantime you can <a href="demo.html">try the live demo</a> and see everything TableTop does.</p></div>
+<form id="wl" novalidate hidden>
 <div class="row2"><div class="fld"><label for="wn">Your name</label><input id="wn" name="name" autocomplete="name" required maxlength="80"><div class="err">Please enter your name.</div></div>
 <div class="fld"><label for="we">Email</label><input id="we" name="email" type="email" autocomplete="email" required maxlength="120" placeholder="you@restaurant.com"><div class="err">Please enter a valid email.</div></div></div>
 <div class="fld"><label for="wf">Feature you want most</label><select id="wf" name="feature"><option>Staff schedule</option><option>Tip splitter</option><option>End-of-night report</option><option>Allergy tags</option><option>Staff training quiz</option><option>Syncing between devices</option><option>Something else</option></select></div>
-<button class="btn" style="width:100%" type="submit">Join the waitlist (demo)</button>
+<div class="hp" aria-hidden="true"><label for="wh">Leave this empty</label><input id="wh" name="_honey" type="text" tabindex="-1" autocomplete="off"></div>
+<div id="wlerr" class="wlerr" role="alert" hidden></div>
+<button class="btn" id="wlbtn" style="width:100%" type="submit">Join the waitlist</button>
 </form>
-<div id="thanks" role="status" aria-live="polite"><div class="big">🎉</div><h3>Thank you<span id="tname"></span>!</h3><p>Your answers were saved <b>only in this browser</b> as a demo. Nothing was sent to us or anyone else.</p>
-<p><button class="btn alt sm" id="clearwl" type="button">Delete what was saved</button> <button class="btn alt sm" id="againwl" type="button">Fill it in again</button></p></div>
+<div id="thanks" role="status" aria-live="polite"><div class="big">🎉</div><h3>You're on the list<span id="tname"></span>!</h3><p>Thanks for signing up. We will email you when TableTop opens up.</p>
+<p><button class="btn alt sm" id="againwl" type="button">Add another email</button></p></div>
 <p class="center" style="margin:18px 0 0"><a href="app.html" style="display:inline-block;padding:10px 14px">Or just try the live demo →</a></p>
 </div></div></section>
 </main>
 <footer><div class="wrap foot1"><a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>Table<b>Top</b></span></a>
-<small>© 2026 TableTop. Demo site: the waitlist form saves only in your browser. Pricing is planned launch pricing.</small></div></footer>
+<small>© 2026 TableTop. Pricing is planned launch pricing.</small></div></footer>
 <script src="js/site.js"></script>
 </body></html>
