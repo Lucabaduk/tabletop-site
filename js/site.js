@@ -1,6 +1,6 @@
 // ===== WAITLIST SETUP: the ONE line to edit =====
 // Replace REPLACE_WITH_LUCA_EMAIL with the real address (then confirm the first signup from that inbox). Until then the form stays hidden.
-var WAITLIST_ENDPOINT='https://formsubmit.co/ajax/REPLACE_WITH_LUCA_EMAIL';
+var WAITLIST_ENDPOINT='https://formsubmit.co/ajax/lucabomfim3@gmail.com';
 (function(){
 'use strict';
 var $=function(s){return document.querySelector(s)};
