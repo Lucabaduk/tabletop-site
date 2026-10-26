@@ -31,7 +31,8 @@
 <div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></div><h3>Reservations</h3><p>Seat a party in one tap.</p></div>
 <div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div><h3>Inventory</h3><p>Low-stock warnings on your dashboard.</p></div>
 </div>
-<div class="v2row" id="v2"><span class="tag soon">Coming in v2</span><span class="chip">Staff schedule</span><span class="chip">Tip splitter</span><span class="chip">End-of-night report</span><span class="chip">Allergy tags</span><span class="chip">Training quiz</span></div>
+<div class="v2row now" id="v2"><span class="tag live">Included now</span><span class="chip">Staff schedule</span><span class="chip">Tip splitter</span><span class="chip">End-of-night report</span><span class="chip">Allergy tags</span><span class="chip">Training quiz</span></div>
+<p class="center" style="margin:16px 0 0;color:var(--muted);font-size:15px">Not built yet: guest phone ordering by QR code (it needs a shared server) and syncing between devices.</p>
 </div></section>
 
 <section class="alt"><div class="wrap">
@@ -62,7 +63,7 @@
 <form id="wl" novalidate hidden>
 <div class="row2"><div class="fld"><label for="wn">Your name</label><input id="wn" name="name" autocomplete="name" required maxlength="80"><div class="err">Please enter your name.</div></div>
 <div class="fld"><label for="we">Email</label><input id="we" name="email" type="email" autocomplete="email" required maxlength="120" placeholder="you@restaurant.com"><div class="err">Please enter a valid email.</div></div></div>
-<div class="fld"><label for="wf">Feature you want most</label><select id="wf" name="feature"><option>Staff schedule</option><option>Tip splitter</option><option>End-of-night report</option><option>Allergy tags</option><option>Staff training quiz</option><option>Syncing between devices</option><option>Something else</option></select></div>
+<div class="fld"><label for="wf">Feature you want most</label><select id="wf" name="feature"><option>Guest phone ordering (QR)</option><option>Syncing between devices</option><option>Something else</option></select></div>
 <div class="hp" aria-hidden="true"><label for="wh">Leave this empty</label><input id="wh" name="_honey" type="text" tabindex="-1" autocomplete="off"></div>
 <div id="wlerr" class="wlerr" role="alert" hidden></div>
 <button class="btn" id="wlbtn" style="width:100%" type="submit">Join the waitlist</button>

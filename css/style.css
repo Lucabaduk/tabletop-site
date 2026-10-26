@@ -89,6 +89,7 @@ h2{font-size:clamp(30px,4.4vw,44px);line-height:1.1;letter-spacing:-.035em;font-
 .fgrid .card:nth-child(3n+3) .ico{background:linear-gradient(135deg,#3b82f6,#6366f1)}
 .fgrid .card h3{margin:20px 0 6px;font-size:20px}
 .v2row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin-top:34px;padding:18px 20px;border:1px dashed var(--amber-bd);border-radius:20px;background:linear-gradient(#fffdf6,#fff8e8)}
+.v2row.now{border-color:#bbf7d0;background:linear-gradient(#f7fff9,#fff)}
 .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-weight:600;font-size:14.5px;color:var(--ink2)}
 .card.soonc{background:linear-gradient(#fffdf6,#fff8e8);border-style:dashed;border-color:var(--amber-bd)}
 
