@@ -5,7 +5,8 @@ var $=function(s){return document.querySelector(s)};
 // Plans and prices exactly as listed in the Pricing section of index.html
 var PLANS={tabletop:{name:'TableTop (everything included)',price:'$25–30 / month',note:'Planned launch pricing. Free 30-day trial planned at launch.'}};
 var q=(location.search.match(/[?&]plan=([^&]*)/)||[])[1]||'tabletop';
-var key=PLANS[q]?q:'tabletop',plan=PLANS[key];
+try{q=decodeURIComponent(q)}catch(e){q='tabletop'}
+var key=Object.prototype.hasOwnProperty.call(PLANS,q)?q:'tabletop',plan=PLANS[key];
 $('#planname').textContent=plan.name;$('#planprice').textContent=plan.price;$('#plannote').textContent=plan.note;$('#btnprice').textContent=plan.price.split(' / ')[0];
 var f=$('#co'),box=$('#cberr');
 var digits=function(v){return String(v).replace(/\D/g,'')};
