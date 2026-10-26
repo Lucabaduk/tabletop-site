@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data: blob:; connect-src https://tabletop-server.tabletop-luca.workers.dev">
 <title>TableTop — Restaurant Manager</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍽️%3C/text%3E%3C/svg%3E">
 <style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:#f4f6fb;color:#1c2333}
@@ -162,6 +162,11 @@ input.tiny[data-restock-amt]{width:104px}
 /* schedule: hours/labor/action columns no wider than needed; tighter on ~1024px windows */
 table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px}table.sched th:nth-last-child(2),table.sched td:nth-last-child(2){min-width:72px}table.sched th:last-child,table.sched td:last-child{min-width:0;white-space:nowrap}
 @media(min-width:761px) and (max-width:1100px){nav{width:206px;padding:20px 8px}nav a{padding:10px 8px}nav em{right:6px}main{padding:18px}table.sched th,table.sched td{min-width:60px;padding:8px 3px}table.sched td:first-child,table.sched th:first-child{min-width:104px}.shift{font-size:11px;padding:5px 2px}}
+/* guest-phone orders waiting (only shown when a shared server + staff token are set) */
+.qrwait{margin:0 0 14px}.qrwait h4{margin:0 0 8px}.qrnone{margin:0 0 10px}
+.qrcard{background:#fff7ed;border:2px solid #fb923c;border-radius:10px;padding:10px 12px;margin:0 0 8px;max-width:520px}.qrcard ul{margin:6px 0;padding-left:18px}
+.qrerr{margin:0 0 8px;padding:8px 10px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;color:#991b1b}
+.firstrun,.firstmenu{border:2px solid #fb923c;background:#fff7ed;margin:0 0 14px;max-width:760px}.firstrun .muted,.firstmenu .muted{margin:6px 0 10px}.firstrun .row,.firstmenu .row{gap:8px;flex-wrap:wrap}
 </style></head>
 <body><div id="app"></div><div id="modal" class="modal hidden"><div class="card" id="modal-body"></div></div><div id="toast" class="toast hidden"></div><div id="print"></div>
 <script>
@@ -412,7 +417,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
       h += '<tr class="' + (lo ? 'lowrow' : '') + '"><td><b>' + esc(i.name) + '</b></td><td><b>' + numOpt(i.qty) + '</b> ' + esc(i.unit) + '</td><td class="muted">' + numOpt(i.low) + ' ' + esc(i.unit) +
         '</td><td>' + (lo ? '<span class="badge low">LOW STOCK</span>' : '<span class="badge okk">OK</span>') +
         '</td><td class="nowrap"><input class="tiny" style="width:96px" type="number" min="0" step="any" placeholder="amount" data-restock-amt="' + esc(i.id) + '"> <button class="sm" data-act="restock" data-id="' + esc(i.id) + '">+ Restock</button></td>' +
-        '<td class="nowrap"><button class="sm sec" data-act="edit" data-id="' + esc(i.id) + '">Edit</button> <button class="sm sec" data-act="del" data-id="' + esc(i.id) + '">Del</button></td></tr>';
+        '<td class="nowrap"><button class="sm sec" data-act="edit" data-id="' + esc(i.id) + '">Edit</button> <button class="sm sec" data-act="del" data-id="' + esc(i.id) + '">Delete</button></td></tr>';
     });
     h += '</table></div>';
     // add / edit form
@@ -785,7 +790,12 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
   // ====================================================================
   // Link for a table: <base>#/order?table=<id>. base defaults to the current page URL without its hash.
   function currentBase() {
-    try { return String(root.location.href).split('#')[0]; } catch (e) { return 'TableTop.html'; }
+    try {
+      var h = String(root.location.href).split('#')[0];
+      // opened from a file (or other non-web page): cards would hold an address a phone can't open, so use the hosted app address given to setServer({appUrl})
+      if (server.appUrl && !/^https?:/i.test(h)) return server.appUrl;
+      return h;
+    } catch (e) { return 'TableTop.html'; }
   }
   function tableLink(base, tableId) {
     return String(base || currentBase()).split('#')[0] + '#/order?table=' + encodeURIComponent(String(tableId));
@@ -804,7 +814,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
   }
   function isCustomerHash() { return !!parseHash(); }
 
-  var state = { v: 1, carts: {}, baseUrl: '' };
+  var state = { v: 1, carts: {}, baseUrl: '', orders: {} };
   var saveError = '', listeners = [];
   function store() { try { return root.localStorage || null; } catch (e) { return null; } }
   function load() {
@@ -817,8 +827,13 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
       if (d && typeof d === 'object') {
         state.carts = d.carts && typeof d.carts === 'object' && !Array.isArray(d.carts) ? d.carts : {};
         state.baseUrl = typeof d.baseUrl === 'string' ? d.baseUrl.slice(0, 500) : '';
+        state.orders = {};   // guest orders placed through the shared server (private token kept on this phone only)
+        if (d.orders && typeof d.orders === 'object' && !Array.isArray(d.orders)) Object.keys(d.orders).forEach(function (k) {
+          var r = d.orders[k];
+          if (r && /^o_[a-z0-9]{12}$/.test(k) && r.id === k && typeof r.token === 'string' && r.token && Date.now() - (+r.t || 0) < 86400000) state.orders[k] = r;
+        });
       }
-    } catch (e) { saveError = 'Saved QR-order data was unreadable and was ignored.'; state = { v: 1, carts: {}, baseUrl: '' }; }
+    } catch (e) { saveError = 'Saved QR-order data was unreadable and was ignored.'; state = { v: 1, carts: {}, baseUrl: '', orders: {} }; }
   }
   function save() {
     var s = store();
@@ -827,6 +842,8 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
       var keys = Object.keys(state.carts); // keep only the 30 newest drafts
       if (keys.length > 30) keys.sort(function (a, b) { return (state.carts[a].t || 0) - (state.carts[b].t || 0); })
         .slice(0, keys.length - 30).forEach(function (k) { delete state.carts[k]; });
+      var ok = Object.keys(state.orders || {}); // keep only the 12 newest tracked orders
+      if (ok.length > 12) ok.sort(function (a, b) { return (state.orders[a].t || 0) - (state.orders[b].t || 0); }).slice(0, ok.length - 12).forEach(function (k) { delete state.orders[k]; });
       s.setItem(KEY, JSON.stringify(state)); saveError = ''; return true;
     } catch (e) { saveError = 'Could not save (storage full or blocked): ' + (e && e.message || e); return false; }
   }
@@ -913,6 +930,255 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
   }
 
   // ====================================================================
+  // 2b. Shared-server mode (optional). With no server address NOTHING below is used and the module
+  //     behaves exactly as before. See QRORDER_README.md ("Using the server").
+  //     Guest phone: menu <- GET /menu, order -> POST /orders, status <- GET /orders/<id>?t=<private token>.
+  //     Staff device: GET /changes?since=N, accept/reject, PUT /staff/menu (all with the staff token).
+  //     The guest code never sends the staff token. Every request resolves to a result object, never throws.
+  // ====================================================================
+  var SERVER_URL = '';   // bake the Worker address in here for the build (guest phones have no settings); empty = no server
+  var STAFF_KEY = 'tabletop_qrorder_staff';   // staff device only: last change counter + ids already imported (never the token)
+  var server = { url: normUrl(SERVER_URL), appUrl: '', token: '', fetch: null, onAcceptedOrder: null, timeoutMs: 12000, pollMs: 5000, pollHiddenMs: 30000 };
+  var OFFLINE_MSG = "Can't reach the server. Check the internet connection and try again.";
+
+  function normUrl(u) { u = String(u == null ? '' : u).trim().replace(/\/+$/, ''); return /^https?:\/\/[^\s]+$/i.test(u) ? u : ''; }
+  // setServer({url, staffToken, onAcceptedOrder, fetch, timeoutMs, pollMs, pollHiddenMs}); setServer(null) turns server mode off.
+  function setServer(c) {
+    c = c || {};
+    server.url = normUrl(c.url != null ? c.url : (c.serverUrl != null ? c.serverUrl : ''));
+    server.appUrl = typeof c.appUrl === 'string' && /^https:\/\/[^\s]+$/i.test(c.appUrl.trim()) ? c.appUrl.trim() : '';
+    server.token = typeof c.staffToken === 'string' ? c.staffToken.trim() : '';
+    server.onAcceptedOrder = typeof c.onAcceptedOrder === 'function' ? c.onAcceptedOrder : null;
+    server.fetch = typeof c.fetch === 'function' ? c.fetch : null;
+    server.timeoutMs = +c.timeoutMs > 0 ? +c.timeoutMs : 12000;
+    server.pollMs = +c.pollMs > 0 ? +c.pollMs : 5000;
+    server.pollHiddenMs = +c.pollHiddenMs > 0 ? +c.pollHiddenMs : 30000;
+    return getServer();
+  }
+  function getServer() { return { url: server.url, hasStaffToken: !!server.token }; }
+  function serverEnabled() { return !!server.url; }
+  function pageHidden() { try { return !!(root.document && root.document.hidden); } catch (e) { return false; } }
+
+  // -> Promise<{ok,status,data,error,message,offline,retryAfter}>
+  function sFetch(method, path, o) {
+    o = o || {};
+    return new Promise(function (resolve) {
+      var done = false, timer = null, ac = null;
+      function fin(v) { if (done) return; done = true; if (timer) clearTimeout(timer); resolve(v); }
+      function offline(why) { fin({ ok: false, status: 0, offline: true, error: 'offline', message: OFFLINE_MSG, why: String(why || '') }); }
+      var f = server.fetch || (typeof root.fetch === 'function' ? function (u, i) { return root.fetch(u, i); } : null);
+      if (!server.url) return fin({ ok: false, status: 0, error: 'no_server', message: 'No server address is set.' });
+      if (!f) return offline('fetch is not available');
+      var headers = {};
+      if (o.body !== undefined) headers['Content-Type'] = 'application/json';
+      if (o.auth) headers['Authorization'] = 'Bearer ' + server.token;   // staff calls only
+      var init = { method: method, headers: headers, cache: 'no-store' };
+      if (o.body !== undefined) init.body = JSON.stringify(o.body);
+      try { if (typeof AbortController !== 'undefined') { ac = new AbortController(); init.signal = ac.signal; } } catch (e) { ac = null; }
+      timer = setTimeout(function () { try { if (ac) ac.abort(); } catch (e) {} offline('timeout'); }, server.timeoutMs);
+      var p;
+      try { p = f(server.url + path, init); } catch (e) { return offline(e && e.message); }
+      Promise.resolve(p).then(function (r) {
+        return Promise.resolve(r.text()).then(function (txt) {
+          var data = null; try { data = txt ? JSON.parse(txt) : null; } catch (e) { data = null; }
+          var ra = 0; try { ra = +(r.headers && r.headers.get && r.headers.get('Retry-After')) || 0; } catch (e) {}
+          if (r.ok) return fin({ ok: true, status: r.status, data: data, retryAfter: ra });
+          fin({ ok: false, status: r.status, data: data, error: (data && data.error) || 'http_' + r.status, retryAfter: ra,
+            message: (data && typeof data.message === 'string' && data.message) || ('The server answered with an error (' + r.status + ').') });
+        });
+      }).then(null, function (e) { offline(e && e.message); });
+    });
+  }
+
+  // ---------- staff device state (own key; the staff token is NEVER stored here) ----------
+  var staff = { lastSeq: 0, imported: [], loaded: false };
+  var seenPending = {}, staffPoll = null;
+  function staffLoad() {
+    if (staff.loaded) return; staff.loaded = true;
+    var s = store(); if (!s) return;
+    try {
+      var d = JSON.parse(s.getItem(STAFF_KEY) || 'null');
+      if (d && typeof d === 'object') {
+        staff.lastSeq = Math.max(0, parseInt(d.lastSeq, 10) || 0);
+        staff.imported = Array.isArray(d.imported) ? d.imported.filter(function (x) { return typeof x === 'string'; }).slice(-1000) : [];
+      }
+    } catch (e) {}
+  }
+  function staffSave() { var s = store(); if (!s) return; try { s.setItem(STAFF_KEY, JSON.stringify({ lastSeq: staff.lastSeq, imported: staff.imported.slice(-1000) })); } catch (e) {} }
+  function isImported(id) { staffLoad(); return staff.imported.indexOf(String(id)) >= 0; }
+  function markImported(id) { staffLoad(); if (!isImported(id)) { staff.imported.push(String(id)); staffSave(); } }
+  function resetStaffState() { staff = { lastSeq: 0, imported: [], loaded: true }; seenPending = {}; var s = store(); try { if (s) s.removeItem(STAFF_KEY); } catch (e) {} }
+  function staffState() { staffLoad(); return { lastSeq: staff.lastSeq, imported: staff.imported.slice() }; }
+
+  function staffCall(method, path, body) {
+    if (!server.url) return Promise.resolve({ ok: false, status: 0, error: 'no_server', message: 'No server address is set.' });
+    if (!server.token) return Promise.resolve({ ok: false, status: 0, error: 'no_token', message: 'The staff token is not set on this device.' });
+    return sFetch(method, path, { auth: true, body: body }).then(function (r) {
+      if (r.status === 401) r.message = 'Check the staff token: the server did not accept it.';
+      else if (r.status === 429 && r.error === 'too_many_attempts') r.message = 'Too many wrong staff tokens. Locked for about a minute.';
+      else if (r.status === 503 && r.error === 'not_configured') r.message = 'The server has no staff token set up yet.';
+      return r;
+    });
+  }
+
+  // Is the server reachable, and (when tableId is given) can a guest really load that table's menu?
+  // -> Promise<{ok, reachable, published, seq, message}>. ok is true only when both checks pass.
+  function checkServer(tableId) {
+    if (!server.url) return Promise.resolve({ ok: false, reachable: false, published: false, configured: false, message: 'No server address is set.' });
+    return sFetch('GET', '/health').then(function (h) {
+      if (!h.ok || !h.data || h.data.ok !== true) return { ok: false, reachable: false, published: false, message: h.offline ? h.message : ('The server did not answer correctly' + (h.status ? ' (' + h.status + ')' : '') + '.') };
+      var seq = h.data.seq;
+      if (tableId == null || tableId === '') return { ok: true, reachable: true, published: null, seq: seq };
+      return sFetch('GET', '/menu?table=' + encodeURIComponent(String(tableId))).then(function (m) {
+        if (m.ok && m.data && Array.isArray(m.data.items) && m.data.items.length) return { ok: true, reachable: true, published: true, seq: seq };
+        var np = m.status === 503 || m.status === 404;
+        return { ok: false, reachable: true, published: false, seq: seq, message: np ? 'The server is reachable, but the menu and tables are not published yet (press "Publish menu").' : m.message };
+      });
+    });
+  }
+
+  // ---------- staff: publish the menu ----------
+  // source: TableTop's DB ({settings,tables,categories,items}) or an already-built body for PUT /staff/menu.
+  function menuPayload(src) {
+    src = src || {};
+    if (src.settings || src.items) {
+      var s = src.settings || {};
+      return {
+        restaurant_name: src.restaurant_name != null ? src.restaurant_name : s.name, tax: src.tax != null ? src.tax : s.tax,
+        tables: (src.tables || []).map(function (t) { return { id: t.id, name: t.name, seats: t.seats }; }),
+        categories: (src.categories || []).map(function (c) { return { id: c.id, name: c.name }; }),
+        items: (src.items || []).map(function (i) {
+          return { id: i.id, name: i.name, price: i.price, cost: i.cost, cat_id: i.cat_id, available: i.available, mods: i.mods, tags: i.tags != null ? i.tags : i.allergens, desc: i.desc || i.description || '' };
+        })
+      };
+    }
+    return src;
+  }
+  function publishMenu(source) {
+    var body; try { body = menuPayload(typeof source === 'function' ? source() : source); } catch (e) { return Promise.resolve({ ok: false, error: 'bad_menu', message: 'Could not read the menu: ' + (e && e.message || e) }); }
+    if (!body.tables || !body.tables.length) return Promise.resolve({ ok: false, error: 'bad_menu', message: 'Add at least one table first.' });
+    if (!body.items || !body.items.length) return Promise.resolve({ ok: false, error: 'bad_menu', message: 'Add at least one menu item first.' });
+    return staffCall('PUT', '/staff/menu', body).then(function (r) {
+      if (!r.ok) return r;
+      var d = r.data || {}, skipped = Math.max(0, body.items.length - (+d.items || 0)), skippedT = Math.max(0, body.tables.length - (+d.tables || 0));
+      return { ok: true, status: r.status, seq: d.seq, tables: d.tables, items: d.items, skipped: skipped + skippedT,
+        message: 'Published ' + d.items + ' items and ' + d.tables + ' tables.' + (skipped + skippedT ? ' ' + (skipped + skippedT) + ' were skipped (ids may only use letters, digits, - and _).' : '') };
+    });
+  }
+  var publishTimer = null;
+  // Call after any menu / table / 86 change; sends once, 2 s after the last call. Fails silently (use onResult to show it).
+  function publishMenuSoon(source, onResult, ms) {
+    if (!server.url || !server.token) return false;
+    if (publishTimer) clearTimeout(publishTimer);
+    publishTimer = setTimeout(function () { publishTimer = null; publishMenu(source).then(function (r) { if (onResult) { try { onResult(r); } catch (e) {} } }); }, ms == null ? 2000 : ms);
+    return true;
+  }
+
+  // ---------- staff: poll, accept, reject ----------
+  // Hand an accepted order to the app (once per order id on this device). cb may return a Promise; returning
+  // false or throwing means "not imported" (it is retried on the next poll). The module never writes TableTop's DB.
+  function deliverAccepted(order, cb) {
+    cb = cb || server.onAcceptedOrder;
+    if (isImported(order.id)) return Promise.resolve({ imported: true, already: true });
+    if (!cb) return Promise.resolve({ imported: false, error: 'No onAcceptedOrder callback is set, so the order was not added to the kitchen screen on this device.' });
+    return new Promise(function (resolve) {
+      var out; try { out = cb(order); } catch (e) { return resolve({ imported: false, error: 'Import failed: ' + (e && e.message || e) }); }
+      Promise.resolve(out).then(function (v) {
+        if (v === false) return resolve({ imported: false, error: 'The app did not take the order.' });
+        markImported(order.id); resolve({ imported: true });
+      }, function (e) { resolve({ imported: false, error: 'Import failed: ' + (e && e.message || e) }); });
+    });
+  }
+  // One poll. opts: {importAccepted (default true), onAcceptedOrder, onUpdate(info)}.
+  // -> {ok, seq, changed, pending, accepted, newPending, conflictsOpen, events, importErrors}
+  function pollOrders(opts) {
+    opts = opts || {}; staffLoad();
+    return staffCall('GET', '/changes?since=' + staff.lastSeq).then(function (r) {
+      if (!r.ok) return r;
+      var d = r.data || {};
+      if (!d.changed) return { ok: true, status: 200, seq: d.seq, changed: false, pending: null, accepted: null, newPending: [], importErrors: [] };
+      var pending = Array.isArray(d.pending) ? d.pending : [], accepted = Array.isArray(d.accepted) ? d.accepted : [];
+      var newPending = pending.filter(function (o) { return !seenPending[o.id]; });
+      pending.forEach(function (o) { seenPending[o.id] = 1; });
+      var importErrors = [], chain = Promise.resolve();
+      if (opts.importAccepted !== false) accepted.forEach(function (o) {
+        if (isImported(o.id)) return;
+        chain = chain.then(function () { return deliverAccepted(o, opts.onAcceptedOrder).then(function (x) { if (!x.imported) importErrors.push({ id: o.id, message: x.error }); }); });
+      });
+      return chain.then(function () {
+        // only move the counter forward when everything was imported, so a failed import is retried next poll
+        if (!importErrors.length) { staff.lastSeq = +d.seq || 0; staffSave(); }
+        var info = { ok: true, status: 200, seq: d.seq, changed: true, pending: pending, accepted: accepted, newPending: newPending,
+          conflictsOpen: d.conflicts_open || 0, events: d.events || [], importErrors: importErrors };
+        if (opts.onUpdate) { try { opts.onUpdate(info); } catch (e) {} }
+        return info;
+      });
+    });
+  }
+  // Keeps polling every 5 s (30 s while the tab is hidden). opts: {onUpdate, onError, onAcceptedOrder, importAccepted}.
+  function startStaffPolling(opts) {
+    opts = opts || {}; stopStaffPolling();
+    var ctl = { stopped: false, timer: null, busy: false, last: null };
+    function tick() {
+      if (ctl.stopped || ctl.busy) return;
+      ctl.busy = true;
+      pollOrders(opts).then(function (r) {
+        ctl.busy = false; ctl.last = r;
+        if (!r.ok && opts.onError) { try { opts.onError(r); } catch (e) {} }
+        else if (r.ok && r.importErrors && r.importErrors.length && opts.onError) { try { opts.onError({ ok: false, error: 'import_failed', message: r.importErrors[0].message, importErrors: r.importErrors }); } catch (e) {} }
+        next();
+      });
+    }
+    function next() { if (ctl.stopped) return; ctl.timer = setTimeout(tick, pageHidden() ? server.pollHiddenMs : server.pollMs); }
+    ctl.pollNow = function () { if (ctl.timer) clearTimeout(ctl.timer); return pollOrders(opts).then(function (r) { ctl.last = r; next(); return r; }); };
+    ctl.stop = function () { ctl.stopped = true; if (ctl.timer) clearTimeout(ctl.timer); if (staffPoll === ctl) staffPoll = null; };
+    staffPoll = ctl; tick();
+    return ctl;
+  }
+  function stopStaffPolling() { if (staffPoll) staffPoll.stop(); }
+  function isStaffPolling() { return !!staffPoll && !staffPoll.stopped; }
+
+  function closedMessage(r) { return 'That order was already ' + ((r.data && r.data.status) || 'closed') + '. Added to "Needs a look".'; }
+  function actionResult(r) {
+    if (r.ok) return null;
+    var o = { ok: false, status: r.status, error: r.error, message: r.message, offline: !!r.offline, retryable: !!r.offline || r.status === 429 || r.error === 'busy' };
+    if (r.status === 409 && r.data && r.data.conflict_id != null) { o.closed = true; o.orderStatus = r.data.status; o.conflictId = r.data.conflict_id; o.message = closedMessage(r); o.retryable = false; }
+    if (r.offline) o.message = 'Offline: ' + OFFLINE_MSG + ' It is safe to tap again.';
+    return o;
+  }
+  // Accept: on success hands the order to onAcceptedOrder (once). -> {ok, order, already, imported, importError}
+  // A 409 is "closed wins": nothing is imported ({ok:false, closed:true, orderStatus, conflictId}).
+  function acceptOrder(id, opts) {
+    opts = opts || {}; var body = {}; if (opts.baseVersion != null) body.base_version = opts.baseVersion;
+    return staffCall('POST', '/staff/orders/' + encodeURIComponent(String(id)) + '/accept', body).then(function (r) {
+      var bad = actionResult(r); if (bad) return bad;
+      var order = r.data && r.data.order;
+      if (!order) return { ok: false, error: 'bad_reply', message: 'The server gave an unexpected answer.' };
+      return deliverAccepted(order, opts.onAcceptedOrder).then(function (x) {
+        return { ok: true, order: order, seq: r.data.seq, already: !!r.data.already, imported: x.imported, importError: x.error || '' };
+      });
+    });
+  }
+  function rejectOrder(id, reason) {
+    return staffCall('POST', '/staff/orders/' + encodeURIComponent(String(id)) + '/reject', { reason: String(reason || '') }).then(function (r) {
+      return actionResult(r) || { ok: true, order: r.data && r.data.order, seq: r.data && r.data.seq, already: !!(r.data && r.data.already) };
+    });
+  }
+  // outcome: 'paid' | 'void' (after the POS closes a QR order)
+  function closeOrder(id, outcome) {
+    return staffCall('POST', '/staff/orders/' + encodeURIComponent(String(id)) + '/close', { outcome: outcome }).then(function (r) {
+      return actionResult(r) || { ok: true, order: r.data && r.data.order, seq: r.data && r.data.seq, already: !!(r.data && r.data.already) };
+    });
+  }
+  function listConflicts(all) { return staffCall('GET', '/staff/conflicts' + (all ? '?all=1' : '')).then(function (r) { return r.ok ? { ok: true, conflicts: (r.data && r.data.conflicts) || [] } : r; }); }
+  function resolveConflict(id) { return staffCall('POST', '/staff/conflicts/' + encodeURIComponent(String(id)) + '/resolve', {}); }
+
+  // ---------- guest: tracked orders on this phone ----------
+  var FINAL = { rejected: 1, expired: 1, paid: 1, void: 1, lost: 1 };
+  var STATUS_LABEL = { pending: 'Sent - waiting for staff to accept', accepted: 'Accepted by staff \u2713', rejected: 'Not accepted', expired: 'Not confirmed in time', paid: 'Order closed', void: 'Order cancelled', lost: 'Status unavailable' };
+  function newDraftId() { var a = 'abcdefghjkmnpqrstuvwxyz23456789', s = 'g', i, b; try { b = new Uint8Array(14); root.crypto.getRandomValues(b); for (i = 0; i < 14; i++) s += a[b[i] % a.length]; } catch (e) { for (i = 0; i < 14; i++) s += a[Math.floor(Math.random() * a.length)]; } return s; }
+
+  // ====================================================================
   // 3. Print sheet (QR card per table)
   // ====================================================================
   var SHEET_CSS =
@@ -929,11 +1195,11 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
     '.ttq-sheet button{background:#c2410c;color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}' +
     '@media print{.ttq-noprint{display:none!important}.ttq-cards{grid-template-columns:repeat(2,1fr);gap:10mm}.ttq-card{margin-bottom:0}}';
 
-  function cardHTML(table, base, restaurant) {
+  function cardHTML(table, base, restaurant, canOrder) {
     var link = tableLink(base, table.id);
     return '<div class="ttq-card"><h3>' + esc(restaurant || '') + '</h3><div class="ttq-t">' + esc(table.name != null ? table.name : 'Table ' + table.id) + '</div>' +
       toSVG(link, { title: 'QR code to order from ' + (table.name || table.id) }) +
-      '<div class="ttq-s">Scan to see the menu &amp; order from your phone</div><div class="ttq-u">' + esc(link) + '</div></div>';
+      '<div class="ttq-s">' + (canOrder ? 'Scan to order from your phone' : 'Please ask a team member to order') + '</div><div class="ttq-u">' + esc(link) + '</div></div>';
   }
   // Complete standalone HTML document with all cards (what the print window shows).
   function sheetHTML(opts) {
@@ -943,7 +1209,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
     return '<!doctype html><html><head><meta charset="utf-8">' + csp + '<title>' + esc((opts.restaurantName || 'TableTop') + ' - table QR codes') + '</title><style>body{margin:12mm}' +
       SHEET_CSS + '</style></head><body class="ttq-sheet"><div class="ttq-noprint" style="margin-bottom:12px"><button onclick="window.print()">Print</button> ' +
       '<span style="color:#64748b;font-size:13px">Tip: cut along the dashed lines and put one card on each table.</span></div><div class="ttq-cards">' +
-      tables.map(function (t) { return cardHTML(t, base, opts.restaurantName); }).join('') +
+      tables.map(function (t) { return cardHTML(t, base, opts.restaurantName, opts.canOrder === true); }).join('') +
       '</div>' + (tables.length ? '' : '<p>No tables yet.</p>') + '</body></html>';
   }
   function openPrintSheet(opts) {
@@ -966,29 +1232,60 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
 
   // Staff page: QR cards for every table with an editable base URL and Print button.
   // opts: {getTables:()=>[{id,name}], restaurantName:()=>string|string, toast?:fn}
+  // Server mode (setServer called): the amber banner is replaced by a green one ONLY while checkServer() succeeds
+  // (server answers /health AND a guest can load the first table's menu). Otherwise the amber warning stays,
+  // with the reason. opts.getPublishData (optional): () => TableTop DB, adds a "Publish menu" button.
   var sheetCtl = null;
   function mountSheet(container, opts) {
     var doc = container.ownerDocument; ensureCSS(doc);
+    var chk = serverEnabled() ? { state: 'checking', msg: '' } : null, pubMsg = '', pubBad = false;
     function name() { return typeof opts.restaurantName === 'function' ? opts.restaurantName() : (opts.restaurantName || ''); }
+    function recheck() {
+      if (!serverEnabled()) { chk = null; draw(); return; }
+      chk = { state: 'checking', msg: '' }; var my = ctl; draw();
+      var t0 = (opts.getTables() || [])[0];
+      checkServer(t0 ? t0.id : null).then(function (r) {
+        if (sheetCtl !== my) return;
+        chk = { state: r.ok && t0 ? 'ok' : 'fail', msg: r.ok && !t0 ? 'Add a table first, then check again.' : (r.message || ''), r: r }; draw();
+      });
+    }
+    function banner() {
+      if (!chk) return '<div class="ttq-limit" role="alert" id="ttq-limit">&#9888;&#65039; ' + esc(LIMIT_WARNING) + '</div>';
+      if (chk.state === 'ok') {
+        var tokenNote = !server.token ? ' The staff token is not set on this device, so it cannot accept orders.' : (!isStaffPolling() ? ' This device is not checking for new orders right now.' : '');
+        return '<div class="ttq-ok" role="status" id="ttq-server-ok"><b>Connected to the shared server &#10003;</b> Guests can open the menu from their own phones and send orders. Orders wait up to 10 minutes for a team member to accept them on the kitchen screen.' + esc(tokenNote) + '</div>';
+      }
+      return '<div class="ttq-limit" role="alert" id="ttq-limit">&#9888;&#65039; ' + esc(LIMIT_WARNING) + '</div>' +
+        (chk.state === 'checking' ? '<div class="ttq-hint">Checking the shared server&hellip;</div>' : '<div class="ttq-warn" id="ttq-server-bad">Shared server not ready: ' + esc(chk.msg || 'unknown problem') + '</div>');
+    }
     function draw() {
       var base = state.baseUrl || currentBase(), tables = opts.getTables() || [];
-      var warn = /^file:/i.test(base) ? '<div class="ttq-warn">This address starts with <b>file:</b> - it only works on this computer. For customers\' phones, the app must be opened from a web address (for example a free host) and that address typed below.</div>' : '';
+      var warn = /^file:/i.test(base) ? '<div class="ttq-warn">This address starts with <b>file:</b> and only works on this computer. Open TableTop from its web address and type that address below.</div>' : '';
       container.innerHTML = '<div class="ttq-sheet">' +
-        '<div class="ttq-limit" role="alert" id="ttq-limit">&#9888;&#65039; ' + esc(LIMIT_WARNING) + '</div>' +
+        banner() +
         (saveError ? '<div class="ttq-err">&#9888; ' + esc(saveError) + '</div>' : '') +
-        '<div class="ttq-noprint"><div class="ttq-row"><h2 style="margin:0">Table QR codes</h2><button id="ttq-print">Print cards</button></div>' +
-        '<label class="ttq-lbl">Address customers will open (the page TableTop.html is served from)<input id="ttq-base" value="' + esc(base) + '"></label>' + warn +
-        '<p class="ttq-hint">Customers scanning a card open <code>' + esc(String(base).split('#')[0]) + '#/order?table=N</code>. Note: without a shared server an order placed on a phone cannot reach the kitchen screen on another device (see README).</p></div>' +
-        '<div class="ttq-cards">' + tables.map(function (t) { return cardHTML(t, base, name()); }).join('') + '</div>' +
+        '<div class="ttq-noprint"><div class="ttq-row"><h2 style="margin:0">Table QR codes</h2><span>' +
+        (chk && opts.getPublishData ? '<button id="ttq-publish" class="ttq-noprint">Publish menu</button> ' : '') + (chk ? '<button id="ttq-recheck" class="ttq-noprint">Check server</button> ' : '') + '<button id="ttq-print">Print cards</button></span></div>' +
+        (pubMsg ? '<div class="' + (pubBad ? 'ttq-err' : 'ttq-ok') + '" id="ttq-pubmsg">' + esc(pubMsg) + '</div>' : '') +
+        '<label class="ttq-lbl">Web address customers will open (the address of this app)<input id="ttq-base" value="' + esc(base) + '"></label>' + warn +
+        '<p class="ttq-hint">Customers scanning a card open <code>' + esc(String(base).split('#')[0]) + '#/order?table=N</code>. Cards say "Scan to order from your phone" only while the shared server is connected (green note above); otherwise they ask guests to order with a team member.</p></div>' +
+        '<div class="ttq-cards">' + tables.map(function (t) { return cardHTML(t, base, name(), !!(chk && chk.state === 'ok')); }).join('') + '</div>' +
         (tables.length ? '' : '<p>No tables yet. Add tables on the Tables page first.</p>') + '</div>';
       container.querySelector('#ttq-base').onchange = function (e) { state.baseUrl = clean(e.target.value, 500); changed(); draw(); };
+      var pb = container.querySelector('#ttq-publish'), rb = container.querySelector('#ttq-recheck');
+      if (rb) rb.onclick = recheck;
+      if (pb) pb.onclick = function () {
+        pb.disabled = true; pubMsg = 'Publishing...'; pubBad = false; var my = ctl;
+        publishMenu(opts.getPublishData).then(function (r) { if (sheetCtl !== my) return; pubMsg = r.message || (r.ok ? 'Published.' : 'Could not publish.'); pubBad = !r.ok; if (r.ok) recheck(); else draw(); });
+      };
       container.querySelector('#ttq-print').onclick = function () {
-        if (!openPrintSheet({ tables: tables, baseUrl: base, restaurantName: name() })) {
+        if (!openPrintSheet({ tables: tables, baseUrl: base, restaurantName: name(), canOrder: !!(chk && chk.state === 'ok') })) {
           if (opts.toast) opts.toast('Pop-up blocked - using this page instead'); root.print();
         }
       };
     }
-    sheetCtl = { draw: draw }; draw();
+    var ctl = sheetCtl = { draw: draw, recheck: recheck }; draw();
+    if (chk) recheck();
   }
 
   // ====================================================================
@@ -1026,17 +1323,20 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
     var doc = container.ownerDocument; ensureCSS(doc);
     var hashInfo = opts.table != null ? { table: safeId(opts.table) } : parseHash() || { table: '' };
     var tableId = hashInfo.table;
-    var ui = { cat: 'all', open: null, avoid: {}, busy: false, error: '', done: null, openOpts: {} };
-    var table = tableId ? opts.getTable(tableId) : null;
+    // Server mode: menu and table come from the shared server (async); orders are POSTed to it and their status polled.
+    var srv = serverEnabled() && opts.server !== false, cache = null, destroyed = false, pollTimer = null;
+    var ui = { cat: 'all', open: null, avoid: {}, busy: false, error: '', done: null, openOpts: {}, loading: srv && !!tableId, loadErr: '', pollErr: '' };
+    var table = (!srv && tableId) ? opts.getTable(tableId) : null;
     var cartKey = 't' + tableId;
 
-    function rname() { return typeof opts.restaurantName === 'function' ? opts.restaurantName() : (opts.restaurantName || 'Menu'); }
+    function rname() { if (srv) return (cache && cache.restaurant_name) || 'Menu'; return typeof opts.restaurantName === 'function' ? opts.restaurantName() : (opts.restaurantName || 'Menu'); }
+    function taxOf() { if (srv) return +(cache && cache.tax) || 0; return opts.taxRate ? (typeof opts.taxRate === 'function' ? opts.taxRate() : opts.taxRate) : 0; }
     function cart() {
       var c = state.carts[cartKey];
       if (!c || !Array.isArray(c.lines)) c = state.carts[cartKey] = { lines: [], note: '', t: Date.now() };
       return c;
     }
-    function menu() { return normalizeMenu(opts.getMenu()); }
+    function menu() { return normalizeMenu(srv ? cache : opts.getMenu()); }
     function findItem(m, id) { return m.items.filter(function (i) { return String(i.id) === String(id); })[0]; }
     function lineKey(l) { return l.item_id + '|' + JSON.stringify(l.mods) + '|' + l.note; }
     function lineUnit(l) { return l.price + l.mods.reduce(function (a, m) { return a + (+m.p || 0); }, 0); }
@@ -1056,16 +1356,127 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
       return { lines: lines, problems: problems };
     }
 
+    // ---- server mode helpers (guest) ----
+    function recs() {
+      return Object.keys(state.orders).map(function (k) { return state.orders[k]; })
+        .filter(function (r) { return String(r.table) === String(tableId) && !r.dismissed; }).sort(function (a, b) { return a.t - b.t; });
+    }
+    function statusBlock(r, withDismiss) {
+      var cls = (r.status === 'accepted' || r.status === 'paid') ? 'ttq-ok' : r.status === 'pending' ? 'ttq-warn' : 'ttq-err';
+      return '<div class="' + cls + '" data-order="' + esc(r.id) + '"><b>' + esc(STATUS_LABEL[r.status] || r.status) + '</b> <span class="ttq-mut">Order ' + esc(String(r.id).slice(2, 8)) + '</span><br>' +
+        esc(r.message || '') + (r.total != null ? '<div class="ttq-mut">Total ' + money(r.total) + ' before tax</div>' : '') +
+        (withDismiss && FINAL[r.status] ? '<div style="margin-top:8px"><button class="sec" data-dismiss="' + esc(r.id) + '">Dismiss</button></div>' : '') + '</div>';
+    }
+    function pollWarn() { return ui.pollErr && recs().some(function (r) { return !FINAL[r.status]; }) ? '<div class="ttq-warn">Can\'t refresh the order status right now: ' + esc(ui.pollErr) + ' This is the last status we received. Trying again&hellip;</div>' : ''; }
+    function bannersHTML() { return recs().map(function (r) { return statusBlock(r, true); }).join('') + pollWarn(); }
+    function paint() {   // status changed: repaint only the order boxes so typing in the menu page is not interrupted
+      var box = container.querySelector('#ttq-orders');
+      if (ui.done) { draw(); return; }
+      if (box) box.innerHTML = bannersHTML();
+    }
+    function pollOne(r) {
+      return sFetch('GET', '/orders/' + encodeURIComponent(r.id) + '?t=' + encodeURIComponent(r.token)).then(function (x) {
+        if (destroyed) return;
+        if (x.ok && x.data && x.data.status) {
+          var hadErr = !!ui.pollErr; ui.pollErr = '';
+          if (r.status !== x.data.status || r.message !== x.data.message) { r.status = x.data.status; r.message = x.data.message || ''; if (x.data.total != null) r.total = x.data.total; saveOrWarn(); paint(); }
+          else if (hadErr) paint();
+        } else if (x.status === 404) {
+          r.status = 'lost'; r.message = "We can't find this order any more. Please ask a team member."; saveOrWarn(); paint();
+        } else { ui.pollErr = x.message || OFFLINE_MSG; paint(); }
+      });
+    }
+    function pollTick() {
+      pollTimer = null; if (destroyed) return;
+      var active = recs().filter(function (r) { return !FINAL[r.status] && Date.now() - r.t < 6 * 3600000; }).slice(0, 6);
+      if (!active.length) return;
+      Promise.all(active.map(pollOne)).then(function () { startPoll(pageHidden() ? server.pollHiddenMs : server.pollMs); });
+    }
+    function startPoll(delay) { if (destroyed || pollTimer) return; pollTimer = setTimeout(pollTick, delay == null ? 0 : delay); }
+    function fetchMenu() {
+      return sFetch('GET', '/menu?table=' + encodeURIComponent(tableId)).then(function (x) {
+        if (x.ok && x.data && Array.isArray(x.data.items) && x.data.table && typeof x.data.table === 'object') return { ok: true, data: x.data };
+        if (x.ok) return { ok: false, message: 'The server sent a menu we could not read. Please ask a team member.' };
+        return { ok: false, status: x.status, message: x.message };
+      });
+    }
+    function applyMenu(d) { cache = d; table = { id: d.table.id, name: d.table.name != null ? d.table.name : 'Table ' + d.table.id, seats: d.table.seats }; }
+    function loadMenuView() {
+      ui.loading = true; ui.loadErr = ''; draw();
+      fetchMenu().then(function (r) {
+        if (destroyed) return;
+        ui.loading = false;
+        if (r.ok) applyMenu(r.data); else if (r.status === 404) table = null; else ui.loadErr = r.message;
+        draw();
+      });
+    }
+    function placeServer() {
+      if (ui.busy) return;
+      ui.busy = true; ui.error = ''; draw();
+      var stop = function (msg) { ui.busy = false; ui.error = esc(msg); draw(); };
+      fetchMenu().then(function (mr) {
+        if (destroyed) return;
+        if (!mr.ok) return stop((mr.message || OFFLINE_MSG) + ' Your order was NOT sent.');
+        applyMenu(mr.data);
+        var m = menu(), rp = repriced(m), c = cart();
+        if (rp.problems.length) {
+          c.lines = c.lines.filter(function (l) { var it = findItem(m, l.item_id); return it && it.available; });
+          saveOrWarn(); ui.busy = false;
+          ui.error = esc(rp.problems.join('. ')) + '. Those items were removed from your order - please check it and place it again.'; draw(); return;
+        }
+        if (!rp.lines.length) { ui.busy = false; draw(); return; }
+        var body = { table: table.id, note: clean(c.note, 200), items: rp.lines.map(function (l) { return { item_id: l.item_id, qty: l.qty, mods: l.mods.map(function (md) { return md.n; }), note: clean(l.note, 120) }; }) };
+        var sig = JSON.stringify(body);   // same cart => same client_id on retry (no double order); changed cart => new id
+        if (!c.draft || c.draft.sig !== sig) { c.draft = { id: newDraftId(), sig: sig }; saveOrWarn(); }
+        body.client_id = c.draft.id;
+        return sFetch('POST', '/orders', { body: body }).then(function (x) {
+          if (destroyed) return;
+          if (x.ok && x.data && /^o_[a-z0-9]{12}$/.test(String(x.data.id)) && typeof x.data.token === 'string' && x.data.token) {
+            var d = x.data;
+            state.orders[d.id] = { id: d.id, token: d.token, table: String(table.id), status: d.status || 'pending', message: d.message || '', total: d.total, t: Date.now() };
+            c.lines = []; c.note = ''; c.draft = null; saveOrWarn();
+            ui.busy = false; ui.done = d.id; ui.pollErr = ''; draw(); startPoll(server.pollMs);
+            if (opts.onDone) { try { opts.onDone({ ok: true, orderId: d.id, status: d.status, pending: true }); } catch (e) {} }
+            return;
+          }
+          if (x.ok) return stop('The server gave an answer we could not read, so we cannot tell if your order arrived. Please ask a team member before ordering again.');
+          if (x.offline) return stop("We couldn't reach the server, so we can't tell if your order went through. Tap Place order again (it is safe to repeat) or ask a team member.");
+          if (x.status === 409 && x.error === 'sold_out') {
+            return fetchMenu().then(function (r2) {
+              if (destroyed) return;
+              if (r2.ok) { applyMenu(r2.data); var m2 = menu(); c.lines = c.lines.filter(function (l) { var it = findItem(m2, l.item_id); return it && it.available; }); saveOrWarn(); }
+              stop(x.message + ' Sold-out items were removed - please check your order and place it again.');
+            });
+          }
+          if (x.status === 429) return stop((x.message || 'Too many orders.') + (x.retryAfter ? ' Please wait about ' + x.retryAfter + ' seconds.' : ''));
+          stop((x.message || 'The order could not be placed.') + ' Your order was NOT sent.');
+        });
+      });
+    }
+
     function draw() {
+      if (srv && ui.loading) { container.innerHTML = '<div class="ttq-c"><h1>Menu</h1><div class="ttq-sub">Loading the menu&hellip;</div></div>'; return; }
+      if (srv && ui.loadErr) {
+        container.innerHTML = '<div class="ttq-c"><h1>' + esc(rname()) + '</h1><div class="ttq-err">' + esc(ui.loadErr) + '</div><button id="ttq-retry">Try again</button><p class="ttq-hint">A team member can also take your order.</p></div>';
+        return;
+      }
       if (!table) {
         container.innerHTML = '<div class="ttq-c"><h1>' + esc(rname()) + '</h1><div class="ttq-err">' +
           (tableId ? 'This QR code is for a table we can\'t find (' + esc(tableId) + '). Please ask a team member for help.' : 'This ordering link is missing a table number. Please scan the QR code on your table again.') +
-          '</div><p class="ttq-hint">If the menu does not show up on your phone: this version of TableTop keeps its data on the restaurant\'s own device, so ordering from a phone needs the shared server upgrade. A team member can take your order meanwhile.</p></div>';
+          '</div><p class="ttq-hint">' + (srv ? 'A team member can take your order meanwhile.' : 'If the menu does not show up on your phone, please ask a team member to take your order.') + '</p></div>';
         return;
       }
       var m = menu(), c = cart(), html = '';
       if (!m.items.length) {
         container.innerHTML = '<div class="ttq-c"><h1>' + esc(rname()) + '</h1><div class="ttq-sub">' + esc(table.name) + '</div><div class="ttq-warn">The menu is not available on this device. A team member can take your order.</div></div>';
+        return;
+      }
+      if (srv && ui.done) {
+        var dr = state.orders[ui.done];
+        container.innerHTML = '<div class="ttq-c"><h1>' + esc(rname()) + '</h1><div class="ttq-sub">' + esc(table.name) + '</div>' + (dr ? statusBlock(dr, false) : '') +
+          (dr && !FINAL[dr.status] ? '<p class="ttq-hint">Keep this page open or come back to this link - the status updates by itself.</p>' : '') + pollWarn() +
+          '<button id="ttq-again">Back to the menu</button></div>';
+        container.querySelector('#ttq-again').onclick = function () { ui.done = null; draw(); };
         return;
       }
       if (ui.done) {
@@ -1079,6 +1490,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
       var akeys = Object.keys(allergens).sort();
       html += '<div class="ttq-c"><h1>' + esc(rname()) + '</h1><div class="ttq-sub">Ordering for <b>' + esc(table.name) + '</b></div>';
       if (saveError) html += '<div class="ttq-err">&#9888; ' + esc(saveError) + '</div>';
+      if (srv) html += '<div id="ttq-orders">' + bannersHTML() + '</div>';
       if (ui.error) html += '<div class="ttq-err">' + ui.error + '</div>';
       html += '<div class="ttq-warn">Allergies? Please tell your server &mdash; the tags below are a guide, not a guarantee.</div>';
       if (akeys.length) html += '<div class="ttq-mut">I need to avoid:</div><div class="ttq-filter">' + akeys.map(function (k) {
@@ -1117,7 +1529,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
       if (c.lines.length) {
         html += '<label class="ttq-lbl">Note for the table / server (optional)<textarea id="ttq-onote" maxlength="200" rows="2">' + esc(c.note) + '</textarea></label>';
         html += '<div class="ttq-row"><span>Subtotal</span><b>' + money(r2(sub)) + '</b></div>';
-        var tax = opts.taxRate ? (typeof opts.taxRate === 'function' ? opts.taxRate() : opts.taxRate) : 0;
+        var tax = taxOf();
         if (tax) html += '<div class="ttq-row ttq-mut"><span>Tax (' + esc(tax) + '%)</span><span>' + money(r2(sub * tax / 100)) + '</span></div>';
       }
       html += '<p class="ttq-hint">Pay your server at the end of the meal.</p></div>';
@@ -1127,6 +1539,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
 
     function saveOrWarn() { changed(); }
     function place() {
+      if (srv) return placeServer();
       if (ui.busy) return;
       var m = menu(), rp = repriced(m), c = cart();
       if (rp.problems.length) {
@@ -1170,6 +1583,8 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
       else if (t.dataset.inc != null) { var l = c.lines[+t.dataset.inc]; if (l && l.qty < MAX_QTY) l.qty++; saveOrWarn(); draw(); }
       else if (t.dataset.dec != null) { var k = +t.dataset.dec, l2 = c.lines[k]; if (l2) { l2.qty--; if (l2.qty < 1) c.lines.splice(k, 1); } saveOrWarn(); draw(); }
       else if (t.id === 'ttq-place') place();
+      else if (t.id === 'ttq-retry') loadMenuView();
+      else if (t.dataset.dismiss != null) { var rr = state.orders[t.dataset.dismiss]; if (rr) { rr.dismissed = true; saveOrWarn(); paint(); } }
     }
     function addLine(it, modNames, note) {
       var c = cart(); ui.error = '';
@@ -1194,9 +1609,10 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
     container.addEventListener('click', onClick); container.addEventListener('input', onInput); container.addEventListener('change', onChange);
     customerCtl = {
       container: container, redraw: draw,
-      destroy: function () { container.removeEventListener('click', onClick); container.removeEventListener('input', onInput); container.removeEventListener('change', onChange); customerCtl = null; }
+      destroy: function () { destroyed = true; if (pollTimer) clearTimeout(pollTimer); pollTimer = null; container.removeEventListener('click', onClick); container.removeEventListener('input', onInput); container.removeEventListener('change', onChange); customerCtl = null; }
     };
     draw();
+    if (srv && tableId) { loadMenuView(); startPoll(0); }
     return customerCtl;
   }
 
@@ -1215,7 +1631,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
   function unmount() { if (customerCtl) customerCtl.destroy(); }
 
   // for tests
-  function _reset() { state = { v: 1, carts: {}, baseUrl: '' }; saveError = ''; var s = store(); try { if (s) s.removeItem(KEY); } catch (e) {} }
+  function _reset() { state = { v: 1, carts: {}, baseUrl: '', orders: {} }; saveError = ''; var s = store(); try { if (s) s.removeItem(KEY); } catch (e) {} }
   function _state() { return state; }
 
   load();
@@ -1225,6 +1641,10 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
     tableLink: tableLink, parseHash: parseHash, isCustomerHash: isCustomerHash,
     sheetHTML: sheetHTML, openPrintSheet: openPrintSheet, mountSheet: mountSheet, LIMIT_WARNING: LIMIT_WARNING,
     mountCustomer: mountCustomer, autoStart: autoStart, unmount: unmount, tableTopAdapter: tableTopAdapter,
+    setServer: setServer, getServer: getServer, serverEnabled: serverEnabled, checkServer: checkServer,
+    publishMenu: publishMenu, publishMenuSoon: publishMenuSoon, pollOrders: pollOrders, startStaffPolling: startStaffPolling,
+    stopStaffPolling: stopStaffPolling, isStaffPolling: isStaffPolling, acceptOrder: acceptOrder, rejectOrder: rejectOrder,
+    closeOrder: closeOrder, listConflicts: listConflicts, resolveConflict: resolveConflict, staffState: staffState, resetStaffState: resetStaffState,
     normalizeMenu: normalizeMenu, getSaveError: getSaveError, onChange: onChange, esc: esc,
     _rs: function (d, n) { return rsRemainder(d, rsDivisor(n)); }, _reset: _reset, _state: _state, _load: load
   };
@@ -1393,7 +1813,7 @@ let saveFailed=false;
 function saveWarn(on){let b=document.getElementById('savewarn');if(!b){if(!on)return;b=document.createElement('div');b.id='savewarn';b.className='warnbar';b.setAttribute('role','alert');b.innerHTML='⚠️ <span><b>Could not save your data</b> — browser storage is full or blocked. Changes will be lost when you close this page. Export a backup now.</span> <button class="sm" id="swexp">Export backup</button>';document.body.prepend(b);document.getElementById('swexp').onclick=()=>exportBackup();}b.style.display=on?'flex':'none';warnPad();}
 function warnPad(){const b=document.getElementById('savewarn'),h=b&&b.style.display!=='none'?b.offsetHeight:0;document.documentElement.style.setProperty('--wbh',h+'px');}
 window.addEventListener('resize',warnPad);
-function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));if(saveFailed){saveFailed=false;saveWarn(false);}return true;}catch(e){saveFailed=true;saveWarn(true);return false;}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));if(saveFailed){saveFailed=false;saveWarn(false);}try{qrAfterSave();}catch(e){}return true;}catch(e){saveFailed=true;saveWarn(true);return false;}}
 function migrate(){const b=blank();for(const k of Object.keys(b)){if(DB[k]===undefined||(Array.isArray(b[k])&&!Array.isArray(DB[k])))DB[k]=b[k];}DB.items.forEach(i=>{if(!Array.isArray(i.tags))i.tags=[];});DB.staff.forEach(s=>{if(s.wage===undefined)s.wage=0;});DB.shifts=DB.shifts.filter(s=>s&&typeof s==='object');DB.shifts.forEach(s=>{['start','end'].forEach(k=>{const n=normTime(s[k]);if(n)s[k]=n;});});}
 const nid=()=>(DB.seq=(DB.seq||1)+1);
 const byId=(t,id)=>DB[t].find(x=>x.id==id);
@@ -1413,7 +1833,7 @@ function tableStatus(t){if(DB.orders.some(o=>o.table_id==t.id&&!o.paid))return'o
 const orderLabel=o=>o.type==='takeout'?'Takeout'+(o.customer?' · '+o.customer:''):(byId('tables',o.table_id)?.name||'Table');
 const elapsed=t=>{const m=Math.floor((Date.now()-t)/60000);return m<60?m+'m':Math.floor(m/60)+'h '+m%60+'m';};
 
-// ---------- demo data ----------
+// ---------- sample data (internal name: demo) ----------
 function seedDemoInventory(d){try{TTInventory._reset();TTInventory.importIngredients(d.ingredients);d.settings.inv_imported=true;const I=n=>TTInventory.getIngredients().find(x=>x.name===n);
  I&&TTInventory.getIngredients().forEach(g=>TTInventory.updateIngredient(g.id,{target:g.low*2.5}));
  const R={'Classic Burger':[['Ground beef',0.5],['Burger buns',1]],'Margherita Pizza':[['Pizza dough',1],['Mozzarella',0.4]],'Grilled Salmon':[['Salmon fillet',0.5]],'Chicken Alfredo':[['Chicken breast',0.4]],'Ribeye Steak':[['Ribeye',1]],'Espresso':[['Coffee beans',0.05]],'Wings (8)':[['Fryer oil',0.02]],'Veggie Bowl':[['Romaine',0.5]]};
@@ -1465,10 +1885,10 @@ function delRec(t,id,msg){if(!confirm(msg||'Delete this record?'))return;DB[t]=D
 
 // ---------- shell ----------
 const PAGES=[['dashboard','📊','Dashboard'],['pos','🧾','POS'],['kitchen','👨‍🍳','Kitchen'],['tables','🪑','Tables'],['reservations','📅','Reservations'],['menu','🍔','Menu'],['autoinv','📦','Auto Inventory'],['staff','🧑‍🤝‍🧑','Staff'],['schedule','🕒','Schedule'],['tips','💵','Tip Split'],['report','🌙','Night Report'],['quiz','🎓','Training'],['qrcodes','🔳','QR codes'],['orders','🗂️','Orders'],['settings','⚙️','Settings']];
-function render(){if(DB.settings.pin&&!sessionStorage.tt_unlocked)return lockView();
- const low=lowStock().length,kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length;
+function render(){if(DB.settings.pin&&!sessionStorage.tt_unlocked){qrStop();return lockView();}
+ qrStart();const low=lowStock().length,kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length+qrPendN();
  $('#app').innerHTML=`<div class="layout"><nav><div class="brand"><h1>🍽️ TableTop</h1><div class="dl" id="rname">${esc(DB.settings.name)}</div></div><div class="links">
- ${PAGES.map(([h,i,t])=>`<a href="#${h}" data-r="${h}"><span>${i}</span><em>${t}</em>${h==='autoinv'&&low?`<b class="dot">${low}</b>`:''}${h==='kitchen'&&kit?`<b class="dot blue">${kit}</b>`:''}</a>`).join('')}</div>
+ ${PAGES.map(([h,i,t])=>`<a href="#${h}" data-r="${h}" title="${t}" aria-label="${t}"><span>${i}</span><em>${t}</em>${h==='autoinv'&&low?`<b class="dot">${low}</b>`:''}${h==='kitchen'&&kit?`<b class="dot blue">${kit}</b>`:''}</a>`).join('')}</div>
  ${DB.settings.pin?'<a href="#" id="lock" class="lockbtn"><span>🔒</span><em>Lock</em></a>':''}</nav><main id="main"></main></div>`;
  const lk=$('#lock');if(lk)lk.onclick=e=>{e.preventDefault();sessionStorage.removeItem('tt_unlocked');render();};route();}
 function lockView(){$('#app').innerHTML=`<div class="login card"><h2>🔒 ${esc(DB.settings.name)}</h2><p class="muted">Enter PIN to unlock TableTop</p><form id="lf"><input name="pin" type="password" inputmode="numeric" placeholder="PIN" autofocus required><button class="wide">Unlock</button></form></div>`;
@@ -1476,14 +1896,14 @@ function lockView(){$('#app').innerHTML=`<div class="login card"><h2>🔒 ${esc(
 let timer=null;
 function route(){if(!$('#main'))return;clearInterval(timer);try{TTInventory.unmount();}catch(e){}const r=(location.hash||'#dashboard').slice(1).split('/')[0];document.body.setAttribute('data-page',r);
  $$('nav a[data-r]').forEach(a=>a.classList.toggle('active',a.dataset.r===r));
- const low=lowStock().length,kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length;
+ const low=lowStock().length,kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length+qrPendN();
  $$('nav a[data-r]').forEach(a=>{const b=a.querySelector('.dot');if(b)b.remove();const n=a.dataset.r==='autoinv'?low:a.dataset.r==='kitchen'?kit:0;if(n)a.insertAdjacentHTML('beforeend',`<b class="dot ${a.dataset.r==='kitchen'?'blue':''}">${n}</b>`);});
  (PAGE[r]||PAGE.dashboard)();}
 window.addEventListener('hashchange',route);
 
 // ---------- dashboard ----------
 const PAGE={};
-PAGE.qrcodes=()=>{TTQROrder.mountSheet($('#main'),{getTables:QRO.getTables,restaurantName:QRO.restaurantName,toast:toast});};
+PAGE.qrcodes=()=>{TTQROrder.mountSheet($('#main'),{getTables:QRO.getTables,restaurantName:QRO.restaurantName,toast:toast,getPublishData:()=>DB});};
 PAGE.dashboard=()=>{const paid=DB.orders.filter(o=>o.paid),today=ymd(Date.now());const tdy=paid.filter(o=>ymd(o.paid_at)===today);
  const T=os=>os.reduce((a,o)=>{const t=totals(o);a.sub+=t.sub;a.cost+=t.cost;a.tip+=t.tip;a.tax+=t.tax;return a;},{sub:0,cost:0,tip:0,tax:0});
  const tt=T(tdy),since=Date.now()-30*864e5,p30=paid.filter(o=>o.paid_at>=since),t30=T(p30);
@@ -1551,7 +1971,7 @@ function drawPOS(){const o=CUR,t=totals(o),open=DB.orders.filter(x=>!x.paid);
  $('#send').onclick=()=>{try{commit();toast(lastShort?'Sent to kitchen — Out of stock: '+lastShort:'Order sent to kitchen');CUR=newTicket();drawPOS();}catch(e){toast(e.message);}};
  $('#paycard').onclick=()=>pay('card');$('#paycash').onclick=()=>pay('cash');
  if($('#voidt'))$('#voidt').onclick=()=>{if(!confirm('Void this ticket? It will be removed.'))return;{const t=totals(o);DB.voids.push({id:nid(),at:Date.now(),order_id:o.id,label:orderLabel(o),status:o.status,total:t.total,sub:t.sub,items:o.lines.reduce((a,l)=>a+l.qty,0),server_id:o.server_id});}try{TTInventory.onOrderVoided(o)}catch(e){}
-DB.orders=DB.orders.filter(x=>x.id!==o.id);save();CUR=newTicket();toast('Ticket voided');route();};}
+DB.orders=DB.orders.filter(x=>x.id!==o.id);save();qrClose(o,'void');CUR=newTicket();toast('Ticket voided');route();};}
 function addItem(it){const mods=parseMods(it.mods);const push=(ms,note)=>{const same=CUR.lines.find(l=>l.item_id===it.id&&!note&&!l.note&&JSON.stringify(l.mods)===JSON.stringify(ms));if(same)same.qty++;else CUR.lines.push({item_id:it.id,name:it.name,price:it.price,cost:+it.cost||0,qty:1,mods:ms,note:note||'',tags:(it.tags||[]).slice()});drawPOS();};
  modal(`<h3>${esc(it.name)} <span class="muted">${money(it.price)}</span></h3><form class="form">${mods.length?`<div class="full"><div class="muted">Modifiers</div><div class="mods">${mods.map((m,i)=>`<label class="chk"><input type="checkbox" data-mod="${i}"> ${esc(m.n)}${m.p?` <span class="muted">+${money(m.p)}</span>`:''}</label>`).join('')}</div></div>`:''}
  <label class="full">Kitchen note<input name="note" placeholder="e.g. allergy, no salt, on the side"></label>${field('qty','Quantity',1,'number')}<div class="full row end"><button type="button" class="sec" onclick="closeModal()">Cancel</button><button>Add to ticket</button></div></form>`,
@@ -1563,13 +1983,13 @@ function commit(){const o=CUR;if(!o.lines.length)throw new Error('Add at least o
  save();return o;}
 function pay(method){try{const o=commit();o.paid=true;o.method=method;o.paid_at=Date.now();if(o.status!=='served')o.status='served';
  if(o.type==='dine'){const r=DB.reservations.find(r=>r.table_id==o.table_id&&r.status==='seated');if(r)r.status='completed';}
- save();CUR=newTicket();receipt(o.id);if(lastShort)toast('Out of stock: '+lastShort);}catch(e){toast(e.message);}}
+ save();qrClose(o,'paid');CUR=newTicket();receipt(o.id);if(lastShort)toast('Out of stock: '+lastShort);}catch(e){toast(e.message);}}
 function receipt(id){const o=byId('orders',id),t=totals(o),s=DB.settings;
  const html=`<div class="receipt"><h3>${esc(s.name)}</h3>${s.address?`<div>${esc(s.address)}</div>`:''}${s.phone?`<div>${esc(s.phone)}</div>`:''}<hr>
  <div>Ticket #${o.id} · ${esc(orderLabel(o))}</div><div>${new Date(o.paid_at||o.created_at).toLocaleString()}</div>${o.server_id?`<div>Server: ${esc(byId('staff',o.server_id)?.name||'')}</div>`:''}<hr>
  ${o.lines.map(l=>`<div class="rl"><span>${l.qty} × ${esc(l.name)}</span><span>${money(lineTotal(l))}</span></div>${l.mods.map(m=>`<div class="rm">+ ${esc(m.n)}${m.p?' '+money(m.p):''}</div>`).join('')}${l.note?`<div class="rm">“${esc(l.note)}”</div>`:''}`).join('')}<hr>
  <div class="rl"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="rl"><span>Tax (${o.tax_rate}%)</span><span>${money(t.tax)}</span></div><div class="rl"><span>Tip</span><span>${money(t.tip)}</span></div>
- <div class="rl big"><span>TOTAL</span><span>${money(t.total)}</span></div>${o.paid?`<div class="rl"><span>Paid by</span><span>${o.method==='card'?'Card':'Cash'}</span></div>`:'<div><b>UNPAID</b></div>'}<hr><div class="center">Thank you for dining with us!</div></div>`;
+ <div class="rl big"><span>TOTAL</span><span>${money(t.total)}</span></div>${o.paid?`<div class="rl"><span>Paid by</span><span>${o.method==='card'?'Card':'Cash'}</span></div>`:'<div><b>UNPAID</b></div>'}<hr><div class="center">${o.type==='dine'?'Thank you for dining with us!':'Thank you!'}</div></div>`;
  $('#print').innerHTML=html;modal(`${html}<div class="row end noprint"><button class="sec" onclick="closeModal();route()">Close</button><button onclick="window.print()">🖨️ Print receipt</button></div>`);}
 
 // ---------- kitchen ----------
@@ -1580,7 +2000,7 @@ PAGE.kitchen=()=>{clearInterval(timer);const os=DB.orders.filter(o=>!o.paid||(o.
  <div class="row nomb">${KN[s]?`<button class="sm grow" data-adv="${o.id}">→ ${KN[s]}</button>`:`<a class="btn sm sec grow" href="#pos/o${o.id}">Go to POS to pay</a>`}${s!=='new'?`<button class="sm sec" data-back="${o.id}" title="Move back">↩</button>`:''}</div></div>`;}).join('')||'<p class="muted center">—</p>'}</div>`;}).join('');
  $$('[data-adv]').forEach(b=>b.onclick=()=>{const o=byId('orders',b.dataset.adv);o.status=KN[o.status];save();route();});
  $$('[data-back]').forEach(b=>b.onclick=()=>{const o=byId('orders',b.dataset.back);o.status=KS[KS.indexOf(o.status)-1];save();route();});};
- $('#main').innerHTML=`<div class="row between"><h2>Kitchen Display</h2><span class="muted">Auto-refreshes every 15s · cards turn amber at 12 min, red at 20 min</span></div><div class="kanban k4" id="kds"></div>`;draw();TT86.render($('#main'),{getItems:()=>DB.items,restore:id=>{const it=byId('items',+id);if(it){it.available=true;save();toast(it.name+' is back on');}}});timer=setInterval(()=>{if(!$('#kds'))return clearInterval(timer);PAGE.kitchen();},15000);};
+ $('#main').innerHTML=`<div class="row between"><h2>Kitchen Display</h2><span class="muted">Auto-refreshes every 15s · cards turn amber at 12 min, red at 20 min</span></div>${qrWaitHtml()}<div class="kanban k4" id="kds"></div>`;qrWaitBind();draw();TT86.render($('#main'),{getItems:()=>DB.items,restore:id=>{const it=byId('items',+id);if(it){it.available=true;save();toast(it.name+' is back on');}}});timer=setInterval(()=>{if(!$('#kds'))return clearInterval(timer);PAGE.kitchen();},15000);};
 
 // ---------- tables ----------
 PAGE.tables=()=>{const c={free:0,occupied:0,reserved:0};DB.tables.forEach(t=>c[tableStatus(t)]++);
@@ -1601,7 +2021,7 @@ PAGE.reservations=()=>{let rs=DB.reservations.slice().sort((a,b)=>a.at<b.at?-1:1
  $('#main').innerHTML=`<div class="row between"><h2>Reservations</h2><button id="add">+ New reservation</button></div>
  <div class="row"><div class="seg">${[['upcoming','Upcoming'],['today','Today'],['all','All']].map(([k,l])=>`<button class="${resFilter===k?'on':''}" data-f="${k}">${l}</button>`).join('')}</div></div>
  <div class="tw"><table><tr><th>When</th><th>Name</th><th>Phone</th><th>Party</th><th>Table</th><th>Status</th><th></th></tr>${rs.map(r=>`<tr><td><b>${fmtDT(r.at)}</b></td><td>${esc(r.name)}${r.notes?`<div class="muted">${esc(r.notes)}</div>`:''}${TTRegulars.noteBoxHtml(r.name,r.phone)}</td><td>${esc(r.phone)}</td><td>${r.party}</td><td>${esc(byId('tables',r.table_id)?.name||'—')}</td><td>${badge(r.status)}</td>
- <td class="nowrap">${r.status==='booked'?`<button class="sm green" data-seat="${r.id}">Seat</button> `:''}<button class="sm sec" data-edit="${r.id}">Edit</button> <button class="sm danger" data-del="${r.id}">Del</button></td></tr>`).join('')||'<tr><td colspan=7 class="muted">No reservations.</td></tr>'}</table></div>`;
+ <td class="nowrap">${r.status==='booked'?`<button class="sm green" data-seat="${r.id}">Seat</button> `:''}<button class="sm sec" data-edit="${r.id}">Edit</button> <button class="sm danger" data-del="${r.id}">Delete</button></td></tr>`).join('')||'<tr><td colspan=7 class="muted">No reservations.</td></tr>'}</table></div>`;
  $$('[data-f]').forEach(b=>b.onclick=()=>{resFilter=b.dataset.f;route();});$('#add').onclick=()=>editRes();
  $$('[data-edit]').forEach(b=>b.onclick=()=>editRes(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('reservations',+b.dataset.del,'Delete this reservation?'));
  $$('[data-seat]').forEach(b=>b.onclick=()=>{const r=byId('reservations',b.dataset.seat);if(r.table_id&&DB.orders.some(o=>!o.paid&&o.table_id==r.table_id))return toast('Table is still occupied');r.status='seated';save();toast(r.name+' seated');if(r.table_id)location.hash='#pos/t'+r.table_id;else route();});};
@@ -1619,19 +2039,20 @@ function editRes(id){const r=id?byId('reservations',id):{party:2,status:'booked'
 let menuCat='all';
 PAGE.menu=()=>{const its=DB.items.filter(i=>menuCat==='all'||i.cat_id==menuCat);
  $('#main').innerHTML=`<div class="row between"><h2>Menu</h2><div class="row nomb"><button class="sec" id="cats">Categories</button><button id="add">+ Add item</button></div></div>
+ ${DB.items.length?'':`<div class="card firstmenu"><b>Let's build your menu</b><div class="muted">1) Add a category, like Mains or Drinks. 2) Add your first item with its price. 3) Add your tables on the Tables page.</div><div class="row nomb"><button id="mgcat">1 · Add a category</button><button class="sec" id="mgitem">2 · Add your first item</button></div></div>`}
  <div class="tabs"><button class="${menuCat==='all'?'on':''}" data-c="all">All (${DB.items.length})</button>${DB.categories.map(c=>`<button class="${menuCat==c.id?'on':''}" data-c="${c.id}">${esc(c.name)} (${DB.items.filter(i=>i.cat_id==c.id).length})</button>`).join('')}</div>
  <div class="tw"><table><tr><th>Item</th><th>Category</th><th>Price</th><th>Food cost</th><th>Margin</th><th>Available</th><th></th></tr>${its.map(i=>{const m=margin(i);return`<tr><td><b>${esc(i.name)}</b>${tagsHtml(i.tags)}${i.mods?`<div class="muted">${esc(parseMods(i.mods).map(x=>x.n).join(', '))}</div>`:''}</td><td>${esc(byId('categories',i.cat_id)?.name||'—')}</td><td>${money(i.price)}</td><td class="muted">${money(i.cost)} (${i.price?Math.round(i.cost/i.price*100):0}%)</td>
- <td><b style="color:${m>=65?'#16a34a':m>=50?'#ca8a04':'#dc2626'}">${m}%</b></td><td><label class="switch"><input type="checkbox" data-av="${i.id}" ${i.available?'checked':''}><span></span></label></td><td class="nowrap"><button class="sm sec" data-edit="${i.id}">Edit</button> <button class="sm danger" data-del="${i.id}">Del</button></td></tr>`}).join('')||'<tr><td colspan=7 class="muted">No items.</td></tr>'}</table></div>
+ <td><b style="color:${m>=65?'#16a34a':m>=50?'#ca8a04':'#dc2626'}">${m}%</b></td><td><label class="switch"><input type="checkbox" data-av="${i.id}" ${i.available?'checked':''}><span></span></label></td><td class="nowrap"><button class="sm sec" data-edit="${i.id}">Edit</button> <button class="sm danger" data-del="${i.id}">Delete</button></td></tr>`}).join('')||'<tr><td colspan=7 class="muted">No items.</td></tr>'}</table></div>
  <p class="muted">Margin = (price − food cost) ÷ price. Green ≥ 65%, amber ≥ 50%. Modifiers format: <code>Add cheese:1.5, No onions:0</code></p>`;
  $$('[data-c]').forEach(b=>b.onclick=()=>{menuCat=b.dataset.c==='all'?'all':+b.dataset.c;route();});
  $$('[data-av]').forEach(c=>c.onchange=()=>{byId('items',c.dataset.av).available=c.checked;save();toast(c.checked?'Item available':'Item marked unavailable (86’d)');});
- $('#add').onclick=()=>editItem();$$('[data-edit]').forEach(b=>b.onclick=()=>editItem(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('items',+b.dataset.del,'Delete this menu item?'));$('#cats').onclick=catsModal;};
+ $('#add').onclick=()=>editItem();$$('[data-edit]').forEach(b=>b.onclick=()=>editItem(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('items',+b.dataset.del,'Delete this menu item?'));$('#cats').onclick=catsModal;if($('#mgcat'))$('#mgcat').onclick=catsModal;if($('#mgitem'))$('#mgitem').onclick=()=>editItem();};
 function editItem(id){if(!DB.categories.length)return toast('Add a category first');const i=id?byId('items',id):{available:true,cat_id:menuCat==='all'?DB.categories[0].id:menuCat};
- modal(`<h3>${id?'Edit':'Add'} menu item</h3><form class="form">${field('name','Name',i.name,'text','full')}${sel('cat_id','Category',DB.categories.map(c=>[c.id,c.name]),i.cat_id)}<label>Available<select name="available"><option value="1" ${i.available?'selected':''}>Yes</option><option value="" ${i.available?'':'selected'}>No (86’d)</option></select></label>
+ modal(`<h3>${id?'Edit':'Add'} menu item</h3><form class="form">${field('name','Name',i.name,'text','full')}${sel('cat_id','Category',DB.categories.map(c=>[c.id,c.name]),i.cat_id)}<label>Available<select name="available"><option value="1" ${i.available?'selected':''}>Yes</option><option value="" ${i.available?'':'selected'}>No (sold out / 86’d)</option></select></label>
  ${field('price','Price',i.price,'number','','min="0" max="100000"')}${field('cost','Food cost',i.cost,'number','','min="0" max="100000"')}${field('mods','Modifiers (name:price, comma separated)',i.mods,'text','full')}${tagFields(i)}<div class="full muted" id="mg"></div>${btns}</form>`,
  d=>{need(d.name,'Name is required');if(!(+d.price>0)||!isFinite(+d.price))throw new Error('Price must be greater than 0');const MAXP=100000;let pr=r2(+d.price),co=r2(+d.cost||0);if(pr>MAXP||co>MAXP||+d.cost<0)toast('Price/cost limited to $0 – $'+MAXP.toLocaleString());pr=Math.min(MAXP,pr);co=Math.min(MAXP,Math.max(0,co));const x={name:d.name.trim(),cat_id:+d.cat_id,price:pr,cost:co,mods:d.mods.trim(),available:!!d.available,tags:readTags(d)};if(id)Object.assign(i,x);else DB.items.push({id:nid(),...x});save();});
  const f=$('#modal-body form'),upd=()=>$('#mg').textContent=`Margin: ${margin({price:+f.price.value,cost:+f.cost.value})}% · Food cost: ${+f.price.value?Math.round(+f.cost.value/+f.price.value*100):0}%`;f.price.oninput=f.cost.oninput=upd;upd();}
-function catsModal(){modal(`<h3>Categories</h3>${DB.categories.map(c=>`<div class="row between li"><span>${esc(c.name)} <span class="muted">(${DB.items.filter(i=>i.cat_id==c.id).length} items)</span></span><span><button class="sm sec" data-ren="${c.id}">Rename</button> <button class="sm danger" data-cdel="${c.id}">Del</button></span></div>`).join('')}
+function catsModal(){modal(`<h3>Categories</h3>${DB.categories.map(c=>`<div class="row between li"><span>${esc(c.name)} <span class="muted">(${DB.items.filter(i=>i.cat_id==c.id).length} items)</span></span><span><button class="sm sec" data-ren="${c.id}">Rename</button> <button class="sm danger" data-cdel="${c.id}">Delete</button></span></div>`).join('')}
  <form class="form" style="margin-top:12px">${field('name','New category','','text','full')}<div class="full row end"><button type="button" class="sec" onclick="closeModal();route()">Done</button><button>Add category</button></div></form>`,
  d=>{need(d.name,'Category name required');DB.categories.push({id:nid(),name:d.name.trim()});save();setTimeout(catsModal);});
  $$('[data-ren]').forEach(b=>b.onclick=()=>{const c=byId('categories',b.dataset.ren);const n=prompt('Rename category',c.name);if(n&&n.trim()){c.name=n.trim();save();catsModal();}});
@@ -1645,7 +2066,7 @@ PAGE.autoinv=()=>{TTInventory.mount($('#main'),{getMenuItems:()=>DB.items.map(i=
 // ---------- staff ----------
 PAGE.staff=()=>{const since=Date.now()-30*864e5;const st=id=>{const os=DB.orders.filter(o=>o.paid&&o.server_id==id&&o.paid_at>=since);return[os.length,os.reduce((a,o)=>a+totals(o).sub,0),os.reduce((a,o)=>a+totals(o).tip,0)];};
  $('#main').innerHTML=`<div class="row between"><h2>Staff</h2><button id="add">+ Add staff</button></div><div class="tw"><table><tr><th>Name</th><th>Role</th><th>Phone</th><th>Wage/hr</th><th>Training</th><th>Status</th><th>Orders (30d)</th><th>Sales (30d)</th><th>Tips (30d)</th><th></th></tr>
- ${DB.staff.map(s=>{const x=st(s.id);return`<tr><td><b>${esc(s.name)}</b></td><td>${esc(s.role)}</td><td>${esc(s.phone)}</td><td>${s.wage?money(s.wage):'—'}</td><td>${s.quiz_best!=null?s.quiz_best+'% ':'—'}${s.quiz_best>=80?'<span class="badge trained">🎓 Trained</span>':''}</td><td>${s.active!==false?badge('free','active'):badge('cancelled','inactive')}</td><td>${x[0]}</td><td>${money0(x[1])}</td><td>${money0(x[2])}</td><td class="nowrap"><button class="sm sec" data-edit="${s.id}">Edit</button> <button class="sm danger" data-del="${s.id}">Del</button></td></tr>`}).join('')||'<tr><td colspan=10 class="muted">No staff.</td></tr>'}</table></div>`;
+ ${DB.staff.map(s=>{const x=st(s.id);return`<tr><td><b>${esc(s.name)}</b></td><td>${esc(s.role)}</td><td>${esc(s.phone)}</td><td>${s.wage?money(s.wage):'—'}</td><td>${s.quiz_best!=null?s.quiz_best+'% ':'—'}${s.quiz_best>=80?'<span class="badge trained">🎓 Trained</span>':''}</td><td>${s.active!==false?badge('free','active'):badge('cancelled','inactive')}</td><td>${x[0]}</td><td>${money0(x[1])}</td><td>${money0(x[2])}</td><td class="nowrap"><button class="sm sec" data-edit="${s.id}">Edit</button> <button class="sm danger" data-del="${s.id}">Delete</button></td></tr>`}).join('')||'<tr><td colspan=10 class="muted">No staff.</td></tr>'}</table></div>`;
  $('#add').onclick=()=>editStaff();$$('[data-edit]').forEach(b=>b.onclick=()=>editStaff(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delStaff(+b.dataset.del));};
 function editStaff(id){const s=id?byId('staff',id):{role:'Server',active:true};modal(`<h3>${id?'Edit':'Add'} staff</h3><form class="form">${field('name','Name',s.name,'text','full')}${sel('role','Role',ROLES.map(r=>[r,r]),s.role)}${field('phone','Phone',s.phone,'tel')}${field('wage','Hourly wage ($)',s.wage||0,'number')}${sel('active','Status',[['1','Active'],['','Inactive']],s.active!==false?'1':'','full')}${btns}</form>`,
  d=>{need(d.name,'Name is required');const x={name:d.name.trim(),role:d.role,phone:d.phone,wage:Math.max(0,r2(+d.wage||0)),active:!!d.active};if(id)Object.assign(s,x);else DB.staff.push({id:nid(),...x});save();});}
@@ -1664,15 +2085,15 @@ function exportBackup(){const blob=new Blob([JSON.stringify({app:'TableTop',vers
 PAGE.settings=()=>{const s=DB.settings;$('#main').innerHTML=`<h2>Settings</h2><div class="grid two">
  <div class="card"><h3>Restaurant</h3><form id="sf" class="form">${field('name','Restaurant name',s.name,'text','full')}${field('address','Address (on receipts)',s.address,'text','full')}${field('phone','Phone (on receipts)',s.phone)}${field('tax','Default tax rate %',s.tax,'number')}
  ${field('pin','PIN lock (optional — blank = none)',s.pin,'password','full','inputmode="numeric" autocomplete="off"')}<div class="full"><button>Save settings</button></div></form></div>
- <div class="card"><h3>Your data</h3><p class="muted">Everything is stored only in this browser on this device: ${DB.items.length} menu items, ${DB.orders.length} orders, ${DB.reservations.length} reservations, ${TTInventory.getIngredients().length} ingredients, ${DB.staff.length} staff. Export a backup regularly.</p>
+ <div class="card"><h3>Your data</h3><p class="muted">${QR_SERVER_URL?'Your restaurant data is stored in this browser on this device. If you use guest phone ordering, the published menu (item names, prices, options, tables and item costs, which guests never see) and guests\' orders pass through the shared TableTop server; reservations, staff, inventory and sales history stay on this device. ':'Your data is stored only in this browser: '}${DB.items.length} menu items, ${DB.orders.length} orders, ${DB.reservations.length} reservations, ${TTInventory.getIngredients().length} ingredients, ${DB.staff.length} staff. Export a backup regularly.</p>
  <div class="row"><button id="exp">⬇️ Export backup</button><label class="btn sec">⬆️ Import backup<input type="file" id="imp" accept=".json,application/json" hidden></label></div>
- <p class="muted backup-note">💾 <b>Back up your data weekly.</b> Safari can clear stored data for pages opened from a file (file://), so keep an exported copy.</p>
- <div class="row"><button class="sec" id="demo">✨ Load demo data</button><button class="danger" id="reset">🗑️ Reset all data</button></div></div></div><p class="muted">TableTop single-file edition v2 · works offline · no data leaves this device.</p>`;
+ <p class="muted backup-note">💾 <b>Back up your data weekly.</b> Browsers can clear saved data (for example if you clear your history), so keep an exported copy.</p>
+ <div class="row"><button class="sec" id="sampledata">✨ Load sample data</button><button class="danger" id="reset">🗑️ Reset all data</button></div></div></div>${qrSettingsHtml()}<p class="muted">TableTop · works offline · ${QR_SERVER_URL?'your data stays on this device except the guest-ordering items described above.':'your data stays on this device.'}</p>`;
  $('#sf').onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));Object.assign(DB.settings,{name:d.name.trim()||'My Restaurant',address:d.address.trim(),phone:d.phone.trim(),tax:Math.max(0,+d.tax||0),pin:d.pin.trim()});save();if(DB.settings.pin)sessionStorage.tt_unlocked='1';toast('Settings saved');render();};
- $('#exp').onclick=exportBackup;
+ $('#exp').onclick=exportBackup;qrSettingsBind();
  $('#imp').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text()),d=j.data||j;if(!d.settings||!Array.isArray(d.items)||!Array.isArray(d.orders))throw new Error('Not a TableTop backup file');
   if(!confirm(`Replace current data with this backup (${d.items.length} menu items, ${d.orders.length} orders)?`))return;const b=blank();for(const k of Object.keys(b))if(d[k]===undefined)d[k]=b[k];DB=d;migrate();try{if(j.inventory&&typeof j.inventory==='object'){localStorage.setItem(TTInventory.KEY,JSON.stringify(j.inventory));TTInventory.reload();}else{TTInventory._reset();TTInventory.importIngredients(DB.ingredients);}DB.settings.inv_imported=true;}catch(e){}try{TTRegulars.reset();if(j.guestnotes&&typeof j.guestnotes==='object')TTRegulars.importData(j.guestnotes);}catch(e){}save();CUR=null;toast('Backup imported');render();}catch(err){toast('Import failed: '+err.message);}finally{e.target.value='';}};
- $('#demo').onclick=()=>{if(!confirm('Replace ALL current data with demo data?'))return;demoData();CUR=null;toast('Demo data loaded');location.hash='#dashboard';render();};
+ $('#sampledata').onclick=()=>{if(!confirm('Replace ALL current data with sample data? This cannot be undone.'))return;demoData();CUR=null;toast('Sample data loaded');location.hash='#dashboard';render();};
  $('#reset').onclick=()=>{if(!confirm('Delete ALL data in this browser? This cannot be undone — export a backup first.'))return;const p=DB.settings.pin;DB=blank();DB.settings.pin=p;DB.settings.inv_imported=true;try{TTInventory._reset();}catch(e){}try{TTRegulars.reset();}catch(e){}save();CUR=null;toast('All data reset');render();};};
 
 // ======================= v2: schedule, report, tips, tags, quiz =======================
@@ -1717,7 +2138,7 @@ PAGE.schedule=()=>{schedWeek=schedWeek||mondayOf(Date.now());const days=Array.fr
  <div class="tw"><table class="sched"><tr><th>Staff</th>${days.map((d,i)=>`<th class="${d===today?'today':''}">${DOW[i]}<div class="muted">${d.slice(5)}</div></th>`).join('')}<th>Hours</th><th>Labor</th><th></th></tr>
  ${staff.map(s=>{const p=per(s);const ph=String(s.phone||'').replace(/[^\d+]/g,'');return`<tr><td class="nowrap"><b>${esc(s.name)}</b><div class="muted">${esc(s.role)} · ${s.wage?money(s.wage)+'/hr':'no wage'}</div></td>
  ${days.map(d=>`<td class="${d===today?'today':''}">${wk.filter(h=>h.staff_id==s.id&&h.date===d).sort(cmpShift).map(h=>{const c=clashes(h).length;return`<button class="shift ${c?'clash':''}" data-sh="${h.id}" title="${c?'Overlaps another shift':'Edit shift'}">${esc(shiftTxt(h))}${c?' ⚠':''}<small>${esc(h.role||'')}</small></button>`;}).join('')}<button class="addsh" data-add="${s.id}|${d}" title="Add shift">＋</button></td>`).join('')}
- <td><b>${p.hrs}</b></td><td>${money(p.cost)}</td><td class="nowrap">${ph?`<a class="btn sm sec" data-txtw="${s.id}" href="${esc(smsLink(s.phone,weekSms(s,days)))}">📱 Text week</a>`:'<span class="muted">no phone</span>'}</td></tr>`}).join('')||'<tr><td colspan=11 class="muted">No staff yet — add staff first.</td></tr>'}
+ <td><b>${p.hrs}</b></td><td>${money(p.cost)}</td><td class="nowrap">${ph?`<a class="btn sm sec" data-txtw="${s.id}" href="${esc(smsLink(s.phone,weekSms(s,days)))}" title="Opens your phone's text app">📱 Text week</a>`:'<span class="muted">no phone</span>'}</td></tr>`}).join('')||'<tr><td colspan=11 class="muted">No staff yet — add staff first.</td></tr>'}
  <tr class="tfoot"><td colspan=8><b>Total</b></td><td><b>${r2(T.h)}</b></td><td><b>${money(T.c)}</b></td><td></td></tr></table></div>
  <div class="card"><h3>Shift swap requests</h3>${swaps.length?swaps.slice(0,12).map(w=>{const s=byId('shifts',w.shift_id);return`<div class="li row between"><span><b>${esc(staffName(w.from_id))}</b> → <b>${esc(staffName(w.to_id))}</b> · ${s?esc(dayLabel(s.date)+', '+shiftTxt(s)):'(shift gone)'} ${w.note?`<span class="muted">“${esc(w.note)}”</span>`:''}</span>
  <span class="nowrap">${w.status==='pending'?`<button class="sm green" data-ap="${w.id}">Approve</button> <button class="sm danger" data-dn="${w.id}">Deny</button>`:badge(w.status==='approved'?'free':'cancelled',w.status)}</span></div>`;}).join(''):'<p class="muted empty">No swap requests. Open a shift and choose “Request swap”.</p>'}</div>`;
@@ -1847,7 +2268,7 @@ function buildRound(){const fixed=shuffle(QF.map(f=>{const ans=f.choices[f.answe
  for(let round=0;menu.length<want&&round<50;round++){let any=false;for(const t of types){const q=groups[t].shift();if(q){any=true;if(!seen.has(q.q)){seen.add(q.q);menu.push(q);if(menu.length>=want)break;}}}if(!any)break;}
  const pickF=fixed.slice(0,10-menu.length);return shuffle([...menu,...pickF]).slice(0,10);}
 PAGE.quiz=()=>{if(QZ&&QZ.qs)return drawQuiz();const staff=DB.staff.filter(s=>s.active!==false);
- $('#main').innerHTML=`<h2>Staff Training Quiz</h2><div class="card"><p>10 random questions built from your live menu (prices, sections, add-ons, sold-out items, allergy tags) plus general service questions. Score <b>80%+</b> to earn the 🎓 Trained badge.</p>
+ $('#main').innerHTML=`<h2>Staff Training Quiz</h2><div class="card"><p>10 random questions: mostly about your menu, plus some general service questions. Score <b>80%+</b> to earn the 🎓 Trained badge.</p>
  <div class="row"><select id="qs"><option value="">Who is taking the quiz?</option>${staff.map(s=>`<option value="${s.id}">${esc(s.name)} (${esc(s.role)})</option>`).join('')}</select><button id="qstart">Start round</button></div></div>
  <div class="card"><h3>Best scores</h3>${staff.map(s=>`<div class="li row between"><span>${esc(s.name)}</span><span>${s.quiz_best!=null?`<b>${s.quiz_best}%</b> ${s.quiz_best>=80?'<span class="badge trained">🎓 Trained</span>':''}`:'<span class="muted">not taken</span>'}</span></div>`).join('')||'<p class="muted">Add staff first.</p>'}</div>`;
  $('#qstart').onclick=()=>{const sid=+$('#qs').value;if(!sid)return toast('Choose who is taking the quiz');QZ={sid,qs:buildRound(),i:0,score:0,ans:null,done:false};route();};};
@@ -1865,13 +2286,105 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();
  if(e.key==='Tab'){const m=$('#modal');if(!m||m.classList.contains('hidden'))return;const fs=[...m.querySelectorAll('a[href],button,input,select,textarea,[tabindex]')].filter(x=>!x.disabled&&x.type!=='hidden'&&x.tabIndex>=0&&x.getClientRects().length);if(!fs.length){e.preventDefault();return;}const first=fs[0],last=fs[fs.length-1],a=document.activeElement;
   if(!m.contains(a)){e.preventDefault();(e.shiftKey?last:first).focus();}else if(e.shiftKey&&a===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&a===last){e.preventDefault();first.focus();}}});
-const CUSTOMER=TTQROrder.isCustomerHash();   // QR customer link: never create demo data or write anything on a customer's phone
-if(!DB){if(CUSTOMER)DB=blank();else demoData();}
+const CUSTOMER=TTQROrder.isCustomerHash();   // QR customer link: never create sample data or write anything on a customer's phone
+
+// ---------- first-run welcome (new browsers only) ----------
+// A brand-new browser gets the sample restaurant (FR_KEY='pending'); the Dashboard shows a small, dismissible choice once. Existing data never gets it.
+const FR_KEY='tabletop_firstrun';
+function frPending(){try{return !CUSTOMER&&localStorage.getItem(FR_KEY)==='pending';}catch(e){return false;}}
+function frDone(v){try{localStorage.setItem(FR_KEY,v||'done');}catch(e){}const b=$('#firstrun');if(b)b.remove();}
+function frStartFresh(){if(!confirm('Remove the sample restaurant and start with an empty one? You can add your own menu, tables and staff.'))return;
+ const p=DB.settings.pin;DB=blank();DB.settings.pin=p;DB.settings.inv_imported=true;try{TTInventory._reset();}catch(e){}try{TTRegulars.reset();}catch(e){}save();CUR=null;frDone('fresh');toast('Fresh start: add a category, then your first item');location.hash='#menu';render();}
+function frShow(){if(!frPending()||!$('#main')||$('#firstrun'))return;
+ const d=document.createElement('div');d.id='firstrun';d.className='card firstrun';d.setAttribute('role','region');d.setAttribute('aria-label','Welcome');
+ d.innerHTML=`<div class="row between nomb"><b>👋 Welcome to TableTop</b><button class="sm sec" id="fr-x" aria-label="Dismiss welcome message" title="Dismiss">✕</button></div><div class="muted">You are looking at a sample restaurant (The Copper Spoon) so you can try everything. Keep it to explore, or start with your own empty menu.</div><div class="row nomb"><button class="sm" id="fr-sample">Start with sample menu</button><button class="sm sec" id="fr-fresh">Start fresh</button></div>`;
+ $('#main').insertBefore(d,$('#main').firstChild);
+ $('#fr-x').onclick=()=>frDone('dismissed');$('#fr-sample').onclick=()=>{frDone('sample');toast('Sample menu kept. Settings → Reset all data starts fresh any time.');};$('#fr-fresh').onclick=frStartFresh;}
+{const _dash=PAGE.dashboard;PAGE.dashboard=()=>{_dash();frShow();};}
+
+// ---------- shared server for guest-phone QR ordering (optional) ----------
+// ONE-LINE EDIT: the Worker address (rebuild with ./build.sh afterwards: it also sets the page's CSP connect-src to just this origin). Empty '' = no server, the app behaves exactly as before.
+const QR_SERVER_URL='https://tabletop-server.tabletop-luca.workers.dev';
+const QR_APP_URL='https://lucabaduk.github.io/tabletop-site/app.html';   // address printed on table QR cards when the app is opened from a file (see QR codes page)
+const QR_TOKEN_KEY='tabletop_staff_token',QR_CLOSEQ_KEY='tabletop_qr_closeq';   // staff token lives ONLY in this browser's localStorage (never in the app, links or backups)
+let QRP={pending:[],err:'',busy:{}},qrCtl=null,qrSig=null,qrFlushT=null;
+const qrOn=()=>!!QR_SERVER_URL&&!CUSTOMER;
+const qrToken=()=>{try{return(localStorage.getItem(QR_TOKEN_KEY)||'').trim();}catch(e){return'';}};
+const qrStaff=()=>qrOn()&&!!qrToken();
+const qrPendN=()=>qrStaff()?QRP.pending.filter(o=>!o.expires_at||o.expires_at>Date.now()).length:0;
+function qrConfigure(){if(!QR_SERVER_URL)return;
+ if(qrStaff())TTQROrder.setServer({url:QR_SERVER_URL,appUrl:QR_APP_URL,staffToken:qrToken(),onAcceptedOrder:importQROrder});
+ else TTQROrder.setServer({url:QR_SERVER_URL,appUrl:QR_APP_URL});}   // guest phones (and staff without a token) get the URL only
+function importQROrder(order){reloadDB();
+ if(!order||!Array.isArray(order.lines)||!order.lines.length)return false;
+ if(DB.orders.some(o=>o.qr_id===order.id||(o.qr_ids||[]).includes(order.id)))return true;
+ const lines=order.lines.map(l=>({item_id:l.item_id,name:String(l.name||''),price:+l.price||0,cost:+l.cost||0,qty:Math.max(1,Math.floor(+l.qty)||1),mods:(l.mods||[]).map(m=>({n:String(m.n),p:+m.p||0})),note:String(l.note||''),tags:Array.isArray(l.tags)?l.tags.slice():[]}));
+ if(order.note)lines[0].note=('TABLE NOTE: '+order.note+(lines[0].note?' | '+lines[0].note:'')).slice(0,300);
+ const tid=String(order.table_id);let o=DB.orders.find(x=>!x.paid&&String(x.table_id)===tid);   // same rule as QRO.placeOrder/POS: one open ticket per table
+ if(o){lines.forEach(l=>o.lines.push(l));o.status='new';o.qr_ids=(o.qr_ids||(o.qr_id?[o.qr_id]:[])).concat(order.id);o.qr_id=o.qr_id||order.id;}
+ else{o={id:nid(),type:'dine',table_id:tid,customer:'',lines,status:'new',paid:false,tax_rate:+DB.settings.tax||0,tip:0,method:null,server_id:null,created_at:Date.now(),paid_at:null,source:'qr',qr_id:order.id,qr_ids:[order.id]};DB.orders.push(o);}
+ try{TTInventory.onOrderPlaced(o);}catch(e){}
+ const okSaved=save();
+ if(okSaved){const pg=(location.hash||'#dashboard').slice(1).split('/')[0];if(['dashboard','kitchen','tables','orders'].includes(pg)&&$('#main')&&$('#modal').classList.contains('hidden'))route();}
+ return okSaved;}
+function qrBeep(){try{const A=window.AudioContext||window.webkitAudioContext,c=new A(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);g.gain.value=.08;o.frequency.value=880;o.start();setTimeout(()=>{o.stop();c.close();},250);}catch(e){}}
+function qrOnUpdate(i){QRP.pending=i.pending||[];QRP.err='';
+ if(i.newPending&&i.newPending.length){const o=i.newPending[0];toast('🔔 New guest order'+(o.table_name?' · '+o.table_name:''));qrBeep();}
+ const pg=(location.hash||'#dashboard').slice(1).split('/')[0];if($('#main')&&$('#modal').classList.contains('hidden')){if(pg==='kitchen')PAGE.kitchen();else if(['dashboard','tables','orders'].includes(pg))route();else qrBadge();}}
+function qrBadge(){const a=$('nav a[data-r=kitchen]');if(!a)return;const b=a.querySelector('.dot');if(b)b.remove();const n=DB.orders.filter(o=>!o.paid&&o.status!=='served').length+qrPendN();if(n)a.insertAdjacentHTML('beforeend',`<b class="dot blue">${n}</b>`);}
+function qrOnError(e){QRP.err=e&&e.message||'Shared server problem';if(e&&e.status===401)QRP.err='Check the staff token (Settings → Shared server).';qrWaitRefresh();}
+function qrStart(){if(!qrStaff())return;qrConfigure();
+ if(!TTQROrder.isStaffPolling())qrCtl=TTQROrder.startStaffPolling({onUpdate:qrOnUpdate,onError:qrOnError});
+ if(!qrFlushT){qrFlushT=setInterval(qrFlushClose,20000);qrFlushClose();}
+ if(qrSig===null)qrSig=qrMenuSig();}
+function qrStop(){try{TTQROrder.stopStaffPolling();}catch(e){}qrCtl=null;if(qrFlushT){clearInterval(qrFlushT);qrFlushT=null;}}
+// guests can only order what is published: re-publish (2 s debounce) whenever menu, tables, categories, tax/name or 86 (available) change
+function qrMenuSig(){return JSON.stringify([DB.settings.name,DB.settings.tax,DB.tables.map(t=>[t.id,t.name,t.seats]),DB.categories.map(c=>[c.id,c.name]),DB.items.map(i=>[i.id,i.name,i.price,i.cost,i.cat_id,i.available,i.mods,i.tags])]);}
+function qrAfterSave(){if(!qrStaff()||qrSig===null)return;const g=qrMenuSig();if(g===qrSig)return;qrSig=g;
+ TTQROrder.publishMenuSoon(()=>DB,r=>{if(!r.ok){QRP.err='Menu not published: '+(r.message||'error');qrWaitRefresh();}});}
+// POS paid/voided a guest order -> tell the server (retried from a small queue if offline)
+function qrQueue(){try{return JSON.parse(localStorage.getItem(QR_CLOSEQ_KEY))||[];}catch(e){return[];}}
+function qrQueueSave(q){try{localStorage.setItem(QR_CLOSEQ_KEY,JSON.stringify(q));}catch(e){}}
+function qrCloseOne(id,outcome){return TTQROrder.closeOrder(id,outcome).then(r=>{
+ if(r.ok)return true;if(r.closed){toast(r.message);return true;}
+ if(r.retryable)return false;toast('Guest order '+id+': '+(r.message||'could not be closed on the server'));return true;});}
+function qrClose(o,outcome){if(!qrStaff()||!o)return;const ids=o.qr_ids||(o.qr_id?[o.qr_id]:[]);ids.forEach(id=>{qrCloseOne(id,outcome).then(done=>{if(!done){const q=qrQueue();q.push({id,outcome});qrQueueSave(q);}});});}
+function qrFlushClose(){if(!qrStaff())return;const q=qrQueue();if(!q.length)return;qrQueueSave([]);q.forEach(x=>qrCloseOne(x.id,x.outcome).then(done=>{if(!done){const n=qrQueue();n.push(x);qrQueueSave(n);}}));}
+// kitchen screen: guest orders waiting for staff
+function qrWaitHtml(){if(!qrStaff())return'';const now=Date.now(),list=QRP.pending.filter(o=>!o.expires_at||o.expires_at>now);
+ return`<div id="qrwait" class="qrwait">${qrWaitInner(list)}</div>`;}
+function qrWaitInner(list){const err=QRP.err?`<div class="qrerr" role="alert">⚠️ ${esc(QRP.err)}</div>`:'';
+ if(!list.length)return err+`<div class="muted qrnone">📱 Guest phone orders: none waiting.</div>`;
+ return err+`<h4>📱 Guest orders waiting for you (${list.length})</h4>`+list.map(o=>{const mins=o.expires_at?Math.max(0,Math.ceil((o.expires_at-Date.now())/60000)):null;
+  return`<div class="qrcard"><div class="row between nomb"><b>${esc(o.table_name||('Table '+o.table_id))}</b><span class="muted">${mins!=null?'expires in ~'+mins+' min · ':''}${money(o.total)}</span></div>
+  <ul>${(o.lines||[]).map(l=>`<li><b>${l.qty}×</b> ${esc(l.name)}${(l.mods||[]).length?`<div class="muted">${l.mods.map(x=>esc(x.n)).join(', ')}</div>`:''}${l.note?`<div class="note">📝 ${esc(l.note)}</div>`:''}</li>`).join('')}</ul>${o.note?`<div class="note">📝 TABLE NOTE: ${esc(o.note)}</div>`:''}
+  <div class="row nomb"><button class="sm green grow" data-qracc="${esc(o.id)}">Accept</button><button class="sm danger" data-qrrej="${esc(o.id)}">Reject</button></div></div>`;}).join('');}
+function qrWaitRefresh(){const el=$('#qrwait');if(el)el.innerHTML=qrWaitInner(QRP.pending.filter(o=>!o.expires_at||o.expires_at>Date.now())),qrWaitBind();}
+function qrWaitBind(){const find=id=>QRP.pending.find(o=>o.id===id);
+ $$('[data-qracc]').forEach(b=>b.onclick=()=>{const o=find(b.dataset.qracc);if(!o||QRP.busy[o.id])return;QRP.busy[o.id]=1;b.disabled=true;
+  TTQROrder.acceptOrder(o.id,{baseVersion:o.version}).then(r=>{delete QRP.busy[o.id];
+   if(!r.ok){toast(r.message||'Could not accept');if(r.closed)QRP.pending=QRP.pending.filter(x=>x.id!==o.id);}
+   else{QRP.pending=QRP.pending.filter(x=>x.id!==o.id);toast(r.imported===false?(r.importError||'Accepted, but could not add to the kitchen on this device'):'Order accepted → kitchen');}
+   if($('#main')&&(location.hash||'').startsWith('#kitchen'))PAGE.kitchen();else qrWaitRefresh();});});
+ $$('[data-qrrej]').forEach(b=>b.onclick=()=>{const o=find(b.dataset.qrrej);if(!o||QRP.busy[o.id])return;if(!confirm('Reject this guest order?'))return;QRP.busy[o.id]=1;b.disabled=true;
+  TTQROrder.rejectOrder(o.id,'').then(r=>{delete QRP.busy[o.id];if(!r.ok)toast(r.message||'Could not reject');else toast('Order rejected');QRP.pending=QRP.pending.filter(x=>x.id!==o.id);
+   if($('#main')&&(location.hash||'').startsWith('#kitchen'))PAGE.kitchen();else qrWaitRefresh();});});}
+// settings: staff token (this device only)
+function qrSettingsHtml(){if(!QR_SERVER_URL||CUSTOMER)return'';
+ return`<div class="card"><h3>📱 Shared server (guest phone ordering)</h3><p class="muted">Server: ${esc(QR_SERVER_URL)}<br>Guests order from their own phones; orders appear on the Kitchen screen of every device that has the staff token below. Only enter it on the kitchen/POS device(s) that should receive orders. It is stored only in this browser (not in backups).</p>
+ <form id="qrf" class="form"><label class="full">Staff token<input type="password" name="tok" autocomplete="off" placeholder="${qrToken()?'saved on this device (type to replace)':'paste the staff token'}"></label>
+ <div class="full row"><button>Save token</button>${qrToken()?'<button type="button" class="sec" id="qrclear">Remove token</button>':''}</div></form></div>`;}
+function qrSettingsBind(){const f=$('#qrf');if(!f)return;
+ f.onsubmit=e=>{e.preventDefault();const t=(f.tok.value||'').trim();if(!t)return toast('Paste the staff token first');try{localStorage.setItem(QR_TOKEN_KEY,t);}catch(x){return toast('Could not store the token in this browser');}
+  qrStop();qrSig=null;QRP={pending:[],err:'',busy:{}};toast('Staff token saved');render();};
+ if($('#qrclear'))$('#qrclear').onclick=()=>{try{localStorage.removeItem(QR_TOKEN_KEY);}catch(x){}qrStop();QRP={pending:[],err:'',busy:{}};try{TTQROrder.setServer({url:QR_SERVER_URL,appUrl:QR_APP_URL});}catch(x){}toast('Staff token removed');render();};}
+if(!DB){if(CUSTOMER)DB=blank();else{demoData();try{localStorage.setItem(FR_KEY,'pending');}catch(e){}}}   // brand-new browser: sample data + a one-time welcome choice
 if(!CUSTOMER){try{if(!DB.settings.inv_imported){if(!TTInventory.getIngredients().length&&DB.ingredients.length)TTInventory.importIngredients(DB.ingredients);DB.settings.inv_imported=true;save();}}catch(e){}}
 const reloadDB=()=>{try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.items)&&d.settings){DB=d;migrate();}}catch(e){}};
 const QRO=TTQROrder.tableTopAdapter({getDB:()=>DB,save:save,nid:nid,reload:reloadDB});
 window.addEventListener('storage',e=>{if(e.key===TTRegulars.KEY){try{TTRegulars.reload();}catch(x){}if((location.hash||'').startsWith('#reservations')&&$('#main')&&$('#modal').classList.contains('hidden'))route();return;}if(e.key===TTInventory.KEY){try{TTInventory.reload();}catch(x){}if((location.hash||'').startsWith('#autoinv')&&$('#main'))route();return;}if(e.key!==KEY||TTQROrder.isCustomerHash())return;reloadDB();
   if(['dashboard','kitchen','tables','orders'].includes((location.hash||'#dashboard').slice(1).split('/')[0])&&$('#main'))route();});
+qrConfigure();   // setServer BEFORE autoStart (no-op while QR_SERVER_URL is empty)
 if(!TTQROrder.autoStart({container:$('#app'),getMenu:QRO.getMenu,getTable:QRO.getTable,
   placeOrder:(tid,items,meta)=>{const r=QRO.placeOrder(tid,items,meta);try{TTInventory.onOrderPlaced(byId('orders',r.orderId));}catch(e){}return r;},
   restaurantName:QRO.restaurantName,taxRate:QRO.taxRate,onLeave:()=>{location.hash='#tables';render();}}))render();
