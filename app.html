@@ -1999,7 +1999,12 @@ function receipt(id){const o=byId('orders',id),t=totals(o),s=DB.settings;
  ${o.lines.map(l=>`<div class="rl"><span>${l.qty} × ${esc(l.name)}</span><span>${money(lineTotal(l))}</span></div>${l.mods.map(m=>`<div class="rm">+ ${esc(m.n)}${m.p?' '+money(m.p):''}</div>`).join('')}${l.note?`<div class="rm">“${esc(l.note)}”</div>`:''}`).join('')}<hr>
  <div class="rl"><span>Subtotal</span><span>${money(t.sub)}</span></div><div class="rl"><span>Tax (${o.tax_rate}%)</span><span>${money(t.tax)}</span></div><div class="rl"><span>Tip</span><span>${money(t.tip)}</span></div>
  <div class="rl big"><span>TOTAL</span><span>${money(t.total)}</span></div>${o.paid?`<div class="rl"><span>Paid by</span><span>${o.method==='card'?'Card':'Cash'}</span></div>`:'<div><b>UNPAID</b></div>'}<hr><div class="center">${o.type==='dine'?'Thank you for dining with us!':'Thank you!'}</div></div>`;
- $('#print').innerHTML=html;modal(`${html}<div class="row end noprint"><button class="sec" onclick="closeModal();route()">Close</button><button onclick="window.print()">🖨️ Print receipt</button></div>`);}
+ $('#print').innerHTML=html;modal(`${html}<div class="row end noprint"><button class="sec" onclick="closeModal();route()">Close</button><button class="sec" id="rcmail">✉️ Email receipt</button><button onclick="window.print()">🖨️ Print receipt</button></div>`);
+ $('#rcmail').onclick=()=>{const to=(prompt('Guest email address:')||'').trim();if(!to)return;if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to))return toast('That email address does not look right');location.href=receiptMailto(o,to);};}
+function receiptText(o){const t=totals(o),s=DB.settings,L=[s.name,s.address,s.phone].filter(Boolean);L.push('','Order #'+o.id+' · '+orderLabel(o),new Date(o.paid_at||o.created_at).toLocaleString(),'');
+ o.lines.forEach(l=>{L.push(l.qty+' x '+l.name+'  '+money(lineTotal(l)));l.mods.forEach(m=>L.push('   + '+m.n+(m.p?' '+money(m.p):'')));});
+ L.push('','Subtotal  '+money(t.sub),'Tax ('+o.tax_rate+'%)  '+money(t.tax),'Tip  '+money(t.tip),'TOTAL  '+money(t.total),o.paid?'Paid by '+(o.method==='card'?'card':'cash'):'UNPAID','','Thank you!');return L.join('\n');}
+function receiptMailto(o,to){return 'mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent('Your receipt from '+DB.settings.name+' (order #'+o.id+')')+'&body='+encodeURIComponent(receiptText(o));}
 
 // ---------- kitchen ----------
 const KS=['new','cooking','ready','served'],KN={new:'cooking',cooking:'ready',ready:'served'};
