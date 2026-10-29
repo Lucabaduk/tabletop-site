@@ -1245,6 +1245,12 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
       chk = { state: 'checking', msg: '' }; var my = ctl; draw();
       var t0 = (opts.getTables() || [])[0];
       checkServer(t0 ? t0.id : null).then(function (r) {
+        // a saved staff token must also be accepted, or the green banner would lie
+        if (!r.ok || !server.token) return r;
+        return staffCall('GET', '/staff/orders?status=pending').then(function (s) {
+          return (s.status === 401 || s.status === 429 || s.status === 503) ? { ok: false, message: s.message } : r;
+        });
+      }).then(function (r) {
         if (sheetCtl !== my) return;
         chk = { state: r.ok && t0 ? 'ok' : 'fail', msg: r.ok && !t0 ? 'Add a table first, then check again.' : (r.message || ''), r: r }; draw();
       });
@@ -1876,7 +1882,10 @@ function demoData(){const keepPin=DB?.settings?.pin||'';const d=blank();DB=d;d.s
 // ---------- modal & forms ----------
 function modal(html,onSubmit){$('#modal-body').innerHTML=html;modalFrom=document.activeElement;$('#modal').setAttribute('role','dialog');$('#modal').setAttribute('aria-modal','true');$('#modal').classList.remove('hidden');const f=$('#modal-body form');setTimeout(()=>{const x=$('#modal-body input:not([type=hidden]):not([type=checkbox]),#modal-body select,#modal-body textarea');if(x&&!$('#modal').classList.contains('hidden'))try{x.focus({preventScroll:true});}catch(e){}},30);
  if(f)f.addEventListener('submit',e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));$$('#modal-body input[type=checkbox][name]').forEach(c=>d[c.name]=c.checked);try{if(onSubmit(d)!==false){closeModal();route();}}catch(err){toast(err.message);}});}
-let modalFrom=null;const closeModal=()=>{const m=$('#modal');if(!m.classList.contains('hidden')){m.classList.add('hidden');try{if(modalFrom&&document.body.contains(modalFrom))modalFrom.focus({preventScroll:true});}catch(e){}modalFrom=null;}};
+let modalFrom=null;const closeModal=()=>{const m=$('#modal');if(!m.classList.contains('hidden')){m.classList.add('hidden');refocus(modalFrom);modalFrom=null;}};
+// focus back to the opener; if a redraw replaced it, to its twin (same id/data-*), else the page heading (never leave focus on <body>)
+function refocus(el){try{let t=el&&document.body.contains(el)?el:null;if(!t&&el&&el.nodeType===1){if(el.id)t=document.getElementById(el.id);if(!t)for(const a of el.attributes)if(a.name.startsWith('data-')){t=document.querySelector(`[${a.name}="${CSS.escape(a.value)}"]`);if(t)break;}}
+ if(!t||t.disabled||!t.getClientRects().length){t=$('#main h2')||$('#main');if(t&&!t.hasAttribute('tabindex'))t.setAttribute('tabindex','-1');}if(t)t.focus({preventScroll:true});}catch(e){}}
 const field=(n,l,v='',t='text',x='',extra='')=>`<label class="${x}">${l}<input name="${n}" type="${t}" value="${esc(v??'')}" ${t==='number'?'step="any"':''} ${extra}></label>`;
 const sel=(n,l,opts,v,x='')=>`<label class="${x}">${l}<select name="${n}">${opts.map(([k,t])=>`<option value="${esc(k)}" ${String(k)===String(v??'')?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
 const btns=`<div class="full row end"><button type="button" class="sec" onclick="closeModal()">Cancel</button><button>Save</button></div>`;
@@ -1975,7 +1984,7 @@ DB.orders=DB.orders.filter(x=>x.id!==o.id);save();qrClose(o,'void');CUR=newTicke
 function addItem(it){const mods=parseMods(it.mods);const push=(ms,note)=>{const same=CUR.lines.find(l=>l.item_id===it.id&&!note&&!l.note&&JSON.stringify(l.mods)===JSON.stringify(ms));if(same)same.qty++;else CUR.lines.push({item_id:it.id,name:it.name,price:it.price,cost:+it.cost||0,qty:1,mods:ms,note:note||'',tags:(it.tags||[]).slice()});drawPOS();};
  modal(`<h3>${esc(it.name)} <span class="muted">${money(it.price)}</span></h3><form class="form">${mods.length?`<div class="full"><div class="muted">Modifiers</div><div class="mods">${mods.map((m,i)=>`<label class="chk"><input type="checkbox" data-mod="${i}"> ${esc(m.n)}${m.p?` <span class="muted">+${money(m.p)}</span>`:''}</label>`).join('')}</div></div>`:''}
  <label class="full">Kitchen note<input name="note" placeholder="e.g. allergy, no salt, on the side"></label>${field('qty','Quantity',1,'number')}<div class="full row end"><button type="button" class="sec" onclick="closeModal()">Cancel</button><button>Add to ticket</button></div></form>`,
- d=>{const ms=$$('#modal-body [data-mod]').filter(c=>c.checked).map(c=>mods[c.dataset.mod]);const q=Math.max(1,Math.floor(+d.qty||1));push(ms,d.note.trim());if(q>1)CUR.lines[CUR.lines.length-1].qty+=q-1;closeModal();drawPOS();return false;});}
+ d=>{const ms=$$('#modal-body [data-mod]').filter(c=>c.checked).map(c=>mods[c.dataset.mod]);const q=Math.max(1,Math.floor(+d.qty||1));push(ms,d.note.trim());if(q>1)CUR.lines[CUR.lines.length-1].qty+=q-1;drawPOS();closeModal();return false;});}
 function commit(){const o=CUR;if(!o.lines.length)throw new Error('Add at least one item');if(o.type==='dine'&&!o.table_id)throw new Error('Choose a table (or switch to Takeout)');
  if(o.type==='dine'&&DB.orders.some(x=>!x.paid&&x.table_id==o.table_id&&x.id!==o.id))throw new Error('That table already has an open ticket');
  if(!o.id){o.id=nid();o.created_at=Date.now();o.status='new';DB.orders.push(o);}else{const i=DB.orders.findIndex(x=>x.id===o.id);if(i<0)throw new Error('Ticket no longer exists');const prev=DB.orders[i];if(o.lines.length>prev.lines.length&&prev.status!=='new')o.status='new';DB.orders[i]=o;}
@@ -2292,7 +2301,7 @@ const CUSTOMER=TTQROrder.isCustomerHash();   // QR customer link: never create s
 // A brand-new browser gets the sample restaurant (FR_KEY='pending'); the Dashboard shows a small, dismissible choice once. Existing data never gets it.
 const FR_KEY='tabletop_firstrun';
 function frPending(){try{return !CUSTOMER&&localStorage.getItem(FR_KEY)==='pending';}catch(e){return false;}}
-function frDone(v){try{localStorage.setItem(FR_KEY,v||'done');}catch(e){}const b=$('#firstrun');if(b)b.remove();}
+function frDone(v){try{localStorage.setItem(FR_KEY,v||'done');}catch(e){}const b=$('#firstrun');if(b){const had=b.contains(document.activeElement);b.remove();if(had)refocus(null);}}
 function frStartFresh(){if(!confirm('Start fresh? This erases EVERYTHING in this app right now, the sample restaurant and any changes you already made, and gives you an empty one.'))return;
  const p=DB.settings.pin;DB=blank();DB.settings.pin=p;DB.settings.inv_imported=true;try{TTInventory._reset();}catch(e){}try{TTRegulars.reset();}catch(e){}save();CUR=null;frDone('fresh');toast('Fresh start: add a category, then your first item');location.hash='#menu';render();}
 function frShow(){if(!frPending()||!$('#main')||$('#firstrun'))return;
@@ -2351,7 +2360,7 @@ function qrCloseOne(id,outcome){return TTQROrder.closeOrder(id,outcome).then(r=>
 function qrClose(o,outcome){if(!qrStaff()||!o)return;const ids=o.qr_ids||(o.qr_id?[o.qr_id]:[]);ids.forEach(id=>{qrCloseOne(id,outcome).then(done=>{if(!done){const q=qrQueue();q.push({id,outcome});qrQueueSave(q);}});});}
 function qrFlushClose(){if(!qrStaff())return;const q=qrQueue();if(!q.length)return;qrQueueSave([]);q.forEach(x=>qrCloseOne(x.id,x.outcome).then(done=>{if(!done){const n=qrQueue();n.push(x);qrQueueSave(n);}}));}
 // kitchen screen: guest orders waiting for staff
-function qrWaitHtml(){if(!qrStaff())return'';const now=Date.now(),list=QRP.pending.filter(o=>!o.expires_at||o.expires_at>now);
+function qrWaitHtml(){if(qrOn()&&!qrToken())return`<div id="qrwait" class="qrwait"><div class="qrerr" role="status">📱 Guest phone orders will NOT show on this device: no staff token. Add it in <a href="#settings">Settings → Shared server</a>.</div></div>`;if(!qrStaff())return'';const now=Date.now(),list=QRP.pending.filter(o=>!o.expires_at||o.expires_at>now);
  return`<div id="qrwait" class="qrwait">${qrWaitInner(list)}</div>`;}
 function qrWaitInner(list){const err=QRP.err?`<div class="qrerr" role="alert">⚠️ ${esc(QRP.err)}</div>`:'';
  if(!list.length)return err+`<div class="muted qrnone">📱 Guest phone orders: none waiting.</div>`;
