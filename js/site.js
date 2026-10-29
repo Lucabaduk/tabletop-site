@@ -59,7 +59,7 @@ if(dev){
 // Visual only: fade-in on scroll (skipped if the visitor prefers reduced motion)
 (function(){
  if(!('IntersectionObserver' in window)||(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))return;
- var els=document.querySelectorAll('main section h2,.fgrid .card,.v2row,.phone,.price1,details,.formcard,.tips .card,.tour-top,.hero .frame');
+ var els=document.querySelectorAll('main section h2,.card,.price,details,.formcard,.gallery figure,.phones img');
  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);var t=e.target;setTimeout(function(){t.style.transitionDelay=''},1200)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
- els.forEach(function(el,i){el.classList.add('rv');el.style.transitionDelay=(el.matches('.fgrid .card,.phone')?(i%3)*80:0)+'ms';io.observe(el)});
+ els.forEach(function(el,i){el.classList.add('rv');el.style.transitionDelay=(el.matches('.card')?(i%3)*80:0)+'ms';io.observe(el)});
 })();

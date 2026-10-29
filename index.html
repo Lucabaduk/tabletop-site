@@ -1,60 +1,84 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TableTop: simple restaurant software for $29 a month</title>
-<meta name="description" content="Orders, kitchen, tables and reservations in one simple app. $29 a month. Works offline.">
+<title>TableTop: simple restaurant software, $29 a month</title>
+<meta name="description" content="TableTop: orders, kitchen screen, tables, reservations and QR ordering for small restaurants. $29 a month.">
+<meta name="theme-color" content="#e8590c">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/site.css">
 </head><body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="top"><div class="wrap">
 <a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>Table<b>Top</b></span></a>
 <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav">☰</button>
 <nav class="main" id="nav" aria-label="Main">
-<a href="index.html#features">Features</a><a href="index.html#pricing">Pricing</a><a href="index.html#faq">FAQ</a><a href="tour.html">Product tour</a><a href="app.html">Open the app</a>
-<a class="btn sm" href="index.html#contact">Contact</a></nav></div></header>
+<a href="index.html#features">Features</a><a href="index.html#how">How it works</a><a href="index.html#qr">QR ordering</a><a href="index.html#pricing">Pricing</a><a href="index.html#faq">FAQ</a><a href="tour.html">Tour</a>
+<a class="btn sm" href="app.html">Open the app</a></nav></div></header>
 <main id="main">
 <section class="hero"><div class="wrap">
-<h1>Run your restaurant from <em>one simple screen.</em></h1>
-<p class="lead">Orders, kitchen, tables and reservations. $29 a month. Works offline.</p>
-<div class="btns"><a class="btn big" href="app.html">Launch TableTop</a></div>
-<figure class="shot"><img src="assets/dashboard.png" alt="TableTop dashboard with today's sales, orders and top items" width="1280" height="800" loading="eager"></figure>
+<span class="eyebrow">Restaurant software for small places</span>
+<h1>Run your whole restaurant from one simple screen.</h1>
+<p class="lead">Take orders, run the kitchen, manage tables and let guests order from their phone. One plan, $29 a month.</p>
+<div class="btns"><a class="btn" href="app.html">Open TableTop</a><a class="btn ghost" href="tour.html">Take the tour</a></div>
+<small>Runs in your browser on a phone, tablet or laptop.</small>
+<div class="heroshot"><div class="desk"><img src="assets/dashboard.png" alt="TableTop dashboard showing sales, orders and best sellers" width="1280" height="800" fetchpriority="high"></div>
+<div class="phone"><img src="assets/mobile-pos.png" alt="Taking an order on a phone" width="390" height="800"></div></div>
 </div></section>
-<div class="wrap strip"><span>$29 / month, everything included</span><span>Works offline</span><span>Phone, tablet, laptop</span><span>Guests can order by QR</span></div>
 
 <section id="features"><div class="wrap">
-<div class="center"><h2>Everything you need. Nothing you don't.</h2></div>
-<div class="grid fgrid">
-<div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></div><h3>Take orders fast</h3><p>A few taps, then record card or cash. TableTop does not process card payments.</p></div>
-<div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"/><path d="M6 17h12"/></svg></div><h3>Kitchen screen</h3><p>No more lost paper tickets.</p></div>
-<div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></div><h3>Tables</h3><p>See which tables are free, busy or reserved.</p></div>
-<div class="card"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div><h3>Daily numbers</h3><p>Sales and best sellers, no spreadsheet.</p></div>
+<div class="center head"><span class="eyebrow">Features</span><h2>Everything a small restaurant needs</h2><p class="lead">No add-ons and no extra modules. It's all in one app.</p></div>
+<div class="grid g3">
+<div class="card"><div class="ico">🧾</div><h3>Fast order taking</h3><p>Pick a table, tap dishes and send to the kitchen. Record card or cash payments and print receipts.</p></div>
+<div class="card"><div class="ico">👨‍🍳</div><h3>Kitchen screen</h3><p>Tickets move from new to cooking to ready, with timers. New phone orders get a banner and a sound.</p></div>
+<div class="card"><div class="ico">🪑</div><h3>Tables and reservations</h3><p>See which tables are free, busy or reserved, and keep your bookings in one place.</p></div>
+<div class="card"><div class="ico">📋</div><h3>Menu control</h3><p>Edit prices, mark items sold out in one tap and add allergy and diet tags.</p></div>
+<div class="card"><div class="ico">📊</div><h3>Daily numbers</h3><p>Sales by hour, best sellers, low-stock alerts and an end-of-night report.</p></div>
+<div class="card"><div class="ico">👥</div><h3>Staff tools</h3><p>Build the weekly schedule and split tips without a spreadsheet.</p></div>
 </div>
-<div class="v2row now" id="v2"><span class="tag live">Included now</span><span class="chip">Staff schedule</span><span class="chip">Tip splitter</span><span class="chip">End-of-night report</span><span class="chip">Allergy tags</span></div>
-<div class="shots2"><figure><img src="assets/kitchen.png" alt="Kitchen screen with open tickets" width="1280" height="800" loading="lazy"><figcaption>Kitchen screen</figcaption></figure><figure><img src="assets/mobile-pos.png" alt="Taking an order on a phone" width="390" height="800" loading="lazy"><figcaption>Orders from a phone</figcaption></figure></div>
-<p class="center" style="margin:16px 0 0;color:var(--muted);font-size:15px">Guests can scan a table's QR card and order from their own phone. Orders appear on your kitchen screen for staff to accept.</p>
-</div></section>
-
-
-<section id="pricing"><div class="wrap">
-<div class="price1">
-<span class="eyebrow">Pricing</span>
-<div class="amt">$29<small> / month</small></div>
-<p class="p1">Everything included. No setup fee, cancel any time.</p>
-<a class="btn light" href="app.html">Try TableTop free</a>
-<p class="note">Questions? <a href="#contact">Use the contact form</a>.</p>
+<div class="gallery">
+<figure><img src="assets/kitchen.png" alt="Kitchen screen with open tickets" width="1280" height="800" loading="lazy"><figcaption>Kitchen screen</figcaption></figure>
+<figure><img src="assets/tables.png" alt="Table map showing free and busy tables" width="1280" height="800" loading="lazy"><figcaption>Table map</figcaption></figure>
 </div>
 </div></section>
 
-<section class="alt" id="faq"><div class="wrap">
-<div class="center"><h2>Quick answers</h2></div>
-<div class="faq"><details><summary>Can guests order from their own phone?</summary><p>Yes. Print a QR card for each table. A guest scans it, sees your menu and orders from their phone. The order goes through a small shared server to your kitchen screen, where staff accept or reject it. It needs an internet connection.</p></details></div>
+<section class="alt" id="how"><div class="wrap">
+<div class="center head"><span class="eyebrow">How it works</span><h2>Set up in an afternoon</h2></div>
+<div class="grid g3 steps">
+<div class="card"><h3>Add your menu</h3><p>Enter your dishes and prices, or edit the starter menu. Set up your tables to match your room.</p></div>
+<div class="card"><h3>Open it on your devices</h3><p>Use a tablet at the counter, a screen in the kitchen and phones for servers. No special hardware.</p></div>
+<div class="card"><h3>Start serving</h3><p>Take orders, send them to the kitchen and check your numbers at the end of the night.</p></div>
+</div>
 </div></section>
 
-<section id="contact"><div class="wrap">
-<div class="formcard slim">
-<h2 style="font-size:clamp(26px,4vw,34px);text-align:center;margin:0 0 8px">Questions? Use the form</h2>
-<p class="center" style="margin:0 0 16px;color:var(--muted)">Ask about setup, pricing or QR ordering and we will reply by email.</p>
-<!-- BUSINESS EMAIL: add a support@yourbusiness address here later (e.g. "Or email support@..."). -->
+<section id="qr"><div class="wrap split">
+<div><span class="eyebrow">Phone & QR ordering</span><h2>Guests order from their own phone</h2>
+<p class="lead">Print a QR card for each table. Guests scan it, browse your menu and send their order.</p>
+<ul class="checks"><li>Orders land on your kitchen screen with a banner and a beep</li><li>Staff accept or reject each order before it's cooked</li><li>Guests see their order status after they send it</li><li>Servers can also take orders on any phone</li></ul>
+<p class="muted" style="font-size:14px">QR ordering needs an internet connection.</p></div>
+<div class="phones"><img src="assets/mobile-pos.png" alt="Ordering screen on a phone" width="390" height="800" loading="lazy"><img src="assets/mobile-kitchen.png" alt="Kitchen screen on a phone" width="390" height="800" loading="lazy"></div>
+</div></section>
+
+<section class="alt" id="pricing"><div class="wrap">
+<div class="center head"><span class="eyebrow">Pricing</span><h2>One plan. Everything included.</h2></div>
+<div class="price"><div class="amt">$29<small> / month</small></div>
+<ul><li>Orders, kitchen screen and receipts</li><li>Tables and reservations</li><li>Guest QR ordering</li><li>Staff schedule, tip split and nightly report</li><li>No setup fee, cancel any time</li></ul>
+<a class="btn" href="app.html">Open TableTop</a><p>Questions about pricing? <a href="#contact" style="color:#ffb27f">Contact us</a>.</p></div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+<div class="center head"><span class="eyebrow">FAQ</span><h2>Common questions</h2></div>
+<div class="faq">
+<details><summary>Do I need special hardware?</summary><p>No. TableTop runs in a web browser on the phones, tablets and laptops you already have.</p></details>
+<details><summary>Does TableTop process card payments?</summary><p>Not yet. You record whether a guest paid by card or cash, and keep using your current card reader.</p></details>
+<details><summary>How does QR ordering work?</summary><p>Each table gets a QR card. A guest scans it, orders from their phone, and the order appears on your kitchen screen for staff to accept. It needs an internet connection.</p></details>
+<details><summary>Where is my data stored?</summary><p>Your menu, tables, orders and settings are saved in the browser on each device. Guest QR orders pass through our server only to reach your kitchen. See our <a href="privacy.html">privacy page</a>.</p></details>
+<details><summary>Can I cancel any time?</summary><p>Yes. There's no contract and no setup fee.</p></details>
+</div>
+</div></section>
+
+<section class="alt" id="contact"><div class="wrap">
+<div class="center head"><span class="eyebrow">Contact</span><h2>Questions? Send us a message</h2><p class="lead">Ask about setup, pricing or QR ordering and we'll reply by email.</p></div>
+<div class="formcard">
+<!-- BUSINESS EMAIL: add a support@yourbusiness address here later. -->
 <form id="wl" action="#contact" method="post" novalidate>
 <div class="row2"><div class="fld"><label for="wn">Your name</label><input id="wn" name="name" autocomplete="name" required maxlength="80"><div class="err">Please enter your name.</div></div>
 <div class="fld"><label for="we">Email</label><input id="we" name="email" type="email" autocomplete="email" required maxlength="120" placeholder="you@restaurant.com"><div class="err">Please enter a valid email.</div></div></div>
@@ -68,7 +92,10 @@
 <p><button class="btn alt sm" id="againwl" type="button">Send another</button></p></div>
 </div></div></section>
 </main>
-<footer><div class="wrap foot1"><a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>Table<b>Top</b></span></a>
-<small>© 2026 TableTop · $29/month · <a href="index.html#contact">Contact</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></small></div></footer>
+<footer><div class="wrap"><div class="cols">
+<div><a class="logo" href="index.html"><img src="assets/favicon.svg" alt="" width="30" height="30"><span>Table<b>Top</b></span></a><p style="max-width:320px">Simple restaurant software for small places. One plan, $29 a month.</p></div>
+<div><b>Product</b><a href="index.html#features">Features</a><a href="index.html#qr">QR ordering</a><a href="index.html#pricing">Pricing</a><a href="tour.html">Product tour</a><a href="app.html">Open the app</a></div>
+<div><b>Company</b><a href="index.html#faq">FAQ</a><a href="index.html#contact">Contact</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+</div><small>© 2026 TableTop</small></div></footer>
 <script src="js/site.js"></script>
 </body></html>

@@ -170,6 +170,34 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
 /* phones/tablets: 16px form text stops iOS Safari zooming on focus; 40px+ tap targets on touch screens */
 @media (max-width:760px){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px}}
 @media (pointer:coarse),(max-width:760px){button,button.sm,.btn,.btn.sm,.chip,select{min-height:40px}button.x{min-width:40px}}
+
+/* POS on phones: compact item grid + sticky jump-to-ticket bar */
+.posbar{display:none}
+@media(max-width:700px){.pos .items{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}.pos .item{padding:8px}.posbar{display:block;position:sticky;bottom:8px;z-index:20;width:100%;margin:8px 0;padding:12px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25)}.pos-right{scroll-margin-top:8px}}
+
+/* ===== Modern refresh (2026-10-29) ===== */
+:root{--brand:#ea580c;--brand2:#f97316;--ink:#0f172a;--line:#e9edf3;--r:16px}
+body{background:radial-gradient(1200px 600px at 100% -10%,#fff1e6 0,transparent 60%),#f6f7fb;color:var(--ink)}
+nav{background:linear-gradient(180deg,#111827,#0b1020)}
+nav a{border-radius:12px;transition:background .15s,color .15s}
+nav a.active{background:linear-gradient(90deg,rgba(249,115,22,.22),rgba(249,115,22,.06));color:#fff;box-shadow:inset 3px 0 0 var(--brand2)}
+nav a:hover{background:rgba(255,255,255,.06)}
+main h2{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.card,table{border-radius:var(--r);border:1px solid var(--line);box-shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px -12px rgba(16,24,40,.12)}
+.stat .v{font-weight:800;letter-spacing:-.02em}
+button{border-radius:12px;font-weight:600;transition:transform .08s,filter .15s}
+button:hover{filter:brightness(1.05)}button:active{transform:scale(.97)}
+input,select,textarea{border-radius:12px;border-color:var(--line)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand2);box-shadow:0 0 0 4px rgba(249,115,22,.15)}
+.item{border-radius:14px;transition:transform .1s,box-shadow .15s}.item:not(.off):hover{transform:translateY(-2px);box-shadow:0 10px 20px -10px rgba(16,24,40,.25)}
+@media(max-width:760px){
+ nav{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:50;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:rgba(17,24,39,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 -8px 24px rgba(0,0,0,.18)}
+ nav .brand,nav .me{display:none}
+ nav a{display:flex;flex-direction:column;align-items:center;padding:6px 10px;min-width:62px;gap:2px}
+ nav a em{display:block;font-size:10px}nav a.active{box-shadow:none;background:rgba(249,115,22,.22)}
+ main{padding:16px 14px 96px}
+ .posbar{bottom:calc(84px + env(safe-area-inset-bottom))}
+}
 </style></head>
 <body><div id="app"></div><div id="modal" class="modal hidden"><div class="card" id="modal-body"></div></div><div id="toast" class="toast hidden"></div><div id="print"></div>
 <script>
@@ -2028,6 +2056,7 @@ function drawPOS(){const o=CUR,t=totals(o),open=DB.orders.filter(x=>!x.paid);
   <div class="tabs">${DB.categories.map(c=>`<button class="${c.id==posCat?'on':''}" data-cat="${c.id}">${esc(c.name)}</button>`).join('')}</div>
   ${posFilterHtml()}${hiddenN?`<div class="muted" id="hiddenn">${hiddenN} item${hiddenN>1?'s':''} hidden by allergy/diet filter</div>`:''}
   <div class="items">${items.map(i=>`<button class="item ${i.available?'':'off'}" data-item="${i.id}" ${i.available?'':'disabled'}><b>${esc(i.name)}</b>${tagsHtml(i.tags)}<span>${money(i.price)}</span>${i.available?(i.mods?'<em>options</em>':''):'<em>86’d</em>'}</button>`).join('')||'<p class="muted empty">No items in this category.</p>'}</div></div>
+ <button class="posbar" id="posbar" type="button" onclick="document.querySelector('.pos-right').scrollIntoView({behavior:'smooth',block:'start'})">🧾 View ticket · ${o.lines.reduce((n,l)=>n+l.qty,0)} item${o.lines.reduce((n,l)=>n+l.qty,0)===1?'':'s'} · ${money(totals(o).total)}</button>
  <div class="pos-right card"><div class="row between nomb"><h3>${o.id?'Ticket #'+o.id:'New ticket'}</h3>${o.id?badge(o.status):''}</div><div class="muted">${o.type==='dine'?esc(byId('tables',o.table_id)?.name||'No table selected'):'Takeout'}</div>
   <div class="lines">${o.lines.map((l,i)=>`<div class="line"><div class="grow"><b>${esc(l.name)}</b>${l.mods.length?`<div class="muted">${l.mods.map(m=>esc(m.n)+(m.p?' +'+money(m.p):'')).join(', ')}</div>`:''}${l.note?`<div class="note">📝 ${esc(l.note)}</div>`:''}</div>
    <div class="qty"><button class="sm sec" data-dec="${i}">−</button><span>${l.qty}</span><button class="sm sec" data-inc="${i}">+</button></div><div class="amt">${money(lineTotal(l))}</div><button class="sm x" data-rm="${i}" title="Remove">✕</button></div>`).join('')||'<p class="muted center">Tap menu items to add them.</p>'}</div>
