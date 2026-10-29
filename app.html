@@ -167,6 +167,9 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
 .qrcard{background:#fff7ed;border:2px solid #fb923c;border-radius:10px;padding:10px 12px;margin:0 0 8px;max-width:520px}.qrcard ul{margin:6px 0;padding-left:18px}
 .qrerr{margin:0 0 8px;padding:8px 10px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;color:#991b1b}
 .firstrun,.firstmenu{border:2px solid #fb923c;background:#fff7ed;margin:0 0 14px;max-width:760px}.firstrun .muted,.firstmenu .muted{margin:6px 0 10px}.firstrun .row,.firstmenu .row{gap:8px;flex-wrap:wrap}
+/* phones/tablets: 16px form text stops iOS Safari zooming on focus; 40px+ tap targets on touch screens */
+@media (max-width:760px){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px}}
+@media (pointer:coarse),(max-width:760px){button,button.sm,.btn,.btn.sm,.chip,select{min-height:40px}button.x{min-width:40px}}
 </style></head>
 <body><div id="app"></div><div id="modal" class="modal hidden"><div class="card" id="modal-body"></div></div><div id="toast" class="toast hidden"></div><div id="print"></div>
 <script>
