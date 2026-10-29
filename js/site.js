@@ -14,7 +14,7 @@ var f=$('#wl');
 if(f){
  var thanks=$('#thanks'),errBox=$('#wlerr'),btn=$('#wlbtn');
  var live=WAITLIST_ENDPOINT.indexOf('REPLACE_WITH')<0&&/^https?:\/\//.test(WAITLIST_ENDPOINT);
-  var mailTo=(WAITLIST_ENDPOINT.split('/ajax/')[1]||'');if(mailTo.indexOf('@')<0)mailTo='';
+  var mailTo=(WAITLIST_ENDPOINT.split('/ajax/')[1]||'');mailTo=''; // no personal address shown on the site
  var showErr=function(msg){
   errBox.textContent='';errBox.appendChild(document.createTextNode(msg));
   if(mailTo){errBox.appendChild(document.createTextNode(' You can also email us at '));var a=document.createElement('a');a.href='mailto:'+mailTo+'?subject='+encodeURIComponent('TableTop product updates');a.textContent=mailTo;errBox.appendChild(a);errBox.appendChild(document.createTextNode('.'))}
@@ -29,12 +29,12 @@ if(f){
   errBox.hidden=true;var ok=true;
   ['wn','we'].forEach(function(id){var el=document.getElementById(id);var bad=!el.value.trim()||(el.type==='email'&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim()));el.classList.toggle('invalid',bad);if(bad)ok=false});
   if(!ok){var first=f.querySelector('.invalid');if(first)first.focus();return}
-  if(!live){showErr('Sorry, product updates signup is not set up yet. Please try again later.');return}
+  if(!live){showErr('Sorry, the contact form is not set up yet. Please try again later.');return}
   var d={};
   new FormData(f).forEach(function(v,k){d[k]=String(v).slice(0,500)});
   d.name=(d.name||'').trim();d.email=(d.email||'').trim();
   if(d._honey){done(d.name);return} // bots fill the hidden field: pretend success, send nothing
-  d._subject='TableTop product updates signup';
+  d._subject='TableTop website question';
   var label=btn.textContent;btn.disabled=true;btn.textContent='Sending...';
   var fail=function(){showErr('Sorry, that did not go through. Please check your connection and try again.')};
   var reset=function(){btn.disabled=false;btn.textContent=label};

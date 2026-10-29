@@ -222,3 +222,8 @@ footer .foot1 small{margin:0;max-width:580px}
 .codone .btn{margin:4px}
 @media(max-width:760px){.cogrid{grid-template-columns:1fr}.cosum{order:-1}.cogrid .formcard{padding:20px}.sumdl{grid-template-columns:1fr;gap:2px}.sumdl dd{margin-bottom:8px}}
 .muted{color:var(--muted)}
+
+.shot{margin:28px auto 0;max-width:960px}.shot img,.shots2 img{width:100%;height:auto;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.18);display:block}
+.shots2{display:grid;grid-template-columns:3fr 1fr;gap:18px;margin:26px auto 0;max-width:960px;align-items:start}.shots2 figure{margin:0}.shots2 figcaption{text-align:center;color:var(--muted);font-size:14px;margin-top:8px}
+@media(max-width:640px){.shots2{grid-template-columns:1fr}.shots2 figure:last-child{max-width:260px;margin:0 auto}}
+#wm{width:100%;font:inherit}

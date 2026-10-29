@@ -3,7 +3,7 @@
 'use strict';
 var $=function(s){return document.querySelector(s)};
 // Plans and prices exactly as listed in the Pricing section of index.html
-var PLANS={tabletop:{name:'TableTop (everything included)',price:'$25–30 / month',note:'Planned launch price.'}};
+var PLANS={tabletop:{name:'TableTop (everything included)',price:'$29 / month',note:'Everything included.'}};
 var q=(location.search.match(/[?&]plan=([^&]*)/)||[])[1]||'tabletop';
 try{q=decodeURIComponent(q)}catch(e){q='tabletop'}
 var key=Object.prototype.hasOwnProperty.call(PLANS,q)?q:'tabletop',plan=PLANS[key];
