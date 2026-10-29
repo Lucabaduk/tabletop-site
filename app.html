@@ -939,11 +939,12 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
   // ====================================================================
   var SERVER_URL = '';   // bake the Worker address in here for the build (guest phones have no settings); empty = no server
   var STAFF_KEY = 'tabletop_qrorder_staff';   // staff device only: last change counter + ids already imported (never the token)
-  var server = { url: normUrl(SERVER_URL), appUrl: '', token: '', fetch: null, onAcceptedOrder: null, timeoutMs: 12000, pollMs: 5000, pollHiddenMs: 30000 };
+  var server = { url: normUrl(SERVER_URL), appUrl: '', token: '', fetch: null, onAcceptedOrder: null, timeoutMs: 12000, pollMs: 5000, pollHiddenMs: 30000, kitchenAlert: true, alertSound: true, onNewOrder: null };
   var OFFLINE_MSG = "Can't reach the server. Check the internet connection and try again.";
 
   function normUrl(u) { u = String(u == null ? '' : u).trim().replace(/\/+$/, ''); return /^https?:\/\/[^\s]+$/i.test(u) ? u : ''; }
-  // setServer({url, staffToken, onAcceptedOrder, fetch, timeoutMs, pollMs, pollHiddenMs}); setServer(null) turns server mode off.
+  // setServer({url, staffToken, onAcceptedOrder, fetch, timeoutMs, pollMs, pollHiddenMs, kitchenAlert, alertSound, onNewOrder}); setServer(null) turns server mode off.
+  // kitchenAlert (default true): banner "New QR order - Table X" + beep when a new guest order arrives; alertSound:false = banner only.
   function setServer(c) {
     c = c || {};
     server.url = normUrl(c.url != null ? c.url : (c.serverUrl != null ? c.serverUrl : ''));
@@ -954,6 +955,10 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
     server.timeoutMs = +c.timeoutMs > 0 ? +c.timeoutMs : 12000;
     server.pollMs = +c.pollMs > 0 ? +c.pollMs : 5000;
     server.pollHiddenMs = +c.pollHiddenMs > 0 ? +c.pollHiddenMs : 30000;
+    server.kitchenAlert = c.kitchenAlert !== false;
+    server.alertSound = c.alertSound !== false;
+    server.onNewOrder = typeof c.onNewOrder === 'function' ? c.onNewOrder : null;
+    if (server.token && server.kitchenAlert) armAudioUnlock();
     return getServer();
   }
   function getServer() { return { url: server.url, hasStaffToken: !!server.token }; }
@@ -994,6 +999,66 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
   // ---------- staff device state (own key; the staff token is NEVER stored here) ----------
   var staff = { lastSeq: 0, imported: [], loaded: false };
   var seenPending = {}, staffPoll = null;
+  // ---------- kitchen alert (staff device): loud beep + banner per new guest order ----------
+  // Browsers block sound until the user taps the page once, so the first tap/key anywhere unlocks WebAudio.
+  var audio = { ctx: null, armed: false }, alerts = {}, alertBox = null;
+  function audioCtx() {
+    if (audio.ctx) return audio.ctx;
+    var AC = root.AudioContext || root.webkitAudioContext; if (!AC) return null;
+    try { audio.ctx = new AC(); } catch (e) { audio.ctx = null; }
+    return audio.ctx;
+  }
+  function armAudioUnlock() {
+    if (audio.armed || !root.document || !root.addEventListener) return; audio.armed = true;
+    function unlock() {
+      var c = audioCtx(); if (c && c.state === 'suspended' && c.resume) { try { c.resume(); } catch (e) {} }
+      root.removeEventListener('pointerdown', unlock, true); root.removeEventListener('keydown', unlock, true);
+    }
+    root.addEventListener('pointerdown', unlock, true); root.addEventListener('keydown', unlock, true);
+  }
+  function beep() {
+    var c = audioCtx(); if (!c) return false;
+    try {
+      if (c.state === 'suspended' && c.resume) c.resume();
+      var t = c.currentTime;
+      [0, 0.28, 0.56].forEach(function (d) {                  // three loud square-wave pips, 880 Hz
+        var o = c.createOscillator(), g = c.createGain();
+        o.type = 'square'; o.frequency.value = 880; o.connect(g); g.connect(c.destination);
+        g.gain.setValueAtTime(0.0001, t + d); g.gain.exponentialRampToValueAtTime(0.9, t + d + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.22);
+        o.start(t + d); o.stop(t + d + 0.24);
+      });
+      return true;
+    } catch (e) { return false; }
+  }
+  function alertTable(o) { return o.table_name || ('Table ' + o.table_id); }
+  function showAlert(o) {
+    var doc = root.document; if (!doc || !doc.body || alerts[o.id]) return;
+    if (!alertBox || !alertBox.parentNode) {
+      alertBox = doc.createElement('div'); alertBox.className = 'ttq-alerts';
+      alertBox.setAttribute('style', 'position:fixed;top:0;left:0;right:0;z-index:2147483000;display:flex;flex-direction:column;gap:4px;padding:6px');
+      doc.body.appendChild(alertBox);
+    }
+    var el = doc.createElement('div'); el.className = 'ttq-alert'; el.setAttribute('role', 'alert');
+    el.setAttribute('style', 'background:#b91c1c;color:#fff;font:800 22px system-ui,sans-serif;padding:14px 16px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:12px;box-shadow:0 4px 16px rgba(0,0,0,.35)');
+    el.innerHTML = '<span>New QR order \u2014 ' + esc(alertTable(o)) + '</span><button type="button" style="background:#fff;color:#b91c1c;border:0;border-radius:8px;padding:8px 14px;font:700 16px system-ui,sans-serif;cursor:pointer">Dismiss</button>';
+    el.querySelector('button').addEventListener('click', function () { dismissKitchenAlert(o.id); });
+    alertBox.appendChild(el); alerts[o.id] = el;
+  }
+  function dismissKitchenAlert(id) {
+    var el = alerts[id]; if (!el) return false; delete alerts[id];
+    if (el.parentNode) el.parentNode.removeChild(el);
+    return true;
+  }
+  function kitchenAlerts() { return Object.keys(alerts); }
+  function alertNew(newPending, pending) {
+    if (pending) Object.keys(alerts).forEach(function (id) { if (!pending.some(function (o) { return o.id === id; })) dismissKitchenAlert(id); });   // accepted/rejected/expired elsewhere
+    if (!newPending.length) return;
+    if (server.onNewOrder) { try { server.onNewOrder(newPending.slice()); } catch (e) {} }
+    if (!server.kitchenAlert) return;
+    newPending.forEach(showAlert);
+    if (server.alertSound) beep();
+  }
+
   function staffLoad() {
     if (staff.loaded) return; staff.loaded = true;
     var s = store(); if (!s) return;
@@ -1008,7 +1073,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
   function staffSave() { var s = store(); if (!s) return; try { s.setItem(STAFF_KEY, JSON.stringify({ lastSeq: staff.lastSeq, imported: staff.imported.slice(-1000) })); } catch (e) {} }
   function isImported(id) { staffLoad(); return staff.imported.indexOf(String(id)) >= 0; }
   function markImported(id) { staffLoad(); if (!isImported(id)) { staff.imported.push(String(id)); staffSave(); } }
-  function resetStaffState() { staff = { lastSeq: 0, imported: [], loaded: true }; seenPending = {}; var s = store(); try { if (s) s.removeItem(STAFF_KEY); } catch (e) {} }
+  function resetStaffState() { staff = { lastSeq: 0, imported: [], loaded: true }; seenPending = {}; Object.keys(alerts).forEach(dismissKitchenAlert); var s = store(); try { if (s) s.removeItem(STAFF_KEY); } catch (e) {} }
   function staffState() { staffLoad(); return { lastSeq: staff.lastSeq, imported: staff.imported.slice() }; }
 
   function staffCall(method, path, body) {
@@ -1109,6 +1174,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
       return chain.then(function () {
         // only move the counter forward when everything was imported, so a failed import is retried next poll
         if (!importErrors.length) { staff.lastSeq = +d.seq || 0; staffSave(); }
+        alertNew(newPending, pending);
         var info = { ok: true, status: 200, seq: d.seq, changed: true, pending: pending, accepted: accepted, newPending: newPending,
           conflictsOpen: d.conflicts_open || 0, events: d.events || [], importErrors: importErrors };
         if (opts.onUpdate) { try { opts.onUpdate(info); } catch (e) {} }
@@ -1152,7 +1218,8 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
   function acceptOrder(id, opts) {
     opts = opts || {}; var body = {}; if (opts.baseVersion != null) body.base_version = opts.baseVersion;
     return staffCall('POST', '/staff/orders/' + encodeURIComponent(String(id)) + '/accept', body).then(function (r) {
-      var bad = actionResult(r); if (bad) return bad;
+      var bad = actionResult(r); if (!bad || bad.closed) dismissKitchenAlert(String(id));
+      if (bad) return bad;
       var order = r.data && r.data.order;
       if (!order) return { ok: false, error: 'bad_reply', message: 'The server gave an unexpected answer.' };
       return deliverAccepted(order, opts.onAcceptedOrder).then(function (x) {
@@ -1162,7 +1229,8 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
   }
   function rejectOrder(id, reason) {
     return staffCall('POST', '/staff/orders/' + encodeURIComponent(String(id)) + '/reject', { reason: String(reason || '') }).then(function (r) {
-      return actionResult(r) || { ok: true, order: r.data && r.data.order, seq: r.data && r.data.seq, already: !!(r.data && r.data.already) };
+      var bad = actionResult(r); if (!bad || bad.closed) dismissKitchenAlert(String(id));
+      return bad || { ok: true, order: r.data && r.data.order, seq: r.data && r.data.seq, already: !!(r.data && r.data.already) };
     });
   }
   // outcome: 'paid' | 'void' (after the POS closes a QR order)
@@ -1652,7 +1720,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
     mountCustomer: mountCustomer, autoStart: autoStart, unmount: unmount, tableTopAdapter: tableTopAdapter,
     setServer: setServer, getServer: getServer, serverEnabled: serverEnabled, checkServer: checkServer,
     publishMenu: publishMenu, publishMenuSoon: publishMenuSoon, pollOrders: pollOrders, startStaffPolling: startStaffPolling,
-    stopStaffPolling: stopStaffPolling, isStaffPolling: isStaffPolling, acceptOrder: acceptOrder, rejectOrder: rejectOrder,
+    stopStaffPolling: stopStaffPolling, isStaffPolling: isStaffPolling, dismissKitchenAlert: dismissKitchenAlert, kitchenAlerts: kitchenAlerts, acceptOrder: acceptOrder, rejectOrder: rejectOrder,
     closeOrder: closeOrder, listConflicts: listConflicts, resolveConflict: resolveConflict, staffState: staffState, resetStaffState: resetStaffState,
     normalizeMenu: normalizeMenu, getSaveError: getSaveError, onChange: onChange, esc: esc,
     _rs: function (d, n) { return rsRemainder(d, rsDivisor(n)); }, _reset: _reset, _state: _state, _load: load
@@ -1896,7 +1964,7 @@ const need=(v,m)=>{if(v===undefined||v===null||String(v).trim()==='')throw new E
 function delRec(t,id,msg){if(!confirm(msg||'Delete this record?'))return;DB[t]=DB[t].filter(x=>x.id!=id);save();toast('Deleted');route();}
 
 // ---------- shell ----------
-const PAGES=[['dashboard','📊','Dashboard'],['pos','🧾','POS'],['kitchen','👨‍🍳','Kitchen'],['tables','🪑','Tables'],['reservations','📅','Reservations'],['menu','🍔','Menu'],['autoinv','📦','Auto Inventory'],['staff','🧑‍🤝‍🧑','Staff'],['schedule','🕒','Schedule'],['tips','💵','Tip Split'],['report','🌙','Night Report'],['quiz','🎓','Training'],['qrcodes','🔳','QR codes'],['orders','🗂️','Orders'],['settings','⚙️','Settings']];
+const PAGES=[['dashboard','📊','Dashboard'],['pos','🧾','POS'],['kitchen','👨‍🍳','Kitchen'],['tables','🪑','Tables'],['reservations','📅','Reservations'],['menu','🍔','Menu'],['autoinv','📦','Auto Inventory'],['staff','🧑‍🤝‍🧑','Staff'],['schedule','🕒','Schedule'],['tips','💵','Tip Split'],['report','🌙','Night Report'],['qrcodes','🔳','QR codes'],['orders','🗂️','Orders'],['settings','⚙️','Settings']];
 function render(){if(DB.settings.pin&&!sessionStorage.tt_unlocked){qrStop();return lockView();}
  qrStart();const low=lowStock().length,kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length+qrPendN();
  $('#app').innerHTML=`<div class="layout"><nav><div class="brand"><h1>🍽️ TableTop</h1><div class="dl" id="rname">${esc(DB.settings.name)}</div></div><div class="links">
@@ -2082,8 +2150,8 @@ PAGE.autoinv=()=>{TTInventory.mount($('#main'),{getMenuItems:()=>DB.items.map(i=
 
 // ---------- staff ----------
 PAGE.staff=()=>{const since=Date.now()-30*864e5;const st=id=>{const os=DB.orders.filter(o=>o.paid&&o.server_id==id&&o.paid_at>=since);return[os.length,os.reduce((a,o)=>a+totals(o).sub,0),os.reduce((a,o)=>a+totals(o).tip,0)];};
- $('#main').innerHTML=`<div class="row between"><h2>Staff</h2><button id="add">+ Add staff</button></div><div class="tw"><table><tr><th>Name</th><th>Role</th><th>Phone</th><th>Wage/hr</th><th>Training</th><th>Status</th><th>Orders (30d)</th><th>Sales (30d)</th><th>Tips (30d)</th><th></th></tr>
- ${DB.staff.map(s=>{const x=st(s.id);return`<tr><td><b>${esc(s.name)}</b></td><td>${esc(s.role)}</td><td>${esc(s.phone)}</td><td>${s.wage?money(s.wage):'—'}</td><td>${s.quiz_best!=null?s.quiz_best+'% ':'—'}${s.quiz_best>=80?'<span class="badge trained">🎓 Trained</span>':''}</td><td>${s.active!==false?badge('free','active'):badge('cancelled','inactive')}</td><td>${x[0]}</td><td>${money0(x[1])}</td><td>${money0(x[2])}</td><td class="nowrap"><button class="sm sec" data-edit="${s.id}">Edit</button> <button class="sm danger" data-del="${s.id}">Delete</button></td></tr>`}).join('')||'<tr><td colspan=10 class="muted">No staff.</td></tr>'}</table></div>`;
+ $('#main').innerHTML=`<div class="row between"><h2>Staff</h2><button id="add">+ Add staff</button></div><div class="tw"><table><tr><th>Name</th><th>Role</th><th>Phone</th><th>Wage/hr</th><th>Status</th><th>Orders (30d)</th><th>Sales (30d)</th><th>Tips (30d)</th><th></th></tr>
+ ${DB.staff.map(s=>{const x=st(s.id);return`<tr><td><b>${esc(s.name)}</b></td><td>${esc(s.role)}</td><td>${esc(s.phone)}</td><td>${s.wage?money(s.wage):'—'}</td><td>${s.active!==false?badge('free','active'):badge('cancelled','inactive')}</td><td>${x[0]}</td><td>${money0(x[1])}</td><td>${money0(x[2])}</td><td class="nowrap"><button class="sm sec" data-edit="${s.id}">Edit</button> <button class="sm danger" data-del="${s.id}">Delete</button></td></tr>`}).join('')||'<tr><td colspan=9 class="muted">No staff.</td></tr>'}</table></div>`;
  $('#add').onclick=()=>editStaff();$$('[data-edit]').forEach(b=>b.onclick=()=>editStaff(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delStaff(+b.dataset.del));};
 function editStaff(id){const s=id?byId('staff',id):{role:'Server',active:true};modal(`<h3>${id?'Edit':'Add'} staff</h3><form class="form">${field('name','Name',s.name,'text','full')}${sel('role','Role',ROLES.map(r=>[r,r]),s.role)}${field('phone','Phone',s.phone,'tel')}${field('wage','Hourly wage ($)',s.wage||0,'number')}${sel('active','Status',[['1','Active'],['','Inactive']],s.active!==false?'1':'','full')}${btns}</form>`,
  d=>{need(d.name,'Name is required');const x={name:d.name.trim(),role:d.role,phone:d.phone,wage:Math.max(0,r2(+d.wage||0)),active:!!d.active};if(id)Object.assign(s,x);else DB.staff.push({id:nid(),...x});save();});}
