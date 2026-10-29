@@ -2094,7 +2094,7 @@ PAGE.settings=()=>{const s=DB.settings;$('#main').innerHTML=`<h2>Settings</h2><d
  $('#imp').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text()),d=j.data||j;if(!d.settings||!Array.isArray(d.items)||!Array.isArray(d.orders))throw new Error('Not a TableTop backup file');
   if(!confirm(`Replace current data with this backup (${d.items.length} menu items, ${d.orders.length} orders)?`))return;const b=blank();for(const k of Object.keys(b))if(d[k]===undefined)d[k]=b[k];DB=d;migrate();try{if(j.inventory&&typeof j.inventory==='object'){localStorage.setItem(TTInventory.KEY,JSON.stringify(j.inventory));TTInventory.reload();}else{TTInventory._reset();TTInventory.importIngredients(DB.ingredients);}DB.settings.inv_imported=true;}catch(e){}try{TTRegulars.reset();if(j.guestnotes&&typeof j.guestnotes==='object')TTRegulars.importData(j.guestnotes);}catch(e){}save();CUR=null;toast('Backup imported');render();}catch(err){toast('Import failed: '+err.message);}finally{e.target.value='';}};
  $('#sampledata').onclick=()=>{if(!confirm('Replace ALL current data with sample data? This cannot be undone.'))return;demoData();CUR=null;toast('Sample data loaded');location.hash='#dashboard';render();};
- $('#reset').onclick=()=>{if(!confirm('Delete ALL data in this browser? This cannot be undone — export a backup first.'))return;const p=DB.settings.pin;DB=blank();DB.settings.pin=p;DB.settings.inv_imported=true;try{TTInventory._reset();}catch(e){}try{TTRegulars.reset();}catch(e){}save();CUR=null;toast('All data reset');render();};};
+ $('#reset').onclick=()=>{if(!confirm('Delete ALL data in this browser? This cannot be undone — export a backup first.'))return;const p=DB.settings.pin;DB=blank();DB.settings.pin=p;DB.settings.inv_imported=true;try{TTInventory._reset();}catch(e){}try{TTRegulars.reset();}catch(e){}save();CUR=null;frDone('reset');toast('All data reset');render();};};
 
 // ======================= v2: schedule, report, tips, tags, quiz =======================
 const ROLES=['Manager','Server','Bartender','Host','Busser','Head Chef','Line Cook','Dishwasher','Other'];
@@ -2293,7 +2293,7 @@ const CUSTOMER=TTQROrder.isCustomerHash();   // QR customer link: never create s
 const FR_KEY='tabletop_firstrun';
 function frPending(){try{return !CUSTOMER&&localStorage.getItem(FR_KEY)==='pending';}catch(e){return false;}}
 function frDone(v){try{localStorage.setItem(FR_KEY,v||'done');}catch(e){}const b=$('#firstrun');if(b)b.remove();}
-function frStartFresh(){if(!confirm('Remove the sample restaurant and start with an empty one? You can add your own menu, tables and staff.'))return;
+function frStartFresh(){if(!confirm('Start fresh? This erases EVERYTHING in this app right now, the sample restaurant and any changes you already made, and gives you an empty one.'))return;
  const p=DB.settings.pin;DB=blank();DB.settings.pin=p;DB.settings.inv_imported=true;try{TTInventory._reset();}catch(e){}try{TTRegulars.reset();}catch(e){}save();CUR=null;frDone('fresh');toast('Fresh start: add a category, then your first item');location.hash='#menu';render();}
 function frShow(){if(!frPending()||!$('#main')||$('#firstrun'))return;
  const d=document.createElement('div');d.id='firstrun';d.className='card firstrun';d.setAttribute('role','region');d.setAttribute('aria-label','Welcome');
@@ -2320,7 +2320,7 @@ function importQROrder(order){reloadDB();
  if(DB.orders.some(o=>o.qr_id===order.id||(o.qr_ids||[]).includes(order.id)))return true;
  const lines=order.lines.map(l=>({item_id:l.item_id,name:String(l.name||''),price:+l.price||0,cost:+l.cost||0,qty:Math.max(1,Math.floor(+l.qty)||1),mods:(l.mods||[]).map(m=>({n:String(m.n),p:+m.p||0})),note:String(l.note||''),tags:Array.isArray(l.tags)?l.tags.slice():[]}));
  if(order.note)lines[0].note=('TABLE NOTE: '+order.note+(lines[0].note?' | '+lines[0].note:'')).slice(0,300);
- const tid=String(order.table_id);let o=DB.orders.find(x=>!x.paid&&String(x.table_id)===tid);   // same rule as QRO.placeOrder/POS: one open ticket per table
+ const tid=String(order.table_id);let o=null;   // each guest order is its own kitchen ticket, so the kitchen shows only what the guest picked (never merged into an existing table ticket)
  if(o){lines.forEach(l=>o.lines.push(l));o.status='new';o.qr_ids=(o.qr_ids||(o.qr_id?[o.qr_id]:[])).concat(order.id);o.qr_id=o.qr_id||order.id;}
  else{o={id:nid(),type:'dine',table_id:tid,customer:'',lines,status:'new',paid:false,tax_rate:+DB.settings.tax||0,tip:0,method:null,server_id:null,created_at:Date.now(),paid_at:null,source:'qr',qr_id:order.id,qr_ids:[order.id]};DB.orders.push(o);}
  try{TTInventory.onOrderPlaced(o);}catch(e){}
