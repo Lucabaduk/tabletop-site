@@ -198,6 +198,25 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand2);
  main{padding:16px 14px 96px}
  .posbar{bottom:calc(84px + env(safe-area-inset-bottom))}
 }
+/* TableTop phone layout. Active only at <=760px. */
+#tt-tabbar,#tt-undo{display:none}
+@media (max-width:760px){
+  html.tt-mobile body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+  html.tt-mobile.tt-tabbar-on nav:not(#tt-tabbar){display:none}
+  #tt-tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid #ddd;padding-bottom:env(safe-area-inset-bottom)}
+  #tt-tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60px;text-decoration:none;color:#555;font-size:12px}
+  #tt-tabbar a span{font-size:22px}
+  #tt-tabbar a.on{color:#0a7;font-weight:700}
+  html.tt-mobile button,html.tt-mobile .btn{min-height:48px;min-width:48px;font-size:16px}
+  html.tt-mobile .pos-right{order:-1}
+  html.tt-mobile .kanban{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px}
+  html.tt-mobile .kanban .col{flex:0 0 88vw;scroll-snap-align:start}
+  html.tt-mobile .kcard,html.tt-mobile .lines .line{touch-action:pan-y;transition:transform .2s}
+  html.tt-mobile .tt-swiping{transition:none}
+  #tt-undo{display:flex;position:fixed;left:12px;right:12px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:60;background:#222;color:#fff;border-radius:10px;padding:10px 14px;align-items:center;justify-content:space-between}
+  #tt-undo[hidden]{display:none}
+  #tt-undo button{background:none;color:#5fd;border:0;font-weight:700}
+}
 </style></head>
 <body><div id="app"></div><div id="modal" class="modal hidden"><div class="card" id="modal-body"></div></div><div id="toast" class="toast hidden"></div><div id="print"></div>
 <script>
@@ -1902,6 +1921,92 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand2);
 
 </script>
 <script>
+/* ===== inlined module: modules/mobile.js ===== */
+/* TableTop mobile layer: bottom tab bar, swipe gestures, PWA registration.
+   Classic script (no imports). Exposes window.TTMobile; also module.exports for Node tests. */
+(function(root){
+'use strict';
+const SELECTORS={kitchenCard:'.kcard',kitchenAdvance:'[data-adv]',posLine:'.lines .line',posRemove:'[data-rm]'};
+const SWIPE_MIN=80, SWIPE_MAX_Y=40, UNDO_MS=5000;
+const TABS=[['pos','🧾','POS'],['kitchen','👨‍🍳','Kitchen'],['tables','🍽️','Tables'],['dashboard','📊','Home']];
+
+// Pure: classify a gesture from start/end points.
+function classifySwipe(dx,dy,min=SWIPE_MIN,maxY=SWIPE_MAX_Y){
+  if(Math.abs(dy)>maxY||Math.abs(dx)<min)return null;
+  return dx>0?'right':'left';
+}
+// Pure: undo stack for removed POS lines.
+function makeUndo(ms=UNDO_MS,now=()=>Date.now()){
+  let last=null;
+  return{
+    push(line,index){last={line:JSON.parse(JSON.stringify(line)),index,at:now()};return last;},
+    take(){if(!last||now()-last.at>ms){last=null;return null;}const l=last;last=null;return l;},
+    peek(){return last;}
+  };
+}
+function restoreLine(lines,entry){const i=Math.max(0,Math.min(entry.index,lines.length));lines.splice(i,0,entry.line);return lines;}
+function isPhone(w){return (w||0)<=760;}
+
+// Host adapter: defaults reach TableTop's shared script-scope globals (CUR, drawPOS, toast).
+function defaultHost(){
+  /* global CUR, drawPOS, toast */
+  return{
+    lines:()=>{try{return CUR.lines;}catch(e){return null;}},
+    redraw:()=>{try{drawPOS();}catch(e){}},
+    toast:m=>{try{toast(m);}catch(e){}}
+  };
+}
+
+function bindSwipe(doc,selector,onSwipe){
+  let s=null;
+  doc.addEventListener('touchstart',e=>{const el=e.target.closest&&e.target.closest(selector);if(!el)return;const t=e.touches[0];s={el,x:t.clientX,y:t.clientY};},{passive:true});
+  doc.addEventListener('touchmove',e=>{if(!s)return;const dx=e.touches[0].clientX-s.x;s.el.style.transform=`translateX(${dx}px)`;s.el.classList.add('tt-swiping');},{passive:true});
+  doc.addEventListener('touchend',e=>{if(!s)return;const t=e.changedTouches[0],dir=classifySwipe(t.clientX-s.x,t.clientY-s.y);s.el.style.transform='';s.el.classList.remove('tt-swiping');const el=s.el;s=null;if(dir)onSwipe(el,dir);});
+  doc.addEventListener('touchcancel',()=>{if(s){s.el.style.transform='';s.el.classList.remove('tt-swiping');}s=null;});
+}
+
+function showUndo(doc,label,onUndo){
+  let bar=doc.getElementById('tt-undo');
+  if(!bar){bar=doc.createElement('div');bar.id='tt-undo';bar.setAttribute('role','status');doc.body.appendChild(bar);}
+  bar.innerHTML='';const span=doc.createElement('span');span.textContent=label;const b=doc.createElement('button');b.type='button';b.textContent='Undo';
+  b.onclick=()=>{bar.hidden=true;onUndo();};bar.append(span,b);bar.hidden=false;
+  clearTimeout(bar._t);bar._t=setTimeout(()=>{bar.hidden=true;},UNDO_MS);
+}
+
+function mountTabBar(doc,loc){
+  if(doc.getElementById('tt-tabbar'))return;
+  const nav=doc.createElement('nav');nav.id='tt-tabbar';nav.setAttribute('aria-label','Main');
+  nav.innerHTML=TABS.map(([h,i,t])=>`<a href="#${h}" data-tt-tab="${h}"><span aria-hidden="true">${i}</span><em>${t}</em></a>`).join('');
+  doc.body.appendChild(nav);
+  const sync=()=>{const r=(loc.hash||'#dashboard').slice(1).split('/')[0];nav.querySelectorAll('a').forEach(a=>{const on=a.dataset.ttTab===r;a.classList.toggle('on',on);on?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current');});};
+  root.addEventListener&&root.addEventListener('hashchange',sync);sync();
+}
+
+function init(opts={}){
+  const sel=Object.assign({},SELECTORS,opts.selectors||{});const doc=opts.document||root.document, host=Object.assign(defaultHost(),opts.host||{}), undo=makeUndo();
+  doc.documentElement.classList.add('tt-mobile');
+  if(opts.tabBar===true){doc.documentElement.classList.add('tt-tabbar-on');mountTabBar(doc,opts.location||root.location); } // off by default: app layout owns navigation
+  // Kitchen: swipe right advances the ticket (same as tapping its → button).
+  bindSwipe(doc,sel.kitchenCard,(el,dir)=>{if(dir!=='right')return;const b=el.querySelector(sel.kitchenAdvance);if(b){if(navigator.vibrate)navigator.vibrate(20);b.click();}});
+  // POS: swipe left removes a line, with Undo.
+  bindSwipe(doc,sel.posLine,(el,dir)=>{
+    if(dir!=='left')return;const rm=el.querySelector(sel.posRemove);if(!rm)return;
+    const lines=host.lines(),i=+(rm.dataset.rm??rm.dataset.index);const line=lines&&lines[i];
+    if(line)undo.push(line,i);rm.click();
+    if(line)showUndo(doc,`Removed ${line.name||'item'}`,()=>{const e=undo.take(),ls=host.lines();if(e&&ls){restoreLine(ls,e);host.redraw();host.toast('Item restored');}});
+  });
+  if(opts.registerSW!==false&&root.navigator&&'serviceWorker' in root.navigator&&/^https?:/.test(root.location.protocol))
+    root.navigator.serviceWorker.register(opts.swUrl||'sw.js').catch(()=>{});
+  return{undo,selectors:sel};
+}
+
+const api={init,SELECTORS,classifySwipe,makeUndo,restoreLine,isPhone,TABS,SWIPE_MIN,UNDO_MS};
+if(typeof module!=='undefined'&&module.exports)module.exports=api;
+if(root)root.TTMobile=api;
+})(typeof window!=='undefined'?window:globalThis);
+
+</script>
+<script>
 /* TableTop single-file edition. Data is stored in this browser's localStorage. */
 const KEY='tabletop_v1';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -2505,5 +2610,7 @@ qrConfigure();   // setServer BEFORE autoStart (no-op while QR_SERVER_URL is emp
 if(!TTQROrder.autoStart({container:$('#app'),getMenu:QRO.getMenu,getTable:QRO.getTable,
   placeOrder:(tid,items,meta)=>{const r=QRO.placeOrder(tid,items,meta);try{TTInventory.onOrderPlaced(byId('orders',r.orderId));}catch(e){}return r;},
   restaurantName:QRO.restaurantName,taxRate:QRO.taxRate,onLeave:()=>{location.hash='#tables';render();}}))render();
+
+try{TTMobile.init();}catch(e){console.warn('mobile init',e);}
 
 </script></body></html>
