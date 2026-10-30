@@ -213,6 +213,9 @@ input[type=color]{height:42px;padding:2px;min-width:70px}
 /* settings page: keep Save buttons above the phone tab bar */
 @media(max-width:760px){.setgrid{padding-bottom:calc(120px + env(safe-area-inset-bottom))}#set-data{margin-bottom:24px}}
 .qrcalls{background:#fef2f2;border:2px solid #ef4444;border-radius:10px;padding:10px 12px;margin:0 0 10px;max-width:520px}.qrcalls h4{margin:0 0 6px}.qrcall{gap:8px;padding:4px 0;flex-wrap:wrap}
+img.thumb{width:40px;height:40px;object-fit:cover;border-radius:8px;float:left;margin:0 8px 0 0;background:#f1f5f9}
+img.thumb.pos{float:none;display:block;width:100%;height:64px;margin:0 0 6px;border-radius:8px}
+img.thumb.big{float:none;width:120px;height:120px;margin:4px 0}
 /* TableTop phone layout. Active only at <=760px. */
 #tt-tabbar,#tt-undo{display:none}
 @media (max-width:760px){
@@ -953,6 +956,15 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
   function isGoodTag(t) { return /^(gluten[- ]?free|vegan|vegetarian|dairy[- ]?free|nut[- ]?free|halal|kosher)$/i.test(String(t).trim()); }
   // Accepts anything shaped like TableTop's DB.items. Allergy/diet tags are read from the first of
   // item.tags (TableTop v2), item.allergens, item.allergy_tags, item.allergy; array or comma-separated text.
+  // Auto food picture for items without a photo: inline SVG data: URI (no network, CSP img-src data: covers it).
+  var FOOD_EMOJI = [[/burger|cheeseburger/i,'🍔'],[/pizza/i,'🍕'],[/fries|chips/i,'🍟'],[/hot ?dog/i,'🌭'],[/taco/i,'🌮'],[/burrito|wrap/i,'🌯'],[/salad|greens/i,'🥗'],[/soup|chowder|stew/i,'🍲'],[/wing|chicken|tender|nugget/i,'🍗'],[/steak|beef|rib/i,'🥩'],[/bacon/i,'🥓'],[/fish|salmon|tuna|shrimp|prawn|seafood/i,'🍤'],[/sushi|roll/i,'🍣'],[/ramen|noodle|pho/i,'🍜'],[/pasta|spaghetti|lasagna|mac/i,'🍝'],[/rice|curry/i,'🍛'],[/sandwich|sub|panini|toast/i,'🥪'],[/egg|omelet|breakfast/i,'🍳'],[/pancake|waffle/i,'🥞'],[/bread|bagel|croissant/i,'🥐'],[/cake|dessert|brownie/i,'🍰'],[/ice ?cream|sundae|gelato|shake/i,'🍨'],[/cookie/i,'🍪'],[/donut|doughnut/i,'🍩'],[/pie/i,'🥧'],[/coffee|latte|espresso|cappuccino|mocha/i,'☕'],[/tea/i,'🍵'],[/beer|ale|lager|ipa/i,'🍺'],[/wine/i,'🍷'],[/cocktail|margarita|mojito/i,'🍹'],[/juice|lemonade|orange/i,'🧃'],[/soda|cola|coke|pop|sprite|drink/i,'🥤'],[/water/i,'💧'],[/fruit|apple/i,'🍎'],[/cheese|nacho/i,'🧀']];
+  var AUTO_BG = ['#fde2e4','#fff1c1','#d8f3dc','#dbeafe','#ede9fe','#ffe5d0','#e0f2f1','#fce7f3'];
+  function foodEmoji(it) { if (it && it.emoji) return it.emoji; var n = String((it && it.name) || '') + ' ' + String((it && it.tags) || ''); for (var i = 0; i < FOOD_EMOJI.length; i++) if (FOOD_EMOJI[i][0].test(n)) return FOOD_EMOJI[i][1]; return '🍽️'; }
+  function autoPic(it) {
+    var n = String((it && it.name) || ''), h = 0; for (var i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) >>> 0;
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100"><rect width="160" height="100" rx="14" fill="' + AUTO_BG[h % AUTO_BG.length] + '"/><text x="80" y="54" font-size="60" text-anchor="middle" dominant-baseline="middle">' + foodEmoji(it) + '</text></svg>';
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
   function safeImg(u) { u = typeof u === 'string' ? u.trim() : ''; return /^(https:\/\/|data:image\/(png|jpe?g|webp|gif);base64,)[^"'<>\s]*$/i.test(u) && u.length < 400000 ? u : ''; }
   // Menu item photos: http(s) URL or a relative path in the app's assets (no scheme, no //, no ..). Never javascript:/data:text etc.
   function safeItemImg(u) {
@@ -1487,7 +1499,7 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
     '.ttq-grid{display:grid;gap:12px;grid-template-columns:1fr}@media (min-width:520px){.ttq-grid{grid-template-columns:1fr 1fr}}' +
     '.ttq-item,.ttq-box{background:var(--card);border-radius:18px;margin:0;box-shadow:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05);overflow:hidden}.ttq-box{padding:12px;margin:10px 0}' +
     '.ttq-item{display:flex;flex-direction:column;animation:ttqIn .25s ease both}.ttq-item.off{opacity:.55}.ttq-item b{display:block;font-size:17px}' +
-    '.ttq-c .ttq-hit{padding:0;border-radius:0;background:none;display:block;width:100%}.ttq-ph{display:flex;position:relative;overflow:hidden;width:100%;aspect-ratio:16/10;height:auto;font-size:56px;border-radius:0}.ttq-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}' +
+    '.ttq-c .ttq-hit{padding:0;border-radius:0;background:none;display:block;width:100%}.ttq-ph{display:flex;position:relative;overflow:hidden;width:100%;aspect-ratio:16/10;height:auto;font-size:56px;border-radius:0}.ttq-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}.ttq-auto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}' +
     '.ttq-info{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}.ttq-desc{color:var(--mut);font-size:15px;line-height:1.35}' +
     '.ttq-buy{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}.ttq-price{font-weight:800;font-size:18px}' +
     '.ttq-mut{color:var(--mut);font-size:15px}.ttq-pill,.ttq-badge{display:inline-block;background:#fef3c7;color:#78350f;border-radius:99px;padding:2px 10px;font-size:14px;margin:2px 4px 0 0;font-weight:700}' +
@@ -1528,16 +1540,16 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
   // GUEST_HISTORY_MIN minutes after its orders are done (closed/rejected/expired/cancelled), or after that long with no activity
   // (stuck), so the next guest at the table never sees the previous guest's order. Orders shown are only this phone's own
   // (ids + private tokens kept in this phone's localStorage); the server has no "list orders for a table" guest route.
-  var GUEST_HISTORY_MIN = 10, GUEST_STUCK_HOURS = 6;
+  var GUEST_HISTORY_MIN = 10, GUEST_STUCK_HOURS = 3;
   function purgeGuestHistory(tableId, nowMs) {
     var now = nowMs == null ? Date.now() : nowMs, lim = GUEST_HISTORY_MIN * 60000, key = 't' + tableId, changedAny = false;
     var mine = Object.keys(state.orders).filter(function (k) { return String(state.orders[k].table) === String(tableId); });
     mine.forEach(function (k) {
       // The 10-minute clock starts when the order is SERVED (server status 'ready'/'served'), not when placed or paid.
       // Orders that will never be served (rejected/expired/void/lost) clear 10 min after that. Anything else is only
-      // dropped after GUEST_STUCK_HOURS with no change (safety net, e.g. paid without the kitchen ever tapping Ready).
+      // dropped GUEST_STUCK_HOURS after it was placed (safety net, e.g. paid without the kitchen ever tapping Ready).
       var r = state.orders[k], last = Math.max(+r.servedAt || 0, +r.doneAt || 0, +r.act || 0, +r.t || 0);
-      var gone = r.servedAt ? now - r.servedAt >= lim : (FINAL[r.status] && r.status !== 'paid') ? now - (+r.doneAt || last) >= lim : now - last >= GUEST_STUCK_HOURS * 3600000;
+      var gone = r.servedAt ? now - r.servedAt >= lim : (FINAL[r.status] && r.status !== 'paid') ? now - (+r.doneAt || last) >= lim : now - (+r.t || last) >= GUEST_STUCK_HOURS * 3600000;   // unserved: dropped GUEST_STUCK_HOURS after it was placed
       if (gone) { delete state.orders[k]; changedAny = true; }
     });
     var c = state.carts[key];
@@ -1622,14 +1634,15 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
           var hadErr = !!ui.pollErr; ui.pollErr = '';
           if (r.status !== x.data.status || r.message !== x.data.message) { r.status = x.data.status; r.act = Date.now(); if ((r.status === 'ready' || r.status === 'served') && !r.servedAt) r.servedAt = r.act; if (FINAL[r.status] && r.status !== 'paid' && !r.doneAt) r.doneAt = r.act; r.message = x.data.message || ''; if (x.data.total != null) r.total = x.data.total; saveOrWarn(); paint(); }
           else if (hadErr) paint();
-        } else if (x.status === 404) {
-          r.status = 'lost'; r.doneAt = r.act = Date.now(); r.message = "We can't find this order any more. Please ask a team member."; saveOrWarn(); paint();
+        } else if (!x.offline && (x.status === 404 || x.status === 410 || x.error === 'not_found')) {
+          // The server clearly says this order no longer exists: drop it from this phone's history (never on a network error).
+          delete state.orders[r.id]; if (ui.done === r.id) ui.done = null; saveOrWarn(); draw();
         } else { ui.pollErr = x.message || OFFLINE_MSG; paint(); }
       });
     }
     function pollTick() {
       pollTimer = null; if (destroyed) return;
-      var active = recs().filter(function (r) { return !FINAL[r.status] && Date.now() - r.t < 6 * 3600000; }).slice(0, 6);
+      var active = recs().filter(function (r) { return !FINAL[r.status] && Date.now() - r.t < GUEST_STUCK_HOURS * 3600000; }).slice(0, 6);
       if (!active.length) return;
       Promise.all(active.map(pollOne)).then(function () { startPoll(pageHidden() ? server.pollHiddenMs : server.pollMs); });
     }
@@ -1732,7 +1745,7 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
       function swatch(it) { var h = 0, k = String(it.name); for (var z = 0; z < k.length; z++) h = (h * 31 + k.charCodeAt(z)) >>> 0; return PALETTE[h % PALETTE.length]; }
       function photo(it, cls) {   // emoji/color block always rendered underneath; the photo sits on top and is removed if it fails to load
         return '<span class="ttq-ph ttq-mono ' + cls + '" style="background:' + swatch(it) + '" aria-hidden="true">' + esc(it.emoji || it.name.charAt(0).toUpperCase()) +
-          (it.img ? '<img class="ttq-img" src="' + esc(it.img) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">' : '') + '</span>';
+          (it.img ? '<img class="ttq-img" src="' + esc(it.img) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">' : '<img class="ttq-auto" src="' + esc(autoPic(it)) + '" alt="">') + '</span>';
       }
       function badges(it) { return it.badges.map(function (b) { var k = b.toLowerCase().replace(/[^a-z]/g, ''); return '<span class="ttq-badge b-' + esc(k) + '">' + (k === 'spicy' ? '&#127798; ' : k === 'popular' ? '&#9733; ' : k === 'veggie' ? '&#127793; ' : '') + esc(b) + '</span>'; }).join(''); }
       html += '<header class="ttq-top"><div class="ttq-topin">' + head() + '<span class="ttq-table">' + esc(table.name) + '</span></div></header>';
@@ -1962,7 +1975,7 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
     stopStaffPolling: stopStaffPolling, isStaffPolling: isStaffPolling, dismissKitchenAlert: dismissKitchenAlert, kitchenAlerts: kitchenAlerts, acceptOrder: acceptOrder, rejectOrder: rejectOrder, readyOrder: readyOrder, ackCall: ackCall, clearCall: clearCall,
     closeOrder: closeOrder, listConflicts: listConflicts, resolveConflict: resolveConflict, staffState: staffState, resetStaffState: resetStaffState,
     normalizeMenu: normalizeMenu, getSaveError: getSaveError, onChange: onChange, esc: esc,
-    _rs: function (d, n) { return rsRemainder(d, rsDivisor(n)); }, _reset: _reset, _state: _state, GUEST_HISTORY_MIN: GUEST_HISTORY_MIN, purgeGuestHistory: purgeGuestHistory, _load: load, statusText: statusText, ensureViewportFit: ensureViewportFit
+    _rs: function (d, n) { return rsRemainder(d, rsDivisor(n)); }, _reset: _reset, _state: _state, GUEST_HISTORY_MIN: GUEST_HISTORY_MIN, GUEST_STUCK_HOURS: GUEST_STUCK_HOURS, purgeGuestHistory: purgeGuestHistory, _load: load, statusText: statusText, autoPic: autoPic, ensureViewportFit: ensureViewportFit
   };
   root.TTQROrder = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -2366,7 +2379,7 @@ function demoData(){const keepPin=DB?.settings?.pin||'';const d=blank();DB=d;d.s
   'Mains':[['Classic Burger',15.99,4.6,'Add cheese:1.5,Add bacon:2,No onions:0,Gluten-free bun:2'],['Margherita Pizza',16,3.9,'Extra cheese:2,Gluten-free crust:3'],['Grilled Salmon',24.5,8.9,'Sub salad:0,Extra veg:2'],['Chicken Alfredo',19.5,5.2,'Add shrimp:5'],['Ribeye Steak',34,13.5,'Rare:0,Medium rare:0,Medium:0,Well done:0'],['Veggie Bowl',14.5,3.6,'Add tofu:3']],
   'Desserts':[['Cheesecake',8.5,2.1,''],['Chocolate Lava Cake',9.5,2.4,'Add ice cream:2']],
   'Drinks':[['Soda',3,0.4,'No ice:0'],['Iced Tea',3.5,0.4,''],['Craft Beer',7,2.2,''],['House Wine',9,2.8,'Red:0,White:0'],['Espresso',3.5,0.6,'Extra shot:1']]};
- for(const[c,items]of Object.entries(menu)){const cid=nid();d.categories.push({id:cid,name:c});items.forEach(([n,p,cost,m])=>d.items.push({id:nid(),cat_id:cid,name:n,price:p,cost,mods:m,available:true,tags:(DEMO_TAGS[n]||[]).slice()}));}
+ for(const[c,items]of Object.entries(menu)){const cid=nid();d.categories.push({id:cid,name:c});items.forEach(([n,p,cost,m])=>d.items.push({id:nid(),cat_id:cid,name:n,price:p,cost,mods:m,available:true,tags:(DEMO_TAGS[n]||[]).slice(),img:'assets/menu/'+n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.webp'}));}
  d.items.find(i=>i.name==='Calamari').available=false;
  [['T1',2],['T2',2],['T3',4],['T4',4],['T5',4],['T6',6],['T7',6],['Bar 1',2],['Patio 1',4],['Patio 2',8]].forEach(([n,s])=>d.tables.push({id:nid(),name:n,seats:s}));
  const STAFF=[['Ana Torres','Manager','313-555-0101',32],['Ben Ford','Server','313-555-0102',11],['Chloe Wu','Server','313-555-0103',11],['Diego Ruiz','Head Chef','313-555-0104',30],['Eve Adams','Line Cook','313-555-0105',20],['Frank Moss','Host','313-555-0106',14],['Gina Park','Busser','313-555-0107',12],['Hank Lee','Bartender','313-555-0108',13]];
@@ -2401,6 +2414,9 @@ let modalFrom=null;const closeModal=()=>{const m=$('#modal');if(!m.classList.con
 // focus back to the opener; if a redraw replaced it, to its twin (same id/data-*), else the page heading (never leave focus on <body>)
 function refocus(el){try{let t=el&&document.body.contains(el)?el:null;if(!t&&el&&el.nodeType===1){if(el.id)t=document.getElementById(el.id);if(!t)for(const a of el.attributes)if(a.name.startsWith('data-')){t=document.querySelector(`[${a.name}="${CSS.escape(a.value)}"]`);if(t)break;}}
  if(!t||t.disabled||!t.getClientRects().length){t=$('#main h2')||$('#main');if(t&&!t.hasAttribute('tabindex'))t.setAttribute('tabindex','-1');}if(t)t.focus({preventScroll:true});}catch(e){}}
+const safeImg=u=>{u=typeof u==='string'?u.trim():'';return u.length<=500&&/^(https?:\/\/[^\s"'<>]+|(\.?\/)?[A-Za-z0-9_\-][A-Za-z0-9_\-\/.]*\.(webp|jpe?g|png|gif|avif))$/i.test(u)&&!/\.\./.test(u)?u:'';};
+const thumb=(i,c='thumb')=>{const u=safeImg(i&&i.img);return u?`<img class="${c}" src="${esc(u)}" alt="" loading="lazy">`:'';};
+document.addEventListener('error',e=>{const t=e.target;if(t&&t.matches&&t.matches('img.thumb')){if(t.classList.contains('big'))t.replaceWith(document.createTextNode('Could not load that photo'));else t.remove();}},true);
 const field=(n,l,v='',t='text',x='',extra='')=>`<label class="${x}">${l}<input name="${n}" type="${t}" value="${esc(v??'')}" ${t==='number'?'step="any"':''} ${extra}></label>`;
 const sel=(n,l,opts,v,x='')=>`<label class="${x}">${l}<select name="${n}">${opts.map(([k,t])=>`<option value="${esc(k)}" ${String(k)===String(v??'')?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
 const btns=`<div class="full row end"><button type="button" class="sec" onclick="closeModal()">Cancel</button><button>Save</button></div>`;
@@ -2469,7 +2485,7 @@ function drawPOS(){const o=CUR,t=totals(o),open=DB.orders.filter(x=>!x.paid);
   <select id="srv"><option value="">Server…</option>${DB.staff.filter(s=>s.active!==false).map(s=>`<option value="${s.id}" ${s.id==o.server_id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
   <div class="tabs">${DB.categories.map(c=>`<button class="${c.id==posCat?'on':''}" data-cat="${c.id}">${esc(c.name)}</button>`).join('')}</div>
   ${posFilterHtml()}${hiddenN?`<div class="muted" id="hiddenn">${hiddenN} item${hiddenN>1?'s':''} hidden by allergy/diet filter</div>`:''}
-  <div class="items">${items.map(i=>`<button class="item ${i.available?'':'off'}" data-item="${i.id}"${TTExtras.catColor(DB,i.cat_id)?` data-cc style="--cc:${TTExtras.catColor(DB,i.cat_id)}"`:''} ${i.available?'':'disabled'}><b>${esc(i.name)}</b>${tagsHtml(i.tags)}<span>${money(i.price)}</span>${i.available?(i.mods?'<em>options</em>':''):'<em>86’d</em>'}</button>`).join('')||'<p class="muted empty">No items in this category.</p>'}</div></div>
+  <div class="items">${items.map(i=>`<button class="item ${i.available?'':'off'}" data-item="${i.id}"${TTExtras.catColor(DB,i.cat_id)?` data-cc style="--cc:${TTExtras.catColor(DB,i.cat_id)}"`:''} ${i.available?'':'disabled'}>${thumb(i,'thumb pos')}<b>${esc(i.name)}</b>${tagsHtml(i.tags)}<span>${money(i.price)}</span>${i.available?(i.mods?'<em>options</em>':''):'<em>86’d</em>'}</button>`).join('')||'<p class="muted empty">No items in this category.</p>'}</div></div>
  <button class="posbar" id="posbar" type="button" onclick="document.querySelector('.pos-right').scrollIntoView({behavior:'smooth',block:'start'})">🧾 View ticket · ${o.lines.reduce((n,l)=>n+l.qty,0)} item${o.lines.reduce((n,l)=>n+l.qty,0)===1?'':'s'} · ${money(totals(o).total)}</button>
  <div class="pos-right card"><div class="row between nomb"><h3>${o.id?'Ticket #'+o.id:'New ticket'}</h3>${o.id?badge(o.status):''}</div><div class="muted">${o.type==='dine'?esc(byId('tables',o.table_id)?.name||'No table selected'):'Takeout'}</div>
   <div class="lines">${o.lines.map((l,i)=>`<div class="line"><div class="grow"><b>${esc(l.name)}</b>${l.mods.length?`<div class="muted">${l.mods.map(m=>esc(m.n)+(m.p?' +'+money(m.p):'')).join(', ')}</div>`:''}${l.note?`<div class="note">📝 ${esc(l.note)}</div>`:''}</div>
@@ -2573,7 +2589,7 @@ PAGE.menu=()=>{const its=DB.items.filter(i=>menuCat==='all'||i.cat_id==menuCat);
  $('#main').innerHTML=`<div class="row between"><h2>Menu</h2><div class="row nomb"><button class="sec" id="cats">Categories</button><button id="add">+ Add item</button></div></div>
  ${DB.items.length?'':`<div class="card firstmenu"><b>Let's build your menu</b><div class="muted">1) Add a category, like Mains or Drinks. 2) Add your first item with its price. 3) Add your tables on the Tables page.</div><div class="row nomb"><button id="mgcat">1 · Add a category</button><button class="sec" id="mgitem">2 · Add your first item</button></div></div>`}
  <div class="tabs"><button class="${menuCat==='all'?'on':''}" data-c="all">All (${DB.items.length})</button>${DB.categories.map(c=>`<button class="${menuCat==c.id?'on':''}" data-c="${c.id}">${esc(c.name)} (${DB.items.filter(i=>i.cat_id==c.id).length})</button>`).join('')}</div>
- <div class="tw"><table><tr><th>Item</th><th>Category</th><th>Price</th><th>Food cost</th><th>Margin</th><th>Available</th><th></th></tr>${its.map(i=>{const m=margin(i);return`<tr><td><b>${esc(i.name)}</b>${tagsHtml(i.tags)}${i.mods?`<div class="muted">${esc(parseMods(i.mods).map(x=>x.n).join(', '))}</div>`:''}</td><td>${esc(byId('categories',i.cat_id)?.name||'—')}</td><td>${money(i.price)}</td><td class="muted">${money(i.cost)} (${i.price?Math.round(i.cost/i.price*100):0}%)</td>
+ <div class="tw"><table><tr><th>Item</th><th>Category</th><th>Price</th><th>Food cost</th><th>Margin</th><th>Available</th><th></th></tr>${its.map(i=>{const m=margin(i);return`<tr><td>${thumb(i)}<b>${esc(i.name)}</b>${tagsHtml(i.tags)}${i.mods?`<div class="muted">${esc(parseMods(i.mods).map(x=>x.n).join(', '))}</div>`:''}</td><td>${esc(byId('categories',i.cat_id)?.name||'—')}</td><td>${money(i.price)}</td><td class="muted">${money(i.cost)} (${i.price?Math.round(i.cost/i.price*100):0}%)</td>
  <td><b style="color:${m>=65?'#16a34a':m>=50?'#ca8a04':'#dc2626'}">${m}%</b></td><td><label class="switch"><input type="checkbox" data-av="${i.id}" ${i.available?'checked':''}><span></span></label></td><td class="nowrap"><button class="sm sec" data-edit="${i.id}">Edit</button> <button class="sm danger" data-del="${i.id}">Delete</button></td></tr>`}).join('')||'<tr><td colspan=7 class="muted">No items.</td></tr>'}</table></div>
  <p class="muted">Margin = (price − food cost) ÷ price. Green ≥ 65%, amber ≥ 50%. Modifiers format: <code>Add cheese:1.5, No onions:0</code></p>`;
  $$('[data-c]').forEach(b=>b.onclick=()=>{menuCat=b.dataset.c==='all'?'all':+b.dataset.c;route();});
@@ -2581,9 +2597,9 @@ PAGE.menu=()=>{const its=DB.items.filter(i=>menuCat==='all'||i.cat_id==menuCat);
  $('#add').onclick=()=>editItem();$$('[data-edit]').forEach(b=>b.onclick=()=>editItem(+b.dataset.edit));$$('[data-del]').forEach(b=>b.onclick=()=>delRec('items',+b.dataset.del,'Delete this menu item?'));$('#cats').onclick=catsModal;if($('#mgcat'))$('#mgcat').onclick=catsModal;if($('#mgitem'))$('#mgitem').onclick=()=>editItem();};
 function editItem(id){if(!DB.categories.length)return toast('Add a category first');const i=id?byId('items',id):{available:true,cat_id:menuCat==='all'?DB.categories[0].id:menuCat};
  modal(`<h3>${id?'Edit':'Add'} menu item</h3><form class="form">${field('name','Name',i.name,'text','full')}${sel('cat_id','Category',DB.categories.map(c=>[c.id,c.name]),i.cat_id)}<label>Available<select name="available"><option value="1" ${i.available?'selected':''}>Yes</option><option value="" ${i.available?'':'selected'}>No (sold out / 86’d)</option></select></label>
- ${field('price','Price',i.price,'number','','min="0" max="100000"')}${field('cost','Food cost',i.cost,'number','','min="0" max="100000"')}${field('mods','Modifiers (name:price, comma separated)',i.mods,'text','full')}${tagFields(i)}<div class="full muted" id="mg"></div>${btns}</form>`,
- d=>{need(d.name,'Name is required');if(!(+d.price>0)||!isFinite(+d.price))throw new Error('Price must be greater than 0');const MAXP=100000;let pr=r2(+d.price),co=r2(+d.cost||0);if(pr>MAXP||co>MAXP||+d.cost<0)toast('Price/cost limited to $0 – $'+MAXP.toLocaleString());pr=Math.min(MAXP,pr);co=Math.min(MAXP,Math.max(0,co));const x={name:d.name.trim(),cat_id:+d.cat_id,price:pr,cost:co,mods:d.mods.trim(),available:!!d.available,tags:readTags(d)};if(id)Object.assign(i,x);else DB.items.push({id:nid(),...x});save();});
- const f=$('#modal-body form'),upd=()=>$('#mg').textContent=`Margin: ${margin({price:+f.price.value,cost:+f.cost.value})}% · Food cost: ${+f.price.value?Math.round(+f.cost.value/+f.price.value*100):0}%`;f.price.oninput=f.cost.oninput=upd;upd();}
+ ${field('price','Price',i.price,'number','','min="0" max="100000"')}${field('cost','Food cost',i.cost,'number','','min="0" max="100000"')}${field('mods','Modifiers (name:price, comma separated)',i.mods,'text','full')}${field('img','Photo URL (optional) — https://… or assets/menu/name.webp',i.img||'','text','full','placeholder="https://… or assets/menu/burger.webp" maxlength="500"')}<div class="full" id="imgprev"></div>${tagFields(i)}<div class="full muted" id="mg"></div>${btns}</form>`,
+ d=>{need(d.name,'Name is required');if(!(+d.price>0)||!isFinite(+d.price))throw new Error('Price must be greater than 0');const MAXP=100000;let pr=r2(+d.price),co=r2(+d.cost||0);if(pr>MAXP||co>MAXP||+d.cost<0)toast('Price/cost limited to $0 – $'+MAXP.toLocaleString());pr=Math.min(MAXP,pr);co=Math.min(MAXP,Math.max(0,co));const x={name:d.name.trim(),cat_id:+d.cat_id,price:pr,cost:co,mods:d.mods.trim(),available:!!d.available,tags:readTags(d),img:''};const im=(d.img||'').trim();if(im&&!safeImg(im))throw new Error('Photo must be an http(s) link or a path like assets/menu/burger.webp');x.img=safeImg(im);if(!x.img)delete x.img;if(id&&!x.img)delete i.img;if(id)Object.assign(i,x);else DB.items.push({id:nid(),...x});save();});
+ const f=$('#modal-body form'),upd=()=>$('#mg').textContent=`Margin: ${margin({price:+f.price.value,cost:+f.cost.value})}% · Food cost: ${+f.price.value?Math.round(+f.cost.value/+f.price.value*100):0}%`;f.price.oninput=f.cost.oninput=upd;upd();const pv=()=>{const u=safeImg(f.img.value);$('#imgprev').innerHTML=u?`<img class="thumb big" src="${esc(u)}" alt="Photo preview">`:(f.img.value.trim()?'<span class="muted">Not a valid photo link</span>':'');};f.img.oninput=pv;pv();}
 function catsModal(){modal(`<h3>Categories</h3>${DB.categories.map(c=>`<div class="row between li"><span>${esc(c.name)} <span class="muted">(${DB.items.filter(i=>i.cat_id==c.id).length} items)</span></span><span><button class="sm sec" data-ren="${c.id}">Rename</button> <button class="sm danger" data-cdel="${c.id}">Delete</button></span></div>`).join('')}
  <form class="form" style="margin-top:12px">${field('name','New category','','text','full')}<div class="full row end"><button type="button" class="sec" onclick="closeModal();route()">Done</button><button>Add category</button></div></form>`,
  d=>{need(d.name,'Category name required');DB.categories.push({id:nid(),name:d.name.trim()});save();setTimeout(catsModal);});
