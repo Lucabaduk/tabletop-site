@@ -216,6 +216,9 @@ input[type=color]{height:42px;padding:2px;min-width:70px}
 img.thumb{width:40px;height:40px;object-fit:cover;border-radius:8px;float:left;margin:0 8px 0 0;background:#f1f5f9}
 img.thumb.pos{float:none;display:block;width:100%;height:64px;margin:0 0 6px;border-radius:8px}
 img.thumb.big{float:none;width:120px;height:120px;margin:4px 0}
+
+/* count badges: small accent pill, hidden at 0 */
+nav a .dot{background:var(--brand);color:#fff;font:700 11px/16px system-ui,sans-serif;min-width:16px;text-align:center;padding:0 5px;box-shadow:0 0 0 2px #1c1917}nav a .dot.call{right:auto;left:26px;background:#0f766e}nav a .dot.warn{background:#b45309}.dot.inl{position:static;display:inline-block;vertical-align:2px;margin-left:4px;background:var(--brand);color:#fff;font:700 11px/16px system-ui,sans-serif;min-width:16px;text-align:center;padding:0 6px;border-radius:99px}
 /* TableTop phone layout. Active only at <=760px. */
 #tt-tabbar,#tt-undo{display:none}
 @media (max-width:760px){
@@ -1092,7 +1095,7 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
   // ---------- staff device state (own key; the staff token is NEVER stored here) ----------
   var staff = { lastSeq: 0, imported: [], loaded: false };
   var seenPending = {}, staffPoll = null;
-  // ---------- kitchen alert (staff device): loud beep + banner per new guest order ----------
+  // ---------- kitchen alert (staff device): soft chime + banner per new guest order ----------
   // Browsers block sound until the user taps the page once, so the first tap/key anywhere unlocks WebAudio.
   var audio = { ctx: null, armed: false }, alerts = {}, alertBox = null;
   function audioCtx() {
@@ -1109,16 +1112,16 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
     }
     root.addEventListener('pointerdown', unlock, true); root.addEventListener('keydown', unlock, true);
   }
-  function beep() {
+  function beep() {                                        // soft two-note sine chime (~0.4s, gain 0.15), not a harsh alarm
     var c = audioCtx(); if (!c) return false;
     try {
       if (c.state === 'suspended' && c.resume) c.resume();
       var t = c.currentTime;
-      [0, 0.28, 0.56].forEach(function (d) {                  // three loud square-wave pips, 880 Hz
+      [[659.25, 0], [880, 0.16]].forEach(function (n) {
         var o = c.createOscillator(), g = c.createGain();
-        o.type = 'square'; o.frequency.value = 880; o.connect(g); g.connect(c.destination);
-        g.gain.setValueAtTime(0.0001, t + d); g.gain.exponentialRampToValueAtTime(0.9, t + d + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.22);
-        o.start(t + d); o.stop(t + d + 0.24);
+        o.type = 'sine'; o.frequency.value = n[0]; o.connect(g); g.connect(c.destination);
+        g.gain.setValueAtTime(0.0001, t + n[1]); g.gain.exponentialRampToValueAtTime(0.15, t + n[1] + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 0.24);
+        o.start(t + n[1]); o.stop(t + n[1] + 0.26);
       });
       return true;
     } catch (e) { return false; }
@@ -2429,8 +2432,7 @@ function lockView(){$('#app').innerHTML=`<div class="login card"><h2>🔒 ${esc(
 let timer=null;
 function route(){if(!$('#main'))return;clearInterval(timer);try{TTInventory.unmount();}catch(e){}const r=(location.hash||'#dashboard').slice(1).split('/')[0];document.body.setAttribute('data-page',r);
  $$('nav a[data-r]').forEach(a=>a.classList.toggle('active',a.dataset.r===r));
- const low=lowStock().length,kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length+qrPendN();
- $$('nav a[data-r]').forEach(a=>{const b=a.querySelector('.dot');if(b)b.remove();const n=a.dataset.r==='autoinv'?low:a.dataset.r==='kitchen'?kit:0;if(n)a.insertAdjacentHTML('beforeend',`<b class="dot ${a.dataset.r==='kitchen'?'blue':''}">${n}</b>`);});
+ navBadges();
  (PAGE[r]||PAGE.dashboard)();}
 window.addEventListener('hashchange',route);
 
@@ -2892,7 +2894,7 @@ const qrToken=()=>{try{return(localStorage.getItem(QR_TOKEN_KEY)||'').trim();}ca
 const qrStaff=()=>qrOn()&&!!qrToken();
 const qrPendN=()=>qrStaff()?QRP.pending.filter(o=>!o.expires_at||o.expires_at>Date.now()).length:0;
 function qrConfigure(){if(!QR_SERVER_URL)return;
- if(qrStaff())TTQROrder.setServer({url:QR_SERVER_URL,appUrl:QR_APP_URL,staffToken:qrToken(),onAcceptedOrder:importQROrder});
+ if(qrStaff())TTQROrder.setServer({url:QR_SERVER_URL,appUrl:QR_APP_URL,staffToken:qrToken(),onAcceptedOrder:importQROrder,alertSound:false});   // the app plays its own soft chime (ttChime), so the module stays quiet
  else TTQROrder.setServer({url:QR_SERVER_URL,appUrl:QR_APP_URL});}   // guest phones (and staff without a token) get the URL only
 function importQROrder(order){reloadDB();
  if(!order||!Array.isArray(order.lines)||!order.lines.length)return false;
@@ -2906,18 +2908,35 @@ function importQROrder(order){reloadDB();
  const okSaved=save();
  if(okSaved){const pg=(location.hash||'#dashboard').slice(1).split('/')[0];if(['dashboard','kitchen','tables','orders'].includes(pg)&&$('#main')&&$('#modal').classList.contains('hidden'))route();}
  return okSaved;}
-function qrBeep(){if(DB&&DB.settings&&DB.settings.kds_sound===false)return;try{const A=window.AudioContext||window.webkitAudioContext,c=new A(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);g.gain.value=.08;o.frequency.value=880;o.start();setTimeout(()=>{o.stop();c.close();},250);}catch(e){}}
+// soft two-note sine chimes: 'order' rises (E5->A5), 'call' falls (G5->D5). ~0.4s, gain 0.15, once per new item; respects Settings → New order alert sound
+let ttAC=null;const TT_CHIMES={order:[659.25,880],call:[783.99,587.33]};
+function ttChime(kind){if(DB&&DB.settings&&DB.settings.kds_sound===false)return false;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return false;ttAC=ttAC||new A();const c=ttAC;if(c.state==='suspended'&&c.resume)c.resume();const t=c.currentTime;
+ (TT_CHIMES[kind]||TT_CHIMES.order).forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain(),d=i*0.16;o.type='sine';o.frequency.value=f;o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(0.0001,t+d);g.gain.exponentialRampToValueAtTime(0.15,t+d+0.03);g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.24);o.start(t+d);o.stop(t+d+0.26);});return true;}catch(e){return false;}}
+function qrBeep(){return ttChime('order');}
+// one chime per NEW order/call (never a loop); if something stays unacknowledged, at most one gentle reminder every 60 s
+const TTA={seen:{},last:0,init:false,REMIND:60000};
+function ttAlertTick(now){now=now||Date.now();const items=[...(QRP.pending||[]).map(o=>['order','o'+o.id]),...(QRP.calls||[]).filter(c=>c.status!=='acked').map(c=>['call','c'+c.id])];
+ const fresh=items.filter(([,k])=>!TTA.seen[k]);const keep={};items.forEach(([,k])=>keep[k]=1);TTA.seen=keep;
+ if(!TTA.init){TTA.init=true;if(!fresh.length)return 0;}
+ if(fresh.length){fresh.forEach(([kind],i)=>i?setTimeout(()=>ttChime(kind),i*600):ttChime(kind));TTA.last=now;return fresh.length;}
+ if(items.length&&now-TTA.last>=TTA.REMIND){ttChime(items.some(([k])=>k==='call')?'call':'order');TTA.last=now;return 1;}return 0;}
+// "Check, please" is not its own type on the server: the guest page sends it as the call's free-text reason. Anything mentioning check/bill counts as Check please; everything else is Waiter.
+function callKind(c){return/\b(check|bill)\b/i.test(String(c&&c.reason||''))?'Check please':'Waiter';}
+function ttBadge(n,cls){n=+n||0;return n>0?`<b class="dot ${cls||''}" aria-label="${n} waiting">${n>99?'99+':n}</b>`:'';}
+function navBadges(){const low=(typeof lowStock==='function'?lowStock().length:0),kit=DB.orders.filter(o=>!o.paid&&o.status!=='served').length+qrPendN(),calls=qrStaff()?(QRP.calls||[]).filter(c=>c.status!=='acked').length:0;
+ $$('nav a[data-r]').forEach(a=>{a.querySelectorAll('.dot').forEach(b=>b.remove());const r=a.dataset.r;if(r==='autoinv')a.insertAdjacentHTML('beforeend',ttBadge(low,'warn'));if(r==='kitchen')a.insertAdjacentHTML('beforeend',ttBadge(kit)+ttBadge(calls,'call'));});}
 const qrAutoRej={};function qrRejectOld(list){const w=(+DB.settings.kds_pending_clear>0?+DB.settings.kds_pending_clear:180)*60000,now=Date.now();return list.filter(o=>{if(!(o&&o.created_at&&now-o.created_at>=w))return true;if(!qrAutoRej[o.id]){qrAutoRej[o.id]=1;TTQROrder.rejectOrder(o.id,'Not accepted in time').then(r=>{if(!r||!r.ok)delete qrAutoRej[o.id];},()=>{delete qrAutoRej[o.id];});}return false;});}
 function qrSyncReady(list){if(!Array.isArray(list)||!list.length)return;let ch=false;list.forEach(r=>{const o=DB.orders.find(x=>x.qr_id===r.id);if(o&&!o.qr_ready){o.qr_ready=1;ch=true;}});if(ch)save();}
-function qrCallsHtml(){const c=(QRP.calls||[]);if(!c.length)return'';return`<div class="qrcalls" role="alert"><h4>🔔 Guests calling a server (${c.length})</h4>${c.map(x=>`<div class="qrcall row between nomb"><span><b>${esc(x.table_name||('Table '+x.table_id))}</b>${x.reason?' · '+esc(x.reason):''} <span class="muted">${x.status==='acked'?'· on the way':'· waiting'}</span></span><span class="row nomb">${x.status!=='acked'?`<button class="sm" data-qcack="${esc(x.id)}">Ack</button>`:''}<button class="sm sec" data-qcclr="${esc(x.id)}">Clear</button></span></div>`).join('')}</div>`;}
+function qrCallsHtml(){const c=(QRP.calls||[]);if(!c.length)return'';const open=c.filter(x=>x.status!=='acked').length;return`<div class="qrcalls" role="alert"><h4>Tables calling ${ttBadge(open,'inl')}</h4>${c.map(x=>{const k=callKind(x),rs=String(x.reason||'').trim();return`<div class="qrcall row between nomb"><span><b>${esc(x.table_name||('Table '+x.table_id))}</b> · ${esc(k)}${rs&&k==='Waiter'?` <span class="muted">(${esc(rs)})</span>`:''} <span class="muted">${x.status==='acked'?'· on the way':'· waiting'}</span></span><span class="row nomb">${x.status!=='acked'?`<button class="sm" data-qcack="${esc(x.id)}">Ack</button>`:''}<button class="sm sec" data-qcclr="${esc(x.id)}">Clear</button></span></div>`;}).join('')}</div>`;}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-qready],[data-qcack],[data-qcclr]');if(!b||b.disabled)return;b.disabled=true;
  if(b.dataset.qready){const o=byId('orders',+b.dataset.qready);if(!o||!o.qr_id){b.disabled=false;return;}TTQROrder.readyOrder(o.qr_id).then(r=>{if(!r.ok){b.disabled=false;return toast(r.message||'Could not mark ready');}o.qr_ready=1;if(o.status==='new'||o.status==='cooking')o.status='ready';save();toast('Guest told: order ready');route();});return;}
  const id=b.dataset.qcack||b.dataset.qcclr,ack=!!b.dataset.qcack;(ack?TTQROrder.ackCall(id):TTQROrder.clearCall(id)).then(r=>{if(!r.ok&&r.status!==404){b.disabled=false;return toast(r.message||'Could not update call');}
   if(ack&&r.ok)QRP.calls=QRP.calls.map(c=>c.id===id?Object.assign({},c,{status:'acked'}):c);else QRP.calls=QRP.calls.filter(c=>c.id!==id);toast(ack?'Call acknowledged':'Call cleared');qrWaitRefresh();});});
 function qrOnUpdate(i){QRP.pending=qrRejectOld(i.pending||[]);qrSyncReady(i.ready);QRP.calls=(i.calls||[]).filter(c=>c&&c.id);QRP.err='';
- if(i.newPending&&i.newPending.length){const o=i.newPending[0];toast('🔔 New guest order'+(o.table_name?' · '+o.table_name:''));qrBeep();}
+ if(i.newPending&&i.newPending.length){const o=i.newPending[0];toast('New guest order'+(o.table_name?' · '+o.table_name:''));}
+ ttAlertTick();
  const pg=(location.hash||'#dashboard').slice(1).split('/')[0];if($('#main')&&$('#modal').classList.contains('hidden')){if(pg==='kitchen')PAGE.kitchen();else if(['dashboard','tables','orders'].includes(pg))route();else qrBadge();}}
-function qrBadge(){const a=$('nav a[data-r=kitchen]');if(!a)return;const b=a.querySelector('.dot');if(b)b.remove();const n=DB.orders.filter(o=>!o.paid&&o.status!=='served').length+qrPendN();if(n)a.insertAdjacentHTML('beforeend',`<b class="dot blue">${n}</b>`);}
+function qrBadge(){navBadges();}
 function qrOnError(e){QRP.err=e&&e.message||'Shared server problem';if(e&&e.status===401)QRP.err='Check the staff token (Settings → Shared server).';qrWaitRefresh();}
 function qrStart(){if(!qrStaff())return;qrConfigure();
  if(!TTQROrder.isStaffPolling())qrCtl=TTQROrder.startStaffPolling({onUpdate:qrOnUpdate,onError:qrOnError});
@@ -2945,7 +2964,7 @@ function qrWaitInner(list){const err=qrCallsHtml()+(QRP.err?`<div class="qrerr" 
   return`<div class="qrcard"><div class="row between nomb"><b>${esc(o.table_name||('Table '+o.table_id))}</b><span class="muted">${mins!=null?'expires in ~'+mins+' min · ':''}${money(o.total)}</span></div>
   <ul>${(o.lines||[]).map(l=>`<li><b>${l.qty}×</b> ${esc(l.name)}${(l.mods||[]).length?`<div class="muted">${l.mods.map(x=>esc(x.n)).join(', ')}</div>`:''}${l.note?`<div class="note">📝 ${esc(l.note)}</div>`:''}</li>`).join('')}</ul>${o.note?`<div class="note">📝 TABLE NOTE: ${esc(o.note)}</div>`:''}
   <div class="row nomb"><button class="sm green grow" data-qracc="${esc(o.id)}">Accept</button><button class="sm danger" data-qrrej="${esc(o.id)}">Reject</button></div></div>`;}).join('');}
-function qrWaitRefresh(){const el=$('#qrwait');if(el)el.innerHTML=qrWaitInner(QRP.pending.filter(o=>!o.expires_at||o.expires_at>Date.now())),qrWaitBind();}
+function qrWaitRefresh(){const el=$('#qrwait');if(el)el.innerHTML=qrWaitInner(QRP.pending.filter(o=>!o.expires_at||o.expires_at>Date.now())),qrWaitBind();try{navBadges();}catch(e){}}
 function qrWaitBind(){const find=id=>QRP.pending.find(o=>o.id===id);
  $$('[data-qracc]').forEach(b=>b.onclick=()=>{const o=find(b.dataset.qracc);if(!o||QRP.busy[o.id])return;QRP.busy[o.id]=1;b.disabled=true;
   TTQROrder.acceptOrder(o.id,{baseVersion:o.version}).then(r=>{delete QRP.busy[o.id];
