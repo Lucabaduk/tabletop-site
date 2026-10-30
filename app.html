@@ -166,6 +166,7 @@ table.sched th:nth-last-child(3),table.sched td:nth-last-child(3){min-width:48px
 .qrwait{margin:0 0 14px}.qrwait h4{margin:0 0 8px}.qrnone{margin:0 0 10px}
 .qrcard{background:#fff7ed;border:2px solid #fb923c;border-radius:10px;padding:10px 12px;margin:0 0 8px;max-width:520px}.qrcard ul{margin:6px 0;padding-left:18px}
 .qrerr{margin:0 0 8px;padding:8px 10px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;color:#991b1b}
+.qrerr a{color:inherit;font-weight:700;padding:12px 2px}  /* bigger tap area on phones; inline padding does not change the line height */
 .firstrun,.firstmenu{border:2px solid #fb923c;background:#fff7ed;margin:0 0 14px;max-width:760px}.firstrun .muted,.firstmenu .muted{margin:6px 0 10px}.firstrun .row,.firstmenu .row{gap:8px;flex-wrap:wrap}
 /* phones/tablets: 16px form text stops iOS Safari zooming on focus; 40px+ tap targets on touch screens */
 @media (max-width:760px){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px}}
@@ -219,6 +220,10 @@ img.thumb.big{float:none;width:120px;height:120px;margin:4px 0}
 
 /* count badges: small accent pill, hidden at 0 */
 nav a .dot{background:var(--brand);color:#fff;font:700 11px/16px system-ui,sans-serif;min-width:16px;text-align:center;padding:0 5px;box-shadow:0 0 0 2px #1c1917}nav a .dot.call{right:auto;left:26px;background:#0f766e}nav a .dot.warn{background:#b45309}.dot.inl{position:static;display:inline-block;vertical-align:2px;margin-left:4px;background:var(--brand);color:#fff;font:700 11px/16px system-ui,sans-serif;min-width:16px;text-align:center;padding:0 6px;border-radius:99px}
+/* Settings on phones: no sideways scroll. Grid items and form fields may shrink below their natural width (opening-hours time inputs and the logo file input were ~440px wide and pushed every Settings card off the right edge). */
+.setgrid>*,.form>*,.logorow .grow{min-width:0}.hrow input[type=time],.logorow input[type=file]{width:100%;max-width:100%}
+@media(max-width:640px){.hrow{grid-template-columns:36px minmax(0,1fr) auto minmax(0,1fr);gap:4px}.hrow input[type=time]{padding:10px 4px 10px 8px;font-size:15px}}
+@media(max-width:360px){.hrow{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.hrow>b,.hrow .chk{grid-column:1/-1}}
 /* TableTop phone layout. Active only at <=760px. */
 #tt-tabbar,#tt-undo{display:none}
 @media (max-width:760px){
@@ -1357,7 +1362,7 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
   function statusText(st) { if (STATUS_LABEL[st]) return STATUS_LABEL[st]; var t = String(st == null ? '' : st).replace(/[_-]+/g, ' ').trim(); return t ? 'Status: ' + t.charAt(0).toUpperCase() + t.slice(1) : 'Status unavailable'; }
   // iPhone notch: env(safe-area-inset-*) is 0 unless the viewport meta has viewport-fit=cover. TableTop.html line 2 lacks it, so add it for the guest page.
   function ensureViewportFit(doc) { try { var m = doc && doc.querySelector && doc.querySelector('meta[name="viewport"]'); if (!m) return false; var c = m.getAttribute('content') || ''; if (/viewport-fit\s*=/.test(c)) return true; m.setAttribute('content', c ? c + ',viewport-fit=cover' : 'width=device-width,initial-scale=1,viewport-fit=cover'); return true; } catch (e) { return false; } }
-  var STATUS_LABEL = { pending: 'Received - waiting for staff to accept', accepted: 'Accepted by staff \u2713', ready: 'Ready \u2713', served: 'Served \u2713', rejected: 'Not accepted', expired: 'Not confirmed in time', paid: 'Order closed', void: 'Order cancelled', lost: 'Status unavailable' };
+  var STATUS_LABEL = { pending: 'Received - waiting for staff to accept', accepted: 'Accepted by staff \u2713', cooking: 'Being prepared in the kitchen', preparing: 'Being prepared in the kitchen', ready: 'Ready \u2713', served: 'Served \u2713', rejected: 'Not accepted', expired: 'Not confirmed in time', paid: 'Order closed', void: 'Order cancelled', lost: 'Status unavailable' };
   function newDraftId() { var a = 'abcdefghjkmnpqrstuvwxyz23456789', s = 'g', i, b; try { b = new Uint8Array(14); root.crypto.getRandomValues(b); for (i = 0; i < 14; i++) s += a[b[i] % a.length]; } catch (e) { for (i = 0; i < 14; i++) s += a[Math.floor(Math.random() * a.length)]; } return s; }
 
   // ====================================================================
@@ -1498,6 +1503,7 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
     '.ttq-item,.ttq-box{background:var(--card);border-radius:18px;margin:0;box-shadow:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05);overflow:hidden}.ttq-box{padding:12px;margin:10px 0}' +
     '.ttq-item{display:flex;flex-direction:column;animation:ttqIn .25s ease both}.ttq-item.off{opacity:.55}.ttq-item b{display:block;font-size:17px}' +
     '.ttq-c .ttq-hit{padding:0;border-radius:0;background:none;display:block;width:100%}.ttq-ph{display:flex;position:relative;overflow:hidden;width:100%;aspect-ratio:16/10;height:auto;font-size:56px;border-radius:0}.ttq-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}' +
+    '.ttq-c button.ttq-nm{padding:0;margin:0;min-height:0;min-width:0;background:none;color:inherit;border-radius:6px;text-align:left;font-weight:inherit;align-self:flex-start}.ttq-c button.ttq-nm:disabled{cursor:default}' +
     '.ttq-info{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}.ttq-desc{color:var(--mut);font-size:15px;line-height:1.35}' +
     '.ttq-buy{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}.ttq-price{font-weight:800;font-size:18px}' +
     '.ttq-mut{color:var(--mut);font-size:15px}.ttq-pill,.ttq-badge{display:inline-block;background:#fef3c7;color:#78350f;border-radius:99px;padding:2px 10px;font-size:14px;margin:2px 4px 0 0;font-weight:700}' +
@@ -1611,8 +1617,8 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
         .filter(function (r) { return String(r.table) === String(tableId) && !r.dismissed; }).sort(function (a, b) { return a.t - b.t; });
     }
     function statusBlock(r, withDismiss) {
-      var cls = (r.status === 'accepted' || r.status === 'ready' || r.status === 'served' || r.status === 'paid') ? 'ttq-ok' : r.status === 'pending' ? 'ttq-warn' : STATUS_LABEL[r.status] ? 'ttq-err' : 'ttq-neutral';
-      var stepN = r.status === 'pending' ? 1 : r.status === 'accepted' ? 2 : (r.status === 'ready' || r.status === 'served' || r.status === 'paid') ? 3 : 0;
+      var cls = (r.status === 'accepted' || r.status === 'cooking' || r.status === 'preparing' || r.status === 'ready' || r.status === 'served' || r.status === 'paid') ? 'ttq-ok' : r.status === 'pending' ? 'ttq-warn' : STATUS_LABEL[r.status] ? 'ttq-err' : 'ttq-neutral';
+      var stepN = r.status === 'pending' ? 1 : (r.status === 'accepted' || r.status === 'cooking' || r.status === 'preparing') ? 2 : (r.status === 'ready' || r.status === 'served' || r.status === 'paid') ? 3 : 0;
       var steps = stepN ? '<ol class="ttq-steps" aria-label="Order progress">' + ['Received', 'Cooking', 'Ready'].map(function (n, i) { return '<li class="' + (i < stepN ? 'done' : '') + (i === stepN - 1 ? ' now' : '') + '"' + (i === stepN - 1 ? ' aria-current="step"' : '') + '><span></span>' + n + '</li>'; }).join('') + '</ol>' : '';
       return '<div class="' + cls + '" data-order="' + esc(r.id) + '" aria-live="polite">' + steps + '<b>' + esc(statusText(r.status)) + '</b> <span class="ttq-mut">Order ' + esc(String(r.id).slice(2, 8)) + '</span><br>' +
         esc(r.message || '') + (r.total != null ? '<div class="ttq-mut">Total ' + money(r.total) + ' before tax</div>' : '') +
@@ -1741,9 +1747,9 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
       var sheet = '', allergens = {}; m.items.forEach(function (i) { i.allergens.forEach(function (a) { allergens[a.toLowerCase()] = a; }); });
       var akeys = Object.keys(allergens).sort(), PALETTE = ['#fde68a', '#fecaca', '#bbf7d0', '#bfdbfe', '#ddd6fe', '#fbcfe8', '#fed7aa'];
       function swatch(it) { var h = 0, k = String(it.name); for (var z = 0; z < k.length; z++) h = (h * 31 + k.charCodeAt(z)) >>> 0; return PALETTE[h % PALETTE.length]; }
-      function photo(it, cls) {   // emoji/color block always rendered underneath; the photo sits on top and is removed if it fails to load
-        return '<span class="ttq-ph ttq-mono ' + cls + '" style="background:' + swatch(it) + '" aria-hidden="true">' + esc(it.emoji || it.name.charAt(0).toUpperCase()) +
-          (it.img ? '<img class="ttq-img" src="' + esc(it.img) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">' : '') + '</span>';
+      function photo(it, cls) {   // real photo only (Luca: no emoji or letter tiles). No photo -> no picture block; a photo that fails to load removes its block.
+        if (!it.img) return '';
+        return '<span class="ttq-ph ' + cls + '" style="background:' + swatch(it) + '" aria-hidden="true"><img class="ttq-img" src="' + esc(it.img) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>';
       }
       function badges(it) { return it.badges.map(function (b) { var k = b.toLowerCase().replace(/[^a-z]/g, ''); return '<span class="ttq-badge b-' + esc(k) + '">' + (k === 'spicy' ? '&#127798; ' : k === 'popular' ? '&#9733; ' : k === 'veggie' ? '&#127793; ' : '') + esc(b) + '</span>'; }).join(''); }
       html += '<header class="ttq-top"><div class="ttq-topin">' + head() + '<span class="ttq-table">' + esc(table.name) + '</span></div></header>';
@@ -1766,8 +1772,9 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
       m.items.filter(function (i) { return (ui.cat === 'all' || String(i.cat_id) === String(ui.cat)) && (!q || (i.name + ' ' + i.desc + ' ' + i.badges.join(' ') + ' ' + i.diet.join(' ')).toLowerCase().indexOf(q) >= 0); }).forEach(function (it) {
         shown++;
         var hit = allergenHit(it), isOpen = ui.open != null && String(ui.open) === String(it.id);
-        html += '<div class="ttq-item' + (it.available ? '' : ' off') + '"><button class="ttq-hit" data-detail="' + esc(it.id) + '"' + (it.available ? '' : ' disabled') + ' aria-label="' + esc(it.name) + ', ' + money(it.price) + ' - details">' + photo(it, '') + '</button>' +
-          '<div class="ttq-info"><b>' + esc(it.name) + '</b>' + (it.desc ? '<span class="ttq-desc">' + esc(it.desc) + '</span>' : '') + '<div class="ttq-tags">' + badges(it) +
+        var pic = photo(it, ''), dis = it.available ? '' : ' disabled';
+        html += '<div class="ttq-item' + (it.available ? '' : ' off') + (pic ? '' : ' nopic') + '">' + (pic ? '<button class="ttq-hit" data-detail="' + esc(it.id) + '"' + dis + ' tabindex="-1" aria-hidden="true">' + pic + '</button>' : '') +
+          '<div class="ttq-info"><button class="ttq-nm" data-detail="' + esc(it.id) + '"' + dis + ' aria-label="' + esc(it.name) + ', ' + money(it.price) + ' - details"><b>' + esc(it.name) + '</b></button>' + (it.desc ? '<span class="ttq-desc">' + esc(it.desc) + '</span>' : '') + '<div class="ttq-tags">' + badges(it) +
           (it.available ? '' : '<span class="ttq-pill out">Sold out</span>') +
           it.diet.map(function (a) { return '<span class="ttq-pill good">' + esc(a) + '</span>'; }).join('') +
           it.allergens.map(function (a) { if (/^spicy$/i.test(a) && !ui.avoid.spicy && it.badges.length) return ''; return '<span class="ttq-pill' + (ui.avoid[a.toLowerCase()] ? ' hit' : '') + '">' + esc(a) + '</span>'; }).join('') + '</div>' +
@@ -1930,7 +1937,7 @@ html.tt-dark .seg{background:#0f172a}html.tt-dark .seg button{background:transpa
       else if (t.dataset && t.dataset.mod != null) { ui.openOpts[t.dataset.mod] = t.checked; }
     }
     if (customerCtl) customerCtl.destroy();
-    function onImgError(e) { var t = e.target; if (t && t.tagName === 'IMG' && /\bttq-img\b/.test(t.className) && t.parentNode) t.parentNode.removeChild(t); }
+    function onImgError(e) { var t = e.target; if (!t || t.tagName !== 'IMG' || !/\bttq-img\b/.test(t.className)) return; var ph = t.parentNode, box = ph && ph.parentNode; if (box && /\bttq-hit\b/.test(box.className)) { var card = box.parentNode; box.parentNode.removeChild(box); if (card && card.classList) card.classList.add('nopic'); } else if (ph && /\bttq-ph\b/.test(ph.className) && box) box.removeChild(ph); else if (ph) ph.removeChild(t); }
     container.addEventListener('error', onImgError, true);
     container.addEventListener('click', onClick); container.addEventListener('input', onInput); container.addEventListener('change', onChange);
     customerCtl = {
