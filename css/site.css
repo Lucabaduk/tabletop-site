@@ -53,11 +53,16 @@ input,textarea{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1
 .cta{background:var(--brand);color:#fff;border-radius:24px;padding:44px 24px;text-align:center}.cta .btn{background:#fff;color:var(--brand2)}.cta p{opacity:.9}
 footer{background:#14161a;color:#a8adb8;padding:48px 0 28px;font-size:14px}footer .logo{color:#fff}
 footer .cols{display:grid;gap:28px;grid-template-columns:1fr}@media(min-width:760px){footer .cols{grid-template-columns:2fr 1fr 1fr}}
-footer a{color:#a8adb8;text-decoration:none;display:block;padding:4px 0}footer a:hover{color:#fff}footer b{color:#fff;display:block;margin-bottom:6px}footer small{display:block;margin-top:32px;border-top:1px solid #2a2d34;padding-top:18px}
+footer a{color:#a8adb8;text-decoration:none;display:block;padding:10px 0;min-height:44px;box-sizing:border-box}footer a:hover{color:#fff}footer b{color:#fff;display:block;margin-bottom:6px}footer small{display:block;margin-top:32px;border-top:1px solid #2a2d34;padding-top:18px}
 .legal{max-width:760px}.legal p{color:#333}.note{background:var(--soft);border-radius:12px;padding:12px 16px;font-size:14px}
 .toolbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:20px 0}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:#fff}.seg button{border:0;background:none;padding:8px 14px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}.seg button[aria-pressed=true]{background:var(--ink);color:#fff}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:#fff}.seg button{border:0;background:none;padding:8px 14px;min-height:44px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}.seg button[aria-pressed=true]{background:var(--ink);color:#fff}
 .stage{margin-bottom:32px}.dev .frame{border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--sh);background:#fff;margin:0 auto;transition:max-width .3s}
 .dev iframe{width:100%;height:min(760px,78vh);border:0;display:block}.dev.phone-w .frame{max-width:390px;border:8px solid #14161a;border-radius:32px}
 .tips{display:grid;gap:16px;grid-template-columns:1fr;margin:28px 0}@media(min-width:760px){.tips{grid-template-columns:1fr 1fr}}
 .rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}.rv.in{opacity:1;transform:none}
+
+@media(max-width:600px){.toolbar .btn{flex:1 1 100%}.dev iframe{height:min(640px,72vh)}}
+img{max-width:100%;height:auto}
+/* Bigger tap area for inline text links (layout unchanged) */
+main p a:not(.btn),main li a:not(.btn),.price p a{display:inline-block;padding:12px 4px;margin:-12px -4px;position:relative}
