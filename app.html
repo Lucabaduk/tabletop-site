@@ -2997,6 +2997,8 @@ if(!TTQROrder.autoStart({container:$('#app'),getMenu:QRO.getMenu,getTable:QRO.ge
   placeOrder:(tid,items,meta)=>{const r=QRO.placeOrder(tid,items,meta);try{TTInventory.onOrderPlaced(byId('orders',r.orderId));}catch(e){}return r;},
   restaurantName:QRO.restaurantName,taxRate:QRO.taxRate,onLeave:()=>{location.hash='#tables';render();}}))render();
 
-try{TTMobile.init();}catch(e){console.warn('mobile init',e);}
+// Service worker is OFF for now (no sw.js on the site). To turn it back on: set ENABLE_SW=true and add a matching worker-src to the CSP.
+const ENABLE_SW=false;
+try{TTMobile.init({registerSW:ENABLE_SW});}catch(e){console.warn('mobile init',e);}
 
 </script></body></html>
