@@ -64,3 +64,5 @@ footer a{color:#a8adb8;text-decoration:none;display:block;padding:10px 0;min-hei
 
 @media(max-width:600px){.toolbar .btn{flex:1 1 100%}.dev iframe{height:min(640px,72vh)}}
 img{max-width:100%;height:auto}
+/* Bigger tap area for inline text links (layout unchanged) */
+main p a:not(.btn),main li a:not(.btn),.price p a{display:inline-block;padding:12px 4px;margin:-12px -4px;position:relative}
