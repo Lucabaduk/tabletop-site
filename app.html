@@ -198,6 +198,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand2);
  main{padding:16px 14px 96px}
  .posbar{bottom:calc(84px + env(safe-area-inset-bottom))}
 }
+/* QA phone fixes: modals sit above the bottom tab bar; small inputs reach 40px tap height */
+@media(max-width:760px){.modal{z-index:60}.modal .card{max-height:calc(100vh - 32px)}input.tiny{min-height:40px}}
 /* TableTop phone layout. Active only at <=760px. */
 #tt-tabbar,#tt-undo{display:none}
 @media (max-width:760px){
